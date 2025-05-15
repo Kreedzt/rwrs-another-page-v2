@@ -40,7 +40,7 @@ export const parseServerListFromString = (
       timeStamp: server.timeStamp,
       version: server.version,
       dedicated: server.dedicated === 1,
-      mod: server.mod,
+      mod: server.mod === 1,
       playerList: fixPlayerList(server.player),
       comment: server.comment,
       url: server.url,

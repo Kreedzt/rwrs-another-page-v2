@@ -54,15 +54,15 @@
 		if (players.length === 0) return '-';
 
 		if (query) {
-			return players
+			return `<div class="flex flex-wrap gap-1">${players
 				.map((player) => {
 					const highlighted = highlightMatch(player, query);
-					return `<span class="badge badge-neutral">${highlighted}</span>`;
+					return `<span class="badge badge-neutral gap-0">${highlighted}</span>`;
 				})
-				.join(' ');
+				.join(' ')}</div>`;
 		}
 
-		return players.map((player) => `<span class="badge badge-neutral">${player}</span>`).join(' ');
+		return `<div class="flex flex-wrap gap-1 text-xs">${players.map((player) => `<span class="badge badge-neutral gap-0">${player}</span>`).join(' ')}</div>`;
 	}
 </script>
 
@@ -99,11 +99,8 @@
 						{#each columns as column}
 							<td>
 								{#if column.key === 'action'}
-									<button
-										class="btn btn-sm btn-primary"
-										onclick={() => handleAction(item, 'connect')}
-									>
-										Connect
+									<button class="btn btn-sm btn-primary" onclick={() => handleAction(item, 'Join')}>
+										Join
 									</button>
 								{:else if column.key === 'url' && item.url}
 									<a href={item.url} target="_blank" class="link link-primary">
@@ -118,8 +115,8 @@
 										item.playerList,
 										shouldHighlight(item, column) ? searchQuery : ''
 									)}
-								{:else if shouldHighlight(item, column) && typeof item[column.key] === 'string'}
-									{@html highlightMatch(item[column.key], searchQuery)}
+								{:else if shouldHighlight(item, column)}
+									{@html highlightMatch(getValue(item, column), searchQuery)}
 								{:else}
 									{getValue(item, column)}
 								{/if}

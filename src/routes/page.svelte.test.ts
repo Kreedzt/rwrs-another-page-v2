@@ -47,7 +47,7 @@ describe('/servers/+page.svelte', () => {
 				timeStamp: 1234567890,
 				version: 1,
 				dedicated: true,
-				mod: null,
+				mod: false,
 				playerList: ['Player1', 'Player2'],
 				comment: 'Test comment',
 				url: 'http://example.com',

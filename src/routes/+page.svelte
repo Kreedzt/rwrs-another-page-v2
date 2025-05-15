@@ -30,7 +30,9 @@
 		{
 			key: 'mapId',
 			label: 'Map',
-			getValue: (server: IDisplayServerItem) => server.mapId.split('/').pop() || ''
+			getValue: (server: IDisplayServerItem) => {
+				return server.mapId.split('/').pop() || '';
+			}
 		},
 		{
 			key: 'playerCount',
@@ -41,10 +43,10 @@
 			key: 'playerList',
 			label: 'Player List',
 			getValue: (server: IDisplayServerItem) => {
-				if (server.playerList.length === 0) return '-';
-				return server.playerList
+				if (server.playerList.length === 0) return '';
+				return `<div class="flex flex-wrap gap-1 text-xs">${server.playerList
 					.map((player) => `<span class="badge badge-neutral">${player}</span>`)
-					.join(' ');
+					.join(' ')}</div>`;
 			}
 		},
 		{ key: 'comment', label: 'Comment' },
@@ -53,7 +55,11 @@
 			label: 'Dedicated',
 			getValue: (server: IDisplayServerItem) => (server.dedicated ? 'Yes' : 'No')
 		},
-		{ key: 'mod', label: 'Mod' },
+		{
+			key: 'mod',
+			label: 'Mod',
+			getValue: (server: IDisplayServerItem) => (server.mod ? 'Yes' : 'No')
+		},
 		{ key: 'url', label: 'URL' },
 		{ key: 'version', label: 'Version' },
 		{ key: 'action', label: 'Action', getValue: () => '' }
@@ -106,16 +112,16 @@
 	}
 
 	function handleRowAction(event: { item: IDisplayServerItem; action: string }) {
-		if (event.action === 'connect') {
-			handleConnect(event.item);
+		if (event.action === 'join') {
+			handleJoin(event.item);
 		}
 	}
 
 	// No unused type definitions
 
-	function handleConnect(server: IDisplayServerItem) {
+	function handleJoin(server: IDisplayServerItem) {
 		// This would be implemented to handle connection to the server
-		alert(`Connecting to ${server.name} at ${server.ipAddress}:${server.port}`);
+		alert(`Join to ${server.name} at ${server.ipAddress}:${server.port}`);
 	}
 
 	// Load data
