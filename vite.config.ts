@@ -37,6 +37,10 @@ export default defineConfig({
 					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
 				}
 			}
-		]
+		],
+		coverage: {
+			include: ['src/'],
+			provider: 'v8',
+		},
 	}
 });
