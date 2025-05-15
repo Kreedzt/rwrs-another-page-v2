@@ -52,5 +52,9 @@
 		"onlyBuiltDependencies": [
 			"esbuild"
 		]
+	},
+	"dependencies": {
+		"daisyui": "^5.0.35",
+		"fast-xml-parser": "^5.2.3"
 	}
 }

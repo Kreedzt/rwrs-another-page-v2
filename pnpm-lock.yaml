@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      daisyui:
+        specifier: ^5.0.35
+        version: 5.0.35
+      fast-xml-parser:
+        specifier: ^5.2.3
+        version: 5.2.3
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -974,6 +981,9 @@ packages:
     resolution: {integrity: sha512-ZgW+Jgdd7i52AaLYCriF8Mxqft0gD/R9i9wi6RWBhs1pqdPEzPjym7rvRKi397WmQFf3SlyUsszhw+VVCbx79Q==}
     engines: {node: '>=18'}
 
+  daisyui@5.0.35:
+    resolution: {integrity: sha512-AWi11n/x5++mps55jcwrBf0Lmip1euWY0FYcH/05SFGmoqrU7S7/aIUWaiaeqlJ5EcmEZ/7zEY73aOxMv6hcIg==}
+
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
     engines: {node: '>=18'}
@@ -1182,6 +1192,10 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
+
+  fast-xml-parser@5.2.3:
+    resolution: {integrity: sha512-OdCYfRqfpuLUFonTNjvd30rCBZUneHpSQkCqfaeWQ9qrKcl6XlWeDBNVwGb+INAIxRshuN2jF+BE0L6gbBO2mw==}
+    hasBin: true
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -1982,6 +1996,9 @@ packages:
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
+
+  strnum@2.1.0:
+    resolution: {integrity: sha512-w0S//9BqZZGw0L0Y8uLSelFGnDJgTyyNQLmSlPnVz43zPAiqu3w4t8J8sDqqANOGeZIZ/9jWuPguYcEnsoHv4A==}
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -3074,6 +3091,8 @@ snapshots:
       '@asamuzakjp/css-color': 3.1.7
       rrweb-cssom: 0.8.0
 
+  daisyui@5.0.35: {}
+
   data-urls@5.0.0:
     dependencies:
       whatwg-mimetype: 4.0.0
@@ -3329,6 +3348,10 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-xml-parser@5.2.3:
+    dependencies:
+      strnum: 2.1.0
 
   fastq@1.19.1:
     dependencies:
@@ -4044,6 +4067,8 @@ snapshots:
       min-indent: 1.0.1
 
   strip-json-comments@3.1.1: {}
+
+  strnum@2.1.0: {}
 
   supports-color@7.2.0:
     dependencies:
