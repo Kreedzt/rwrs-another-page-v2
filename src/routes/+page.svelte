@@ -139,7 +139,8 @@
 </script>
 
 <section aria-label="Server List">
-	<div class="container mx-auto px-4 py-8">
+	<!-- Use a fixed min-height container to prevent layout shifts -->
+	<div class="container mx-auto px-4 py-8 min-h-[600px]">
 		<!-- Search component -->
 		<div class="mb-4">
 			<SearchInput
@@ -150,43 +151,68 @@
 			/>
 		</div>
 
-		{#if loading}
-			<div class="flex h-64 items-center justify-center">
-				<span
-					class="loading loading-spinner loading-lg text-primary"
-					role="status"
-					aria-label="Loading"
-				></span>
-			</div>
-		{:else if error}
-			<div class="alert alert-error">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6 shrink-0 stroke-current"
-					fill="none"
-					viewBox="0 0 24 24"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-					/>
-				</svg>
-				<span>{error}</span>
-			</div>
-		{:else}
-			<!-- Data table component -->
-			<DataTable data={paginatedServers} {columns} {searchQuery} rowAction={handleRowAction} />
+		<!-- Content area with consistent height -->
+		<div class="content-area min-h-[500px]">
+			{#if loading}
+				<!-- Loading state with skeleton UI that matches table structure -->
+				<div class="skeleton-container">
+					<div class="overflow-x-auto">
+						<table class="table w-full">
+							<thead>
+								<tr>
+									{#each columns as column}
+										<th>{column.label}</th>
+									{/each}
+								</tr>
+							</thead>
+							<tbody>
+								{#each Array(5) as _}
+									<tr>
+										{#each Array(columns.length) as _}
+											<td>
+												<div class="skeleton h-4 w-full"></div>
+											</td>
+										{/each}
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
+					<!-- Skeleton pagination -->
+					<div class="mt-4 flex items-center justify-center">
+						<div class="skeleton h-10 w-64"></div>
+					</div>
+				</div>
+			{:else if error}
+				<div class="alert alert-error">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6 shrink-0 stroke-current"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<span>{error}</span>
+				</div>
+			{:else}
+				<!-- Data table component -->
+				<DataTable data={paginatedServers} {columns} {searchQuery} rowAction={handleRowAction} />
 
-			<!-- Pagination component -->
-			<Pagination
-				{currentPage}
-				{totalPages}
-				totalItems={filteredServers.length}
-				pageChange={handlePageChange}
-			/>
-		{/if}
+				<!-- Pagination component -->
+				<Pagination
+					{currentPage}
+					{totalPages}
+					totalItems={filteredServers.length}
+					pageChange={handlePageChange}
+				/>
+			{/if}
+		</div>
 	</div>
 </section>
 
@@ -197,5 +223,33 @@
 		justify-content: center;
 		align-items: center;
 		flex: 0.6;
+	}
+
+	/* Ensure consistent layout to prevent CLS */
+	.content-area {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
+	/* Style for skeleton loading state */
+	.skeleton-container {
+		width: 100%;
+	}
+
+	/* Ensure the skeleton has consistent dimensions */
+	.skeleton {
+		background-color: hsl(var(--b3, var(--b2)) / var(--tw-bg-opacity, 1));
+		border-radius: 0.25rem;
+		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+
+	@keyframes pulse {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.5;
+		}
 	}
 </style>
