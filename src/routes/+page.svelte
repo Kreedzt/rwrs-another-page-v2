@@ -130,7 +130,7 @@
 			loading = true;
 			servers = await DataTableService.listAll();
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load servers';
+			error = err instanceof Error ? err.message : 'Failed to load data';
 			console.error('Error loading servers:', err);
 		} finally {
 			loading = false;
@@ -138,7 +138,7 @@
 	});
 </script>
 
-<section>
+<section aria-label="Server List">
 	<div class="container mx-auto px-4 py-8">
 		<!-- Search component -->
 		<div class="mb-4">
@@ -152,7 +152,11 @@
 
 		{#if loading}
 			<div class="flex h-64 items-center justify-center">
-				<span class="loading loading-spinner loading-lg text-primary"></span>
+				<span
+					class="loading loading-spinner loading-lg text-primary"
+					role="status"
+					aria-label="Loading"
+				></span>
 			</div>
 		{:else if error}
 			<div class="alert alert-error">

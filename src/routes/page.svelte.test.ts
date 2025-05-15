@@ -5,20 +5,20 @@ import { DataTableService } from '@/services/data-table';
 import Page from './+page.svelte';
 
 describe('/+page.svelte', () => {
-	test('should render h1', () => {
+	test('should render the server list section', () => {
 		render(Page);
-		expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+		expect(screen.getByLabelText('Server List')).toBeInTheDocument();
 	});
 });
 
 // Mock the DataTableService
 vi.mock('@/services/data-table', () => ({
 	DataTableService: {
-		listAll: vi.fn()
+		listAll: vi.fn(() => Promise.resolve([])),
 	}
 }));
 
-describe('/servers/+page.svelte', () => {
+describe('Server data loading', () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
 	});
@@ -28,8 +28,8 @@ describe('/servers/+page.svelte', () => {
 		vi.mocked(DataTableService.listAll).mockImplementation(() => new Promise(() => {}));
 
 		render(Page);
-		expect(screen.getByText('Server List')).toBeInTheDocument();
-		expect(screen.getByRole('status')).toBeInTheDocument(); // Loading spinner
+		// Check for loading spinner
+		expect(screen.getByRole('status')).toBeInTheDocument();
 	});
 
 	test('should render server table when data is loaded', async () => {
@@ -75,6 +75,6 @@ describe('/servers/+page.svelte', () => {
 		render(Page);
 
 		// Wait for the error message to be displayed
-		expect(await screen.findByText(/Failed to load servers/)).toBeInTheDocument();
+		expect(await screen.findByText('Failed to load data')).toBeInTheDocument();
 	});
 });

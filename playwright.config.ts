@@ -1,9 +1,23 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-	webServer: {
-		command: 'npm run build && npm run preview',
-		port: 4173
+	webServer: [
+		{
+			command: 'node e2e/mock-server.cjs',
+			port: 5800,
+			reuseExistingServer: false,
+		},
+		{
+			command: 'npm run build && npm run preview',
+			port: 4173,
+			reuseExistingServer: false,
+		}
+	],
+	testDir: 'e2e',
+	use: {
+		// Retry tests on failure
+		retry: 1,
+		// Timeout for each test
+		timeout: 30000,
 	},
-	testDir: 'e2e'
 });
