@@ -49,6 +49,11 @@ export default defineConfig({
 		coverage: {
 			include: ['src/'],
 			provider: 'v8',
+			reporter: ['text', 'json', 'cobertura', 'html', 'lcov'],
 		},
+		reporters: [
+			'default',
+			['vitest-sonar-reporter', { outputFile: 'sonar-report.xml' }],
+		],
 	}
 });

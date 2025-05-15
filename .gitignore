@@ -9,7 +9,10 @@ node_modules
 /.svelte-kit
 /build
 /.idea
+
+# test
 /coverage
+sonar-report.xml
 
 # OS
 .DS_Store
