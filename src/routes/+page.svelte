@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { DataTableService } from '@/services/data-table';
-	import type { IDisplayServerItem } from '@/models/data-table.model';
+	import { DataTableService } from '$lib/services/data-table';
+	import type { IDisplayServerItem } from '$lib/models/data-table.model';
 
 	// Import components
 	import SearchInput from '@/lib/components/SearchInput.svelte';

@@ -25,7 +25,7 @@ This project requires the following backend:
 
 ### Prerequisites
 
-- Node.js (v20 or later recommended)
+- Node.js (v22 or later recommended)
 - pnpm package manager
 
 ### Setup

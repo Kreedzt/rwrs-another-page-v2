@@ -1,7 +1,7 @@
-import { request } from '@/lib/request';
-import type { RequestOptions } from '@/lib/request';
-import type { IDisplayServerItem } from '@/models/data-table.model';
-import { parseServerListFromString } from '@/share/utils';
+import { request } from '$lib/request';
+import type { RequestOptions } from '$lib/request';
+import type { IDisplayServerItem } from '$lib/models/data-table.model';
+import { parseServerListFromString } from '$lib/share/utils';
 
 const SERVER_API_URL = '/api';
 

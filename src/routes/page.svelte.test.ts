@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/svelte';
-import { DataTableService } from '@/services/data-table';
+import { DataTableService } from '$lib/services/data-table';
 import Page from './+page.svelte';
 
 describe('/+page.svelte', () => {
@@ -12,7 +12,7 @@ describe('/+page.svelte', () => {
 });
 
 // Mock the DataTableService
-vi.mock('@/services/data-table', () => ({
+vi.mock('$lib/services/data-table', () => ({
 	DataTableService: {
 		listAll: vi.fn(() => Promise.resolve([])),
 	}

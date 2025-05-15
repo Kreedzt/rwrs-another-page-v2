@@ -1,4 +1,4 @@
-import type { Nullable } from "@/share/types";
+import type { Nullable } from "$lib/share/types";
 
 export interface IGroupedServerItem {
   groupName: string;
