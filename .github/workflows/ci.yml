@@ -1,0 +1,38 @@
+name: CI
+
+on: [push, pull_request]
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        name: Test Coverage
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v3
+              name: Install pnpm
+              with:
+                version: '10.8.0'
+                run_install: false
+            - name: Setup Nodejs
+              uses: actions/setup-node@v4
+              with:
+                node-version: '22.14.0'
+                cache: 'pnpm'
+            - name: Install dependencies
+              run: pnpm install
+            - name: test coverage
+              run: pnpm run coverage
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
+            - name: SonarCloud Scan
+              uses: sonarsource/sonarcloud-github-action@master
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
