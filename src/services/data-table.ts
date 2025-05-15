@@ -21,7 +21,7 @@ export const DataTableService: IDataTableService = {
   async list(params) {
     const queryParams = {
       start: params?.start ?? 0,
-      size: params?.size ?? 100,
+      size: params?.size ?? 20,
       names: params?.names ?? 1,
     };
 

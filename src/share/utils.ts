@@ -7,7 +7,7 @@ import { XMLParser } from 'fast-xml-parser';
 
 const fixPlayerList = (raw: string | undefined | string[]): string[] => {
   if (Array.isArray(raw)) {
-    return raw;
+    return raw.map((player) => player.toString());
   }
 
   if (typeof raw === 'string') {
@@ -29,11 +29,11 @@ export const parseServerListFromString = (
 
   const serverList: IDisplayServerItem[] = res.result.server.map((server) => {
     const block: IDisplayServerItem = {
-      name: server.name,
+      name: server.name.toString(),
       ipAddress: server.address,
       port: server.port,
-      mapId: server.map_id,
-      mapName: server.map_name,
+      mapId: server.map_id.toString(),
+      mapName: server.map_name.toString(),
       bots: server.bots,
       country: server.country,
       currentPlayers: server.current_players,
@@ -45,7 +45,7 @@ export const parseServerListFromString = (
       comment: server.comment,
       url: server.url,
       maxPlayers: server.max_players,
-      mode: server.mode,
+      mode: server.mode.toString(),
       realm: server.realm,
     };
 
