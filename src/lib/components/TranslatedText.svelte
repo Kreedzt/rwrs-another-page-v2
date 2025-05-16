@@ -1,14 +1,19 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages.js';
 
-	// Props
-	export let key: string;
-	export let params: Record<string, any> = {};
-	export let tag: keyof HTMLElementTagNameMap = 'span';
-	export let className = '';
+	let {
+		key,
+		params = {},
+		tag = 'span',
+		className = ''
+	} = $props<{
+		key: string;
+		params?: Record<string, any>;
+		tag?: keyof HTMLElementTagNameMap;
+		className?: string;
+	}>();
 	
-	// Determine if the key exists in the messages
-	$: hasKey = key in m;
+	const hasKey = $derived(key in m);
 </script>
 
 {#if hasKey}

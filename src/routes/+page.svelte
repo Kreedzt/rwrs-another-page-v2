@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { DataTableService } from '$lib/services/data-table';
 	import type { IDisplayServerItem } from '$lib/models/data-table.model';
 
@@ -143,7 +144,7 @@
 		<!-- Search component -->
 		<div class="mb-4">
 			<SearchInput
-				placeholder="Search servers, maps, players, mode, country, etc..."
+				placeholder={m['app.search.placeholder']()}
 				value={searchQuery}
 				search={handleSearch}
 				clear={() => handleSearch('')}
