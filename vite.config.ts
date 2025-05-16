@@ -23,6 +23,7 @@ export default defineConfig({
 		}
 	},
 	test: {
+		watch: false,
 		workspace: [
 			{
 				extends: './vite.config.ts',

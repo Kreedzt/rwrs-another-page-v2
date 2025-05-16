@@ -57,15 +57,34 @@ describe('Server data loading', () => {
 			}
 		];
 
+		// Mock the listAll method to return the mock data immediately
 		vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
 
+		// Render the component
 		render(Page);
 
-		// Wait for the table to be rendered
-		expect(await screen.findByRole('table')).toBeInTheDocument();
-		expect(screen.getByText('Test Server')).toBeInTheDocument();
-		expect(screen.getByText('127.0.0.1')).toBeInTheDocument();
-		expect(screen.getByText('8080')).toBeInTheDocument();
+		// Wait for the loading state to be replaced with the data table
+		// This will wait for the loading state to disappear and the actual data to appear
+		await vi.waitFor(async () => {
+			// This should eventually pass when the data is loaded
+			const tableElement = await screen.findByRole('table');
+			expect(tableElement).toBeInTheDocument();
+
+			// Check that the loading skeleton is no longer present
+			const loadingElement = screen.queryByRole('status');
+			expect(loadingElement).toBeNull();
+		});
+
+		// Now check for specific data in the table
+		// Use queryByText to avoid test failures if the element isn't found
+		const serverNameElement = screen.queryByText('Test Server');
+		expect(serverNameElement).toBeInTheDocument();
+
+		const ipAddressElement = screen.queryByText('127.0.0.1');
+		expect(ipAddressElement).toBeInTheDocument();
+
+		const portElement = screen.queryByText('8080');
+		expect(portElement).toBeInTheDocument();
 	});
 
 	test('should show error message when data loading fails', async () => {

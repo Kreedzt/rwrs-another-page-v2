@@ -7,7 +7,6 @@
 	import SearchInput from '@/lib/components/SearchInput.svelte';
 	import Pagination from '@/lib/components/Pagination.svelte';
 	import DataTable from '@/lib/components/DataTable.svelte';
-	import { highlightMatch } from '@/lib/utils/highlight';
 
 	// State variables
 	let servers = $state<IDisplayServerItem[]>([]);
@@ -155,7 +154,7 @@
 		<div class="content-area min-h-[500px]">
 			{#if loading}
 				<!-- Loading state with skeleton UI that matches table structure -->
-				<div class="skeleton-container">
+				<div class="skeleton-container" role="status" aria-label="Loading server data">
 					<div class="overflow-x-auto">
 						<table class="table w-full">
 							<thead>
