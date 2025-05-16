@@ -1,3 +1,4 @@
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
 import { svelteTesting } from '@testing-library/svelte/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
@@ -5,21 +6,23 @@ import { defineConfig } from 'vite';
 import path from 'path';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [
+		tailwindcss(),
+		sveltekit(),
+		paraglideVitePlugin({
+			project: './project.inlang',
+			outdir: './src/lib/paraglide'
+		})
+	],
 	resolve: {
-		alias: {
-      		'@': path.resolve(__dirname, './src'),
-		}
+		alias: { '@': path.resolve(__dirname, './src') }
 	},
 	server: {
 		proxy: {
-			// use rwrs-server
 			'/api': {
 				target: 'http://localhost:5800',
-
-				// target: 'https://rwrs.kreedzt.cn/',
-				changeOrigin: true,
-			},
+				changeOrigin: true
+			}
 		}
 	},
 	test: {
@@ -50,11 +53,8 @@ export default defineConfig({
 		coverage: {
 			include: ['src/'],
 			provider: 'v8',
-			reporter: ['text', 'json', 'cobertura', 'html', 'lcov'],
+			reporter: ['text', 'json', 'cobertura', 'html', 'lcov']
 		},
-		reporters: [
-			'default',
-			['vitest-sonar-reporter', { outputFile: 'sonar-report.xml' }],
-		],
+		reporters: ['default', ['vitest-sonar-reporter', { outputFile: 'sonar-report.xml' }]]
 	}
 });
