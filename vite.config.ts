@@ -17,6 +17,18 @@ export default defineConfig({
 	resolve: {
 		alias: { '@': path.resolve(__dirname, './src') }
 	},
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					if (id.includes('node_modules')) {
+						return 'vendor';
+					}
+					return 'app';
+				}
+			}
+		}
+	},
 	server: {
 		proxy: {
 			'/api': {

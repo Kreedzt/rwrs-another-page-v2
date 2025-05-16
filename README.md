@@ -32,8 +32,8 @@ This project requires the following backend:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/rwrs-another-page.git
-   cd rwrs-another-page
+   git clone https://github.com/yourusername/rwrs-another-page-v2.git
+   cd rwrs-another-page-v2
    ```
 
 2. Install dependencies:
@@ -75,15 +75,15 @@ There are two ways to deploy using Docker:
    docker run -d --name rwrs-server --network rwrs-network -e "HOST=0.0.0.0" -e "PORT=80" zhaozisong0/rwrs-server:latest
    ```
 
-3. Start the rwrs-another-page container:
+3. Start the rwrs-another-page-v2 container:
    ```bash
-   docker pull zhaozisong0/rwrs-another-page:latest
-   docker run -d --name rwrs-another-page --network rwrs-network -p 80:80 zhaozisong0/rwrs-another-page:latest
+   docker pull zhaozisong0/rwrs-another-page-v2:latest
+   docker run -d --name rwrs-another-page-v2 --network rwrs-network -p 80:80 zhaozisong0/rwrs-another-page-v2:latest
    ```
 
 4. Configure a reverse proxy (like Nginx) to route:
    - `/api/*` requests to the rwrs-server container
-   - `/*` requests to the rwrs-another-page container
+   - `/*` requests to the rwrs-another-page-v2 container
 
 #### Option 2: Single Container
 
@@ -107,7 +107,7 @@ You can also deploy by copying the frontend build to the rwrs-server's static di
 You can inject custom header scripts using the `HEADER_SCRIPTS` environment variable:
 
 ```bash
-docker run -p 80:80 -e "HEADER_SCRIPTS=<script>console.log('Custom script');</script>" zhaozisong0/rwrs-another-page:latest
+docker run -p 80:80 -e "HEADER_SCRIPTS=<script>console.log('Custom script');</script>" zhaozisong0/rwrs-another-page-v2:latest
 ```
 
 ### Manual Deployment
