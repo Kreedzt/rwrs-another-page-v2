@@ -140,7 +140,7 @@
 
 <section aria-label="Server List">
 	<!-- Use a fixed min-height container to prevent layout shifts -->
-	<div class="container mx-auto px-4 py-8 min-h-[600px]">
+	<div class="container mx-auto min-h-[600px] px-4 py-8">
 		<!-- Search component -->
 		<div class="mb-4">
 			<SearchInput
@@ -245,7 +245,8 @@
 	}
 
 	@keyframes pulse {
-		0%, 100% {
+		0%,
+		100% {
 			opacity: 1;
 		}
 		50% {

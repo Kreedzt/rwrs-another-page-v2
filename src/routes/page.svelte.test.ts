@@ -14,7 +14,7 @@ describe('/+page.svelte', () => {
 // Mock the DataTableService
 vi.mock('$lib/services/data-table', () => ({
 	DataTableService: {
-		listAll: vi.fn(() => Promise.resolve([])),
+		listAll: vi.fn(() => Promise.resolve([]))
 	}
 }));
 

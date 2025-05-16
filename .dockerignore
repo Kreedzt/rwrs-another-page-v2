@@ -1,0 +1,81 @@
+# Node.js dependencies and build artifacts
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+.pnpm-store
+
+# Build output
+/build
+/.svelte-kit
+.output
+.vercel
+.netlify
+.wrangler
+
+# Development and testing
+/coverage
+/test-results
+/playwright-report
+/playwright/.cache
+/e2e
+sonar-report.xml
+vitest-setup-client.ts
+
+# Version control
+.git
+.github
+.gitignore
+.gitattributes
+
+# IDE and editor files
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+*.swp
+*.swo
+Thumbs.db
+
+# Configuration files that aren't needed in the Docker image
+.eslintrc*
+.prettierrc*
+.prettierignore
+.editorconfig
+tsconfig.tsbuildinfo
+*.config.js
+*.config.ts
+!vite.config.ts
+!svelte.config.js
+!tailwind.config.js
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs
+*.md
+
+# Environment variables (except examples)
+.env
+.env.*
+!.env.example
+
+# CI/CD
+.gitlab-ci.yml
+.travis.yml
+codecov.yml
+sonar-project.properties
+
+# Docker related
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Misc
+*.log
+*.bak
+*.tmp
+*.temp
