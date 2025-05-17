@@ -112,16 +112,16 @@
 	}
 
 	function handleRowAction(event: { item: IDisplayServerItem; action: string }) {
+		console.log('Row action event received:', event);
 		if (event.action === 'join') {
 			handleJoin(event.item);
 		}
 	}
 
-	// No unused type definitions
-
 	function handleJoin(server: IDisplayServerItem) {
-		// This would be implemented to handle connection to the server
-		alert(`Join to ${server.name} at ${server.ipAddress}:${server.port}`);
+		console.log(`Join to ${server.name} at ${server.ipAddress}:${server.port}`);
+		const url = `steam://rungameid/270150//server_address=${server.ipAddress} server_port=${server.port}`;
+		window.open(url, '_blank');
 	}
 
 	// Load data
@@ -147,7 +147,6 @@
 				placeholder={m['app.search.placeholder']()}
 				value={searchQuery}
 				search={handleSearch}
-				clear={() => handleSearch('')}
 			/>
 		</div>
 

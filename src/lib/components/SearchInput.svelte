@@ -3,10 +3,9 @@
 		placeholder?: string;
 		value?: string;
 		search: (query: string) => void;
-		clear: () => void;
 	}
 
-	let { placeholder = 'Search...', value = '', search, clear }: Props = $props();
+	let { placeholder = 'Search...', value = '', search }: Props = $props();
 
 	// Handle input changes
 	function handleInput(e: Event) {
@@ -14,58 +13,22 @@
 		value = target.value;
 		search(value);
 	}
-
-	// Clear search
-	function clearSearch() {
-		value = '';
-		clear();
-		search('');
-	}
 </script>
 
 <div class="form-control w-full">
-	<div class="input-group w-full">
-		<input
-			type="text"
-			{placeholder}
-			class="input input-bordered w-full"
-			{value}
-			oninput={handleInput}
-		/>
-		{#if value}
-			<button class="btn btn-square" onclick={clearSearch} aria-label="Clear search">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M6 18L18 6M6 6l12 12"
-					/>
-				</svg>
-			</button>
-		{:else}
-			<button class="btn btn-square" aria-label="Search">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-					/>
-				</svg>
-			</button>
-		{/if}
-	</div>
+	<label class="input">
+		<svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+			<g
+				stroke-linejoin="round"
+				stroke-linecap="round"
+				stroke-width="2.5"
+				fill="none"
+				stroke="currentColor"
+			>
+				<circle cx="11" cy="11" r="8"></circle>
+				<path d="m21 21-4.3-4.3"></path>
+			</g>
+		</svg>
+		<input type="search" {placeholder} class="grow" {value} oninput={handleInput} />
+	</label>
 </div>

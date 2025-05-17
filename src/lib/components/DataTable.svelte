@@ -12,12 +12,12 @@
 	let { data = [], columns = [], searchQuery = '', rowAction = () => {} }: Props = $props();
 
 	// Handle row action (like connect button click)
-	function handleAction(item: any, action: string) {
+	function handleAction(item: IDisplayServerItem, action: string) {
 		rowAction({ item, action });
 	}
 
 	// Helper function to safely get a value from an object
-	function getValue(item: any, column: any): string {
+	function getValue(item: IDisplayServerItem, column: any): string {
 		if (column.key === 'action') {
 			return '';
 		}
@@ -30,7 +30,7 @@
 	}
 
 	// Helper function to check if a field should be highlighted
-	function shouldHighlight(item: any, column: any): boolean {
+	function shouldHighlight(item: IDisplayServerItem, column: any): boolean {
 		if (!searchQuery) return false;
 
 		const query = searchQuery.toLowerCase();
@@ -99,7 +99,7 @@
 						{#each columns as column}
 							<td>
 								{#if column.key === 'action'}
-									<button class="btn btn-sm btn-primary" onclick={() => handleAction(item, 'Join')}>
+									<button class="btn btn-sm btn-primary" onclick={() => handleAction(item, 'join')}>
 										Join
 									</button>
 								{:else if column.key === 'url' && item.url}
