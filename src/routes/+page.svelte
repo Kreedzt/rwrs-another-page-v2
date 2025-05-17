@@ -8,6 +8,7 @@
 	import SearchInput from '@/lib/components/SearchInput.svelte';
 	import Pagination from '@/lib/components/Pagination.svelte';
 	import DataTable from '@/lib/components/DataTable.svelte';
+	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 
 	// State variables
 	let servers = $state<IDisplayServerItem[]>([]);
@@ -20,16 +21,22 @@
 	let currentPage = $state(1);
 
 	// Column definitions
-	const columns = [
-		{ key: 'name', label: 'Name' },
-		{ key: 'ipAddress', label: 'IP Address' },
-		{ key: 'port', label: 'Port' },
-		{ key: 'bots', label: 'Bots' },
-		{ key: 'country', label: 'Country' },
-		{ key: 'mode', label: 'Mode' },
+	const columns: Array<{
+		key: string;
+		label: string;
+		visible: boolean;
+		getValue?: (server: IDisplayServerItem) => string;
+	}> = [
+		{ key: 'name', label: 'Name', visible: true },
+		{ key: 'ipAddress', label: 'IP Address', visible: true },
+		{ key: 'port', label: 'Port', visible: true },
+		{ key: 'bots', label: 'Bots', visible: true },
+		{ key: 'country', label: 'Country', visible: true },
+		{ key: 'mode', label: 'Mode', visible: true },
 		{
 			key: 'mapId',
 			label: 'Map',
+			visible: true,
 			getValue: (server: IDisplayServerItem) => {
 				return server.mapId.split('/').pop() || '';
 			}
@@ -37,11 +44,13 @@
 		{
 			key: 'playerCount',
 			label: 'Players',
+			visible: true,
 			getValue: (server: IDisplayServerItem) => `${server.currentPlayers}/${server.maxPlayers}`
 		},
 		{
 			key: 'playerList',
 			label: 'Player List',
+			visible: true,
 			getValue: (server: IDisplayServerItem) => {
 				if (server.playerList.length === 0) return '';
 				return `<div class="flex flex-wrap gap-1 text-xs">${server.playerList
@@ -49,20 +58,22 @@
 					.join(' ')}</div>`;
 			}
 		},
-		{ key: 'comment', label: 'Comment' },
+		{ key: 'comment', label: 'Comment', visible: true },
 		{
 			key: 'dedicated',
 			label: 'Dedicated',
+			visible: true,
 			getValue: (server: IDisplayServerItem) => (server.dedicated ? 'Yes' : 'No')
 		},
 		{
 			key: 'mod',
 			label: 'Mod',
+			visible: true,
 			getValue: (server: IDisplayServerItem) => (server.mod ? 'Yes' : 'No')
 		},
-		{ key: 'url', label: 'URL' },
-		{ key: 'version', label: 'Version' },
-		{ key: 'action', label: 'Action', getValue: () => '' }
+		{ key: 'url', label: 'URL', visible: true },
+		{ key: 'version', label: 'Version', visible: true },
+		{ key: 'action', label: 'Action', visible: true }
 	];
 
 	// Derived values
@@ -142,12 +153,21 @@
 	<!-- Use a fixed min-height container to prevent layout shifts -->
 	<div class="container mx-auto min-h-[600px] px-4 py-8">
 		<!-- Search component -->
-		<div class="mb-4">
+		<div class="mb-4 flex">
 			<SearchInput
 				placeholder={m['app.search.placeholder']()}
 				value={searchQuery}
 				search={handleSearch}
 			/>
+
+			<div class="flex">
+				<ColumnsToggle
+					{columns}
+					columnChange={(columns) => {
+						console.log('Columns changed:', columns);
+					}}
+				/>
+			</div>
 		</div>
 
 		<!-- Content area with consistent height -->
