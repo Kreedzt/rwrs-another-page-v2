@@ -1,15 +1,23 @@
 <script lang="ts">
 	import { highlightMatch } from '@/lib/utils/highlight';
-	import type { IDisplayServerItem } from '@/models/data-table.model';
+	import type { IDisplayServerItem } from '$lib/models/data-table.model';
+	import type { IColumn } from '$lib/models/data-table.model';
 
 	interface Props {
 		data: IDisplayServerItem[];
-		columns: any[];
+		columns: IColumn[];
+		visibleColumns: Record<string, boolean>;
 		searchQuery: string;
-		rowAction: (event: { item: IDisplayServerItem; action: string }) => void;
+		onRowAction: (event: { item: IDisplayServerItem; action: string }) => void;
 	}
 
-	let { data = [], columns = [], searchQuery = '', rowAction = () => {} }: Props = $props();
+	let {
+		data = [],
+		columns = [],
+		searchQuery = '',
+		onRowAction = () => {},
+		visibleColumns = {}
+	}: Props = $props();
 
 	// Handle row action (like connect button click)
 	function handleAction(item: IDisplayServerItem, action: string) {
@@ -89,7 +97,9 @@
 			<thead>
 				<tr>
 					{#each columns as column}
-						<th>{column.label}</th>
+						{#if visibleColumns[column.key]}
+							<th>{column.label}</th>
+						{/if}
 					{/each}
 				</tr>
 			</thead>
@@ -97,30 +107,37 @@
 				{#each data as item}
 					<tr class="hover hover:bg-base-300">
 						{#each columns as column}
-							<td>
-								{#if column.key === 'action'}
-									<button class="btn btn-sm btn-primary" onclick={() => handleAction(item, 'join')}>
-										Join
-									</button>
-								{:else if column.key === 'url' && item.url}
-									<a href={item.url} target="_blank" class="link link-primary">
-										{#if searchQuery && item.url.toLowerCase().includes(searchQuery.toLowerCase())}
-											{@html highlightMatch(item.url, searchQuery)}
-										{:else}
-											{item.url}
-										{/if}
-									</a>
-								{:else if column.key === 'playerList'}
-									{@html renderPlayerList(
-										item.playerList,
-										shouldHighlight(item, column) ? searchQuery : ''
-									)}
-								{:else if shouldHighlight(item, column)}
-									{@html highlightMatch(getValue(item, column), searchQuery)}
-								{:else}
-									{getValue(item, column)}
-								{/if}
-							</td>
+							{#if visibleColumns[column.key]}
+								<td>
+									{#if column.key === 'action'}
+										<button
+											class="btn btn-sm btn-primary"
+											onclick={() => handleAction(item, 'join')}
+										>
+											Join
+										</button>
+									{:else if column.key === 'url' && item.url}
+										<a href={item.url} target="_blank" class="link link-primary">
+											{#if searchQuery && item.url
+													.toLowerCase()
+													.includes(searchQuery.toLowerCase())}
+												{@html highlightMatch(item.url, searchQuery)}
+											{:else}
+												{item.url}
+											{/if}
+										</a>
+									{:else if column.key === 'playerList'}
+										{@html renderPlayerList(
+											item.playerList,
+											shouldHighlight(item, column) ? searchQuery : ''
+										)}
+									{:else if shouldHighlight(item, column)}
+										{@html highlightMatch(getValue(item, column), searchQuery)}
+									{:else}
+										{getValue(item, column)}
+									{/if}
+								</td>
+							{/if}
 						{/each}
 					</tr>
 				{/each}

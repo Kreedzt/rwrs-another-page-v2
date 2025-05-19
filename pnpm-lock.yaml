@@ -11,6 +11,9 @@ importers:
       '@inlang/paraglide-js':
         specifier: ^2.0.0
         version: 2.0.12
+      '@lucide/svelte':
+        specifier: ^0.511.0
+        version: 0.511.0(svelte@5.30.1)
       daisyui:
         specifier: ^5.0.35
         version: 5.0.35
@@ -455,6 +458,11 @@ packages:
 
   '@lix-js/server-protocol-schema@0.1.1':
     resolution: {integrity: sha512-jBeALB6prAbtr5q4vTuxnRZZv1M2rKe8iNqRQhFJ4Tv7150unEa0vKyz0hs8Gl3fUGsWaNJBh3J8++fpbrpRBQ==}
+
+  '@lucide/svelte@0.511.0':
+    resolution: {integrity: sha512-aLCSPMUJmHlCuLXzXENXa4Z1NV2mN1iAZAFKk4bEbey+/MdsNlu+/DqwVkgW3Yvj6p8y8Vn5xZ2v9CLmPlA6Vw==}
+    peerDependencies:
+      svelte: ^5
 
   '@modelcontextprotocol/sdk@1.11.2':
     resolution: {integrity: sha512-H9vwztj5OAqHg9GockCQC06k1natgcxWQSRpQcPJf6i5+MWBzfKkRtxGbjQf0X2ihii0ffLZCRGbYV2f2bjNCQ==}
@@ -2755,6 +2763,10 @@ snapshots:
       - babel-plugin-macros
 
   '@lix-js/server-protocol-schema@0.1.1': {}
+
+  '@lucide/svelte@0.511.0(svelte@5.30.1)':
+    dependencies:
+      svelte: 5.30.1
 
   '@modelcontextprotocol/sdk@1.11.2':
     dependencies:

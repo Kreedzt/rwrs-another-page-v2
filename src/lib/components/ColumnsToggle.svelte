@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { m } from '$lib/paraglide/messages.js';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import { Check } from '@lucide/svelte';
+	import type { IColumn } from '$lib/models/data-table.model';
 
 	let {
 		columns = [],
-		columnChange = () => {}
+		onColumnToggle = () => {},
+		visibleColumns = {}
 	}: {
-		columns: Array<{
-			key: string;
-			label: string;
-			visible: boolean;
-		}>;
-		columnChange: (columns: any[]) => void;
+		columns: IColumn[];
+		visibleColumns: Record<string, boolean>;
+		onColumnToggle: (column: IColumn, visible: boolean) => void;
 	} = $props();
 </script>
 
@@ -20,7 +19,20 @@
 		<TranslatedText key="app.columns.button" />
 	</div>
 	<ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-		<li>TODO</li>
+		{#each columns as column}
+			<li
+				onclick={() => {
+					onColumnToggle(column, !visibleColumns[column.key]);
+				}}
+			>
+				<a href="#">
+					{#if visibleColumns[column.key]}
+						<Check />
+					{/if}
+					{column.label}
+				</a>
+			</li>
+		{/each}
 	</ul>
 </div>
 

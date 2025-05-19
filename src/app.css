@@ -33,12 +33,12 @@ body {
 }
 
 a {
-	color: var(--color-theme-1);
-	text-decoration: none;
+	/*color: var(--color-theme-1);*/
+	/*text-decoration: none;*/
 }
 
 a:hover {
-	text-decoration: underline;
+	/*text-decoration: underline;*/
 }
 
 input,

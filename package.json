@@ -57,6 +57,7 @@
 	},
 	"dependencies": {
 		"@inlang/paraglide-js": "^2.0.0",
+		"@lucide/svelte": "^0.511.0",
 		"daisyui": "^5.0.35",
 		"fast-xml-parser": "^5.2.3"
 	}

@@ -62,3 +62,9 @@ export interface OnlineStats {
 	onlinePlayerCount: number;
 	playerCapacityCount: number;
 }
+
+export interface IColumn {
+	key: string;
+	label: string;
+	getValue?: (server: IDisplayServerItem) => string;
+}

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { DataTableService } from '$lib/services/data-table';
-	import type { IDisplayServerItem } from '$lib/models/data-table.model';
+	import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
 
 	// Import components
 	import SearchInput from '@/lib/components/SearchInput.svelte';
@@ -21,22 +21,16 @@
 	let currentPage = $state(1);
 
 	// Column definitions
-	const columns: Array<{
-		key: string;
-		label: string;
-		visible: boolean;
-		getValue?: (server: IDisplayServerItem) => string;
-	}> = [
-		{ key: 'name', label: 'Name', visible: true },
-		{ key: 'ipAddress', label: 'IP Address', visible: true },
-		{ key: 'port', label: 'Port', visible: true },
-		{ key: 'bots', label: 'Bots', visible: true },
-		{ key: 'country', label: 'Country', visible: true },
-		{ key: 'mode', label: 'Mode', visible: true },
+	const columns: IColumn[] = [
+		{ key: 'name', label: 'Name' },
+		{ key: 'ipAddress', label: 'IP Address' },
+		{ key: 'port', label: 'Port' },
+		{ key: 'bots', label: 'Bots' },
+		{ key: 'country', label: 'Country' },
+		{ key: 'mode', label: 'Mode' },
 		{
 			key: 'mapId',
 			label: 'Map',
-			visible: true,
 			getValue: (server: IDisplayServerItem) => {
 				return server.mapId.split('/').pop() || '';
 			}
@@ -44,7 +38,6 @@
 		{
 			key: 'playerCount',
 			label: 'Players',
-			visible: true,
 			getValue: (server: IDisplayServerItem) => `${server.currentPlayers}/${server.maxPlayers}`
 		},
 		{
@@ -58,23 +51,38 @@
 					.join(' ')}</div>`;
 			}
 		},
-		{ key: 'comment', label: 'Comment', visible: true },
+		{ key: 'comment', label: 'Comment' },
 		{
 			key: 'dedicated',
 			label: 'Dedicated',
-			visible: true,
 			getValue: (server: IDisplayServerItem) => (server.dedicated ? 'Yes' : 'No')
 		},
 		{
 			key: 'mod',
 			label: 'Mod',
-			visible: true,
 			getValue: (server: IDisplayServerItem) => (server.mod ? 'Yes' : 'No')
 		},
-		{ key: 'url', label: 'URL', visible: true },
-		{ key: 'version', label: 'Version', visible: true },
-		{ key: 'action', label: 'Action', visible: true }
+		{ key: 'url', label: 'URL' },
+		{ key: 'version', label: 'Version' },
+		{ key: 'action', label: 'Action' }
 	];
+	let visibleColumns = $state<Record<string, boolean>>({
+		name: true,
+		ipAddress: true,
+		port: true,
+		bots: true,
+		country: true,
+		mode: true,
+		mapId: true,
+		playerCount: true,
+		playerList: true,
+		comment: true,
+		dedicated: true,
+		mod: true,
+		url: true,
+		version: true,
+		action: true
+	});
 
 	// Derived values
 	const filteredServers = $derived(
@@ -122,7 +130,7 @@
 		console.log('Current page after update:', currentPage);
 	}
 
-	function handleRowAction(event: { item: IDisplayServerItem; action: string }) {
+	function onRowAction(event: { item: IDisplayServerItem; action: string }) {
 		console.log('Row action event received:', event);
 		if (event.action === 'join') {
 			handleJoin(event.item);
@@ -133,6 +141,10 @@
 		console.log(`Join to ${server.name} at ${server.ipAddress}:${server.port}`);
 		const url = `steam://rungameid/270150//server_address=${server.ipAddress} server_port=${server.port}`;
 		window.open(url, '_blank');
+	}
+
+	function onColumnToggle(column: IColumn, visible: boolean) {
+		visibleColumns[column.key] = visible;
 	}
 
 	// Load data
@@ -161,12 +173,7 @@
 			/>
 
 			<div class="flex">
-				<ColumnsToggle
-					{columns}
-					columnChange={(columns) => {
-						console.log('Columns changed:', columns);
-					}}
-				/>
+				<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
 			</div>
 		</div>
 
@@ -180,7 +187,9 @@
 							<thead>
 								<tr>
 									{#each columns as column}
-										<th>{column.label}</th>
+										{#if visibleColumns[column.key]}
+											<th>{column.label}</th>
+										{/if}
 									{/each}
 								</tr>
 							</thead>
@@ -221,7 +230,7 @@
 				</div>
 			{:else}
 				<!-- Data table component -->
-				<DataTable data={paginatedServers} {columns} {searchQuery} rowAction={handleRowAction} />
+				<DataTable data={paginatedServers} {columns} {searchQuery} {onRowAction} {visibleColumns} />
 
 				<!-- Pagination component -->
 				<Pagination
