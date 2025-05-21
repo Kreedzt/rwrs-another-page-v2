@@ -22,15 +22,16 @@
 
 	// Column definitions
 	const columns: IColumn[] = [
-		{ key: 'name', label: 'Name' },
-		{ key: 'ipAddress', label: 'IP Address' },
-		{ key: 'port', label: 'Port' },
-		{ key: 'bots', label: 'Bots' },
-		{ key: 'country', label: 'Country' },
-		{ key: 'mode', label: 'Mode' },
+		{ key: 'name', label: 'Name', i18n: 'app.column.name' },
+		{ key: 'ipAddress', label: 'IP Address', i18n: 'app.column.ip' },
+		{ key: 'port', label: 'Port', i18n: 'app.column.port' },
+		{ key: 'bots', label: 'Bots', i18n: 'app.column.bots' },
+		{ key: 'country', label: 'Country', i18n: 'app.column.country' },
+		{ key: 'mode', label: 'Mode', i18n: 'app.column.mode' },
 		{
 			key: 'mapId',
 			label: 'Map',
+			i18n: 'app.column.map',
 			getValue: (server: IDisplayServerItem) => {
 				return server.mapId.split('/').pop() || '';
 			}
@@ -38,12 +39,13 @@
 		{
 			key: 'playerCount',
 			label: 'Players',
+			i18n: 'app.column.capacity',
 			getValue: (server: IDisplayServerItem) => `${server.currentPlayers}/${server.maxPlayers}`
 		},
 		{
 			key: 'playerList',
 			label: 'Player List',
-			visible: true,
+			i18n: 'app.column.players',
 			getValue: (server: IDisplayServerItem) => {
 				if (server.playerList.length === 0) return '';
 				return `<div class="flex flex-wrap gap-1 text-xs">${server.playerList
@@ -51,20 +53,22 @@
 					.join(' ')}</div>`;
 			}
 		},
-		{ key: 'comment', label: 'Comment' },
+		{ key: 'comment', label: 'Comment', i18n: 'app.column.comment' },
 		{
 			key: 'dedicated',
 			label: 'Dedicated',
+			i18n: 'app.column.dedicated',
 			getValue: (server: IDisplayServerItem) => (server.dedicated ? 'Yes' : 'No')
 		},
 		{
 			key: 'mod',
 			label: 'Mod',
+			i18n: 'app.column.mod',
 			getValue: (server: IDisplayServerItem) => (server.mod ? 'Yes' : 'No')
 		},
-		{ key: 'url', label: 'URL' },
-		{ key: 'version', label: 'Version' },
-		{ key: 'action', label: 'Action' }
+		{ key: 'url', label: 'URL', i18n: 'app.column.url' },
+		{ key: 'version', label: 'Version', i18n: 'app.column.version' },
+		{ key: 'action', label: 'Action', i18n: 'app.column.action' }
 	];
 	let visibleColumns = $state<Record<string, boolean>>({
 		name: true,
@@ -186,7 +190,7 @@
 						<table class="table w-full">
 							<thead>
 								<tr>
-									{#each columns as column}
+									{#each columns as column (column.key)}
 										{#if visibleColumns[column.key]}
 											<th>{column.label}</th>
 										{/if}
@@ -194,12 +198,14 @@
 								</tr>
 							</thead>
 							<tbody>
-								{#each Array(5) as _}
+								{#each Array(5).map((_, i) => i + 1) as _}
 									<tr>
-										{#each Array(columns.length) as _}
-											<td>
-												<div class="skeleton h-4 w-full"></div>
-											</td>
+										{#each columns as column (column.key)}
+											{#if visibleColumns[column.key]}
+												<td>
+													<div class="skeleton h-4 w-full"></div>
+												</td>
+											{/if}
 										{/each}
 									</tr>
 								{/each}

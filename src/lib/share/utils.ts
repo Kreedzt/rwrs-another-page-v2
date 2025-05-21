@@ -21,8 +21,9 @@ export const parseServerListFromString = (resString: string): IDisplayServerItem
 	const parser = new XMLParser();
 	const res = parser.parse(resString) as IRes;
 
-	const serverList: IDisplayServerItem[] = res.result.server.map((server: any) => {
+	const serverList: IDisplayServerItem[] = res.result.server.map((server: any, index) => {
 		const block: IDisplayServerItem = {
+			id: index.toString(),
 			name: server.name.toString(),
 			ipAddress: server.address,
 			port: server.port,

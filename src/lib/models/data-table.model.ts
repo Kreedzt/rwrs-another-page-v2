@@ -34,6 +34,7 @@ export interface IRes {
 }
 
 export interface IDisplayServerItem {
+	id: string;
 	name: string;
 	ipAddress: string;
 	port: number;
@@ -66,5 +67,6 @@ export interface OnlineStats {
 export interface IColumn {
 	key: string;
 	label: string;
+	i18n?: string;
 	getValue?: (server: IDisplayServerItem) => string;
 }

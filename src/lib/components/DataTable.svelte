@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import { highlightMatch } from '@/lib/utils/highlight';
 	import type { IDisplayServerItem } from '$lib/models/data-table.model';
 	import type { IColumn } from '$lib/models/data-table.model';
@@ -21,7 +22,7 @@
 
 	// Handle row action (like connect button click)
 	function handleAction(item: IDisplayServerItem, action: string) {
-		rowAction({ item, action });
+		onRowAction({ item, action });
 	}
 
 	// Helper function to safely get a value from an object
@@ -96,17 +97,19 @@
 		<table class="table">
 			<thead>
 				<tr>
-					{#each columns as column}
+					{#each columns as column (column.key)}
 						{#if visibleColumns[column.key]}
-							<th>{column.label}</th>
+							<th>
+								{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+							</th>
 						{/if}
 					{/each}
 				</tr>
 			</thead>
 			<tbody>
-				{#each data as item}
+				{#each data as item (item.id)}
 					<tr class="hover hover:bg-base-300">
-						{#each columns as column}
+						{#each columns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td>
 									{#if column.key === 'action'}
