@@ -42,6 +42,21 @@
 		return item[column.key] ?? '-';
 	}
 
+	// Helper function to get alignment class based on column configuration
+	function getAlignmentClass(column: IColumn): string {
+		switch (column.alignment) {
+			case 'top':
+				return 'align-top';
+			case 'center':
+				return 'align-middle text-center';
+			case 'right':
+				return 'align-middle text-right';
+			case 'left':
+			default:
+				return 'align-middle';
+		}
+	}
+
 	// Helper function to check if a field should be highlighted
 	function shouldHighlight(item: IDisplayServerItem, column: any): boolean {
 		if (!searchQuery) return false;
@@ -158,7 +173,7 @@
 						<tr>
 							{#each columns as column (column.key)}
 								{#if visibleColumns[column.key] && column.key !== 'action'}
-									<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.key === 'playerList' ? 'w-96 min-w-96' : ''}">
+									<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.headerClass || ''}">
 										{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
 									</th>
 								{/if}
@@ -170,7 +185,7 @@
 							<tr class="hover hover:bg-base-300 min-h-12" bind:this={scrollableRows[item.id]}>
 								{#each columns as column (column.key)}
 									{#if visibleColumns[column.key] && column.key !== 'action'}
-										<td class="px-4 py-2 {column.key === 'playerList' ? 'align-top w-96 min-w-96' : 'align-middle'}">
+										<td class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass || ''}">
 											{#if column.key === 'url' && item.url}
 												<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6">
 													{#if searchQuery && item.url
@@ -251,18 +266,21 @@
 
 	/* Responsive adjustments for mobile */
 	@media (max-width: 768px) {
+		/* Action column responsive width */
 		.w-32 {
-			width: 6rem; /* Smaller width on mobile */
+			width: 6rem;
 		}
 
+		/* Player list column responsive width */
 		.w-96 {
-			width: 20rem; /* Smaller player list width on mobile */
+			width: 20rem;
 		}
 
 		.min-w-96 {
 			min-width: 20rem;
 		}
 
+		/* Mobile button styling */
 		.mobile-btn {
 			font-size: 0.75rem;
 			padding: 0.25rem 0.5rem;

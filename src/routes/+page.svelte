@@ -24,8 +24,8 @@
 	const columns: IColumn[] = [
 		{ key: 'name', label: 'Name', i18n: 'app.column.name' },
 		{ key: 'ipAddress', label: 'IP Address', i18n: 'app.column.ip' },
-		{ key: 'port', label: 'Port', i18n: 'app.column.port' },
-		{ key: 'bots', label: 'Bots', i18n: 'app.column.bots' },
+		{ key: 'port', label: 'Port', i18n: 'app.column.port', alignment: 'center' },
+		{ key: 'bots', label: 'Bots', i18n: 'app.column.bots', alignment: 'center' },
 		{ key: 'country', label: 'Country', i18n: 'app.column.country' },
 		{ key: 'mode', label: 'Mode', i18n: 'app.column.mode' },
 		{
@@ -40,12 +40,16 @@
 			key: 'playerCount',
 			label: 'Players',
 			i18n: 'app.column.capacity',
+			alignment: 'center',
 			getValue: (server: IDisplayServerItem) => `${server.currentPlayers}/${server.maxPlayers}`
 		},
 		{
 			key: 'playerList',
 			label: 'Player List',
 			i18n: 'app.column.players',
+			headerClass: 'w-96 min-w-96',
+			cellClass: 'w-96 min-w-96',
+			alignment: 'top',
 			getValue: (server: IDisplayServerItem) => {
 				if (server.playerList.length === 0) return '';
 				return `<div class="flex flex-wrap gap-1 items-start w-full">${server.playerList

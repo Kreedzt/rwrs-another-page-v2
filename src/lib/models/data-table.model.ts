@@ -69,4 +69,7 @@ export interface IColumn {
 	label: string;
 	i18n?: string;
 	getValue?: (server: IDisplayServerItem) => string;
+	headerClass?: string;
+	cellClass?: string;
+	alignment?: 'left' | 'center' | 'right' | 'top';
 }
