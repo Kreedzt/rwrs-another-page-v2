@@ -48,8 +48,8 @@
 			i18n: 'app.column.players',
 			getValue: (server: IDisplayServerItem) => {
 				if (server.playerList.length === 0) return '';
-				return `<div class="flex flex-wrap gap-1 items-center text-xs">${server.playerList
-					.map((player) => `<span class="badge badge-neutral">${player}</span>`)
+				return `<div class="flex flex-wrap gap-1 items-start w-full">${server.playerList
+					.map((player) => `<span class="badge badge-neutral text-xs whitespace-nowrap flex-shrink-0">${player}</span>`)
 					.join(' ')}</div>`;
 			}
 		},

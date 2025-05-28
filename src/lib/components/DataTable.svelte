@@ -67,15 +67,15 @@
 		if (players.length === 0) return '-';
 
 		if (query) {
-			return `<div class="flex flex-wrap gap-1 items-center">${players
+			return `<div class="flex flex-wrap gap-1 items-start w-full">${players
 				.map((player) => {
 					const highlighted = highlightMatch(player, query);
-					return `<span class="badge badge-neutral gap-0">${highlighted}</span>`;
+					return `<span class="badge badge-neutral text-xs whitespace-nowrap flex-shrink-0">${highlighted}</span>`;
 				})
 				.join(' ')}</div>`;
 		}
 
-		return `<div class="flex flex-wrap gap-1 items-center text-xs">${players.map((player) => `<span class="badge badge-neutral gap-0">${player}</span>`).join(' ')}</div>`;
+		return `<div class="flex flex-wrap gap-1 items-start w-full">${players.map((player) => `<span class="badge badge-neutral text-xs whitespace-nowrap flex-shrink-0">${player}</span>`).join(' ')}</div>`;
 	}
 
 	// Sync row heights between scrollable and fixed tables
@@ -158,7 +158,7 @@
 						<tr>
 							{#each columns as column (column.key)}
 								{#if visibleColumns[column.key] && column.key !== 'action'}
-									<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10">
+									<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.key === 'playerList' ? 'w-96 min-w-96' : ''}">
 										{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
 									</th>
 								{/if}
@@ -170,7 +170,7 @@
 							<tr class="hover hover:bg-base-300 min-h-12" bind:this={scrollableRows[item.id]}>
 								{#each columns as column (column.key)}
 									{#if visibleColumns[column.key] && column.key !== 'action'}
-										<td class="px-4 py-2 align-middle">
+										<td class="px-4 py-2 {column.key === 'playerList' ? 'align-top w-96 min-w-96' : 'align-middle'}">
 											{#if column.key === 'url' && item.url}
 												<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6">
 													{#if searchQuery && item.url
@@ -182,10 +182,12 @@
 													{/if}
 												</a>
 											{:else if column.key === 'playerList'}
-												{@html renderPlayerList(
-													item.playerList,
-													shouldHighlight(item, column) ? searchQuery : ''
-												)}
+												<div class="w-full overflow-hidden">
+													{@html renderPlayerList(
+														item.playerList,
+														shouldHighlight(item, column) ? searchQuery : ''
+													)}
+												</div>
 											{:else if shouldHighlight(item, column)}
 												{@html highlightMatch(getValue(item, column), searchQuery)}
 											{:else}
@@ -237,10 +239,28 @@
 {/if}
 
 <style>
+	/* Player badge styling for proper display */
+	:global(.badge) {
+		white-space: nowrap;
+		line-height: 1.2;
+		min-height: 1.5rem;
+		display: inline-flex;
+		align-items: center;
+		max-width: none;
+	}
+
 	/* Responsive adjustments for mobile */
 	@media (max-width: 768px) {
 		.w-32 {
 			width: 6rem; /* Smaller width on mobile */
+		}
+
+		.w-96 {
+			width: 20rem; /* Smaller player list width on mobile */
+		}
+
+		.min-w-96 {
+			min-width: 20rem;
 		}
 
 		.mobile-btn {
