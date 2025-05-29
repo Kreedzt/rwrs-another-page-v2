@@ -15,21 +15,23 @@
 </script>
 
 <div class="dropdown dropdown-bottom dropdown-end">
-	<div tabindex="-1" role="button" class="btn m-1">
+	<div tabindex="-1" role="button" class="btn btn-outline flex-shrink-0">
 		<TranslatedText key="app.columns.button" />
 	</div>
-	<ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+	<ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-lg border border-base-300">
 		{#each columns as column (column.key)}
 			<li
 				onclick={() => {
 					onColumnToggle(column, !visibleColumns[column.key]);
 				}}
 			>
-				<a href="#">
+				<a href="#" class="flex items-center justify-between">
+					<span>
+						{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+					</span>
 					{#if visibleColumns[column.key]}
-						<Check />
+						<Check class="w-4 h-4" />
 					{/if}
-					{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
 				</a>
 			</li>
 		{/each}

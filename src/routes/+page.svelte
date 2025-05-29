@@ -173,16 +173,14 @@
 	<!-- Use a fixed min-height container to prevent layout shifts -->
 	<div class="container mx-auto min-h-[600px] px-4 py-8">
 		<!-- Search component -->
-		<div class="mb-4 flex">
+		<div class="mb-4 flex items-center gap-4">
 			<SearchInput
 				placeholder={m['app.search.placeholder']()}
 				value={searchQuery}
 				search={handleSearch}
 			/>
 
-			<div class="flex">
-				<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
-			</div>
+			<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
 		</div>
 
 		<!-- Content area with consistent height -->
