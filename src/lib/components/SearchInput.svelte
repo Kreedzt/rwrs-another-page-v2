@@ -5,7 +5,11 @@
 		search: (query: string) => void;
 	}
 
-	let { placeholder = 'Search...', value = '', search }: Props = $props();
+	let { placeholder, value, search }: Props = $props();
+
+	// Set default values
+	placeholder = placeholder ?? 'Search...';
+	value = value ?? '';
 
 	// Handle input changes
 	function handleInput(e: Event) {
@@ -16,7 +20,7 @@
 </script>
 
 <div class="form-control flex-1">
-	<label class="input w-full">
+	<label class="input input-bordered w-full focus-within:outline-none">
 		<svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 			<g
 				stroke-linejoin="round"
@@ -29,18 +33,41 @@
 				<path d="m21 21-4.3-4.3"></path>
 			</g>
 		</svg>
-		<input type="search" {placeholder} class="grow" {value} oninput={handleInput} />
+		<input type="search" {placeholder} class="grow focus:outline-none" {value} oninput={handleInput} />
 	</label>
 </div>
 
 <style>
-	.input {
-		/*outline: none;*/
-		/*border: 0;*/
+	/* 彻底移除浏览器默认的聚焦样式 */
+	.input:focus-within {
+		outline: none !important;
+		box-shadow: none !important;
+		border-color: hsl(var(--bc) / 0.3) !important;
 	}
 
-	.input:focus {
-		/*border: 0;*/
-		/*outline: none;*/
+	.input input:focus {
+		outline: none !important;
+		box-shadow: none !important;
+		border: none !important;
+	}
+
+	/* 移除 search 输入框的特殊样式 */
+	input[type="search"]:focus {
+		outline: none !important;
+		box-shadow: none !important;
+		border: none !important;
+		-webkit-appearance: none !important;
+		-moz-appearance: none !important;
+		appearance: none !important;
+	}
+
+	/* 移除 WebKit 浏览器的默认样式 */
+	input[type="search"]::-webkit-search-decoration,
+	input[type="search"]::-webkit-search-cancel-button,
+	input[type="search"]::-webkit-search-results-button,
+	input[type="search"]::-webkit-search-results-decoration {
+		-webkit-appearance: none !important;
 	}
 </style>
+
+
