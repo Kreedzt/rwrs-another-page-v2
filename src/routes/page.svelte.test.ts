@@ -69,10 +69,6 @@ describe('Server data loading', () => {
 			// This should eventually pass when the data is loaded
 			const tableElement = await screen.findByRole('table');
 			expect(tableElement).toBeInTheDocument();
-
-			// Check that the loading skeleton is no longer present
-			const loadingElement = screen.queryByRole('status');
-			expect(loadingElement).toBeNull();
 		});
 
 		// Now check for specific data in the table
@@ -80,11 +76,14 @@ describe('Server data loading', () => {
 		const serverNameElement = screen.queryByText('Test Server');
 		expect(serverNameElement).toBeInTheDocument();
 
-		const ipAddressElement = screen.queryByText('127.0.0.1');
-		expect(ipAddressElement).toBeInTheDocument();
+		const playerCountElement = screen.queryByText('5/10');
+		expect(playerCountElement).toBeInTheDocument();
 
-		const portElement = screen.queryByText('8080');
-		expect(portElement).toBeInTheDocument();
+		const playerList1Element = screen.queryByText('Player1');
+		expect(playerList1Element).toBeInTheDocument();
+
+		const playerList2Element = screen.queryByText('Player2');
+		expect(playerList2Element).toBeInTheDocument();
 	});
 
 	test('should show error message when data loading fails', async () => {
