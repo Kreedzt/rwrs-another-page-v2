@@ -5,50 +5,21 @@
 	let { children } = $props();
 </script>
 
-<div class="app">
+<div class="flex min-h-screen flex-col">
 	<Header />
 
-	<main>
+	<main class="flex w-full flex-1 flex-col">
 		{@render children()}
 	</main>
 
-	<footer>
-		<p>
-			visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to learn about SvelteKit
+	<footer class="flex flex-col items-center justify-center py-4">
+		<p class="m-0">
+			Visit the old version: <a class="font-bold" href="https://rwrs.kreedzt.cn"
+				>RWRS Another Page(V1)</a
+			>
 		</p>
 	</footer>
 </div>
 
 <style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
 </style>

@@ -9,7 +9,7 @@ COPY package.json pnpm-lock.yaml ./
 
 # Install pnpm and dependencies with cache optimization
 RUN corepack enable && \
-    corepack prepare pnpm@latest --activate && \
+    corepack prepare pnpm@10.8.0 --activate && \
     pnpm install --frozen-lockfile
 
 # Copy the rest of the code

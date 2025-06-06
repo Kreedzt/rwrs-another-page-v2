@@ -1,6 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"app.title": "RWRS Another Page",
+	"app.title": "RWRS Another Page(V2)",
 	"app.search.placeholder": "搜索服务器、地图、玩家、模式、国家等...",
 	"app.button.reset": "重置",
 	"app.button.refresh": "刷新",

@@ -1,6 +1,6 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"app.title": "RWRS Another Page",
+	"app.title": "RWRS Another Page(V2)",
 	"app.search.placeholder": "Search servers, maps, players, mode, country, etc...",
 	"app.button.reset": "Reset",
 	"app.button.refresh": "Refresh",

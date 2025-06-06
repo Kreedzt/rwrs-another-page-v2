@@ -29,19 +29,6 @@
 		onRowAction({ item, action });
 	}
 
-	// Helper function to safely get a value from an object
-	function getValue(item: IDisplayServerItem, column: any): string {
-		if (column.key === 'action') {
-			return '';
-		}
-
-		if (column.getValue) {
-			return column.getValue(item);
-		}
-
-		return item[column.key] ?? '-';
-	}
-
 	// Helper function to get alignment class based on column configuration
 	function getAlignmentClass(column: IColumn): string {
 		switch (column.alignment) {
@@ -57,40 +44,19 @@
 		}
 	}
 
-	// Helper function to check if a field should be highlighted
-	function shouldHighlight(item: IDisplayServerItem, column: any): boolean {
-		if (!searchQuery) return false;
-
-		const query = searchQuery.toLowerCase();
-
-		if (column.key === 'playerList') {
-			return item.playerList.some((player: string) => player.toLowerCase().includes(query));
+	// Helper function to get the display value for a column
+	function getDisplayValue(item: IDisplayServerItem, column: IColumn): string {
+		// If there's a search query and the column supports highlighting, use that
+		if (searchQuery && column.getValueWithHighlight) {
+			return column.getValueWithHighlight(item, searchQuery);
 		}
 
-		const value = item[column.key];
-		if (!value) return false;
-
-		if (typeof value === 'string') {
-			return value.toLowerCase().includes(query);
+		// Otherwise use the regular getValue or fallback to the raw value
+		if (column.getValue) {
+			return column.getValue(item);
 		}
 
-		return false;
-	}
-
-	// Helper function to render player list with badges
-	function renderPlayerList(players: string[], query: string = ''): string {
-		if (players.length === 0) return '-';
-
-		if (query) {
-			return `<div class="flex flex-wrap gap-1 items-start w-full">${players
-				.map((player) => {
-					const highlighted = highlightMatch(player, query);
-					return `<span class="badge badge-neutral text-xs whitespace-nowrap flex-shrink-0">${highlighted}</span>`;
-				})
-				.join(' ')}</div>`;
-		}
-
-		return `<div class="flex flex-wrap gap-1 items-start w-full">${players.map((player) => `<span class="badge badge-neutral text-xs whitespace-nowrap flex-shrink-0">${player}</span>`).join(' ')}</div>`;
+		return (item as any)[column.key] ?? '-';
 	}
 
 	// Sync row heights between scrollable and fixed tables
@@ -165,7 +131,7 @@
 {:else}
 	<!-- Fixed table layout with scrollable content and fixed action column -->
 	<div class="w-full">
-		<div class="flex w-full border border-base-300 rounded-lg overflow-hidden">
+		<div class="flex w-full rounded-lg overflow-hidden">
 			<!-- Scrollable table for all columns except action -->
 			<div class="flex-1 overflow-x-auto min-w-0">
 				<table class="table table-pin-rows mb-0 border-0">
@@ -188,25 +154,10 @@
 										<td class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass || ''}">
 											{#if column.key === 'url' && item.url}
 												<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6">
-													{#if searchQuery && item.url
-															.toLowerCase()
-															.includes(searchQuery.toLowerCase())}
-														{@html highlightMatch(item.url, searchQuery)}
-													{:else}
-														{item.url}
-													{/if}
+													{@html getDisplayValue(item, column)}
 												</a>
-											{:else if column.key === 'playerList'}
-												<div class="w-full overflow-hidden">
-													{@html renderPlayerList(
-														item.playerList,
-														shouldHighlight(item, column) ? searchQuery : ''
-													)}
-												</div>
-											{:else if shouldHighlight(item, column)}
-												{@html highlightMatch(getValue(item, column), searchQuery)}
 											{:else}
-												{getValue(item, column)}
+												{@html getDisplayValue(item, column)}
 											{/if}
 										</td>
 									{/if}
@@ -219,11 +170,11 @@
 
 			<!-- Fixed action column -->
 			{#if visibleColumns['action']}
-				<div class="flex-shrink-0 w-32 border-l border-base-300">
-					<table class="table table-pin-rows mb-0 border-0 w-32">
+				<div class="flex-shrink-0 w-32 border-l border-base-300 hidden md:block">
+					<table class="table table-pin-rows mb-0 border-0">
 						<thead>
 							<tr>
-								<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 text-center">
+								<th class="bg-base-200 h-12 px-4 py-2 align-middle top-0 z-10 text-center">
 									{#each columns as column (column.key)}
 										{#if column.key === 'action'}
 											{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
@@ -234,7 +185,7 @@
 						</thead>
 						<tbody>
 							{#each data as item (item.id)}
-								<tr class="hover hover:bg-base-300 min-h-12" bind:this={fixedRows[item.id]}>
+								<tr class="hover hover:bg-base-300" bind:this={fixedRows[item.id]}>
 									<td class="px-4 py-2 align-middle text-center">
 										<button
 											class="btn btn-sm btn-primary mobile-btn"

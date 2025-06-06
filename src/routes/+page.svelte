@@ -3,6 +3,7 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { DataTableService } from '$lib/services/data-table';
 	import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
+	import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highlight';
 
 	// Import components
 	import SearchInput from '@/lib/components/SearchInput.svelte';
@@ -22,12 +23,50 @@
 
 	// Column definitions
 	const columns: IColumn[] = [
-		{ key: 'name', label: 'Name', i18n: 'app.column.name' },
-		{ key: 'ipAddress', label: 'IP Address', i18n: 'app.column.ip' },
-		{ key: 'port', label: 'Port', i18n: 'app.column.port', alignment: 'center' },
-		{ key: 'bots', label: 'Bots', i18n: 'app.column.bots', alignment: 'center' },
-		{ key: 'country', label: 'Country', i18n: 'app.column.country' },
-		{ key: 'mode', label: 'Mode', i18n: 'app.column.mode' },
+		{
+			key: 'name',
+			label: 'Name',
+			i18n: 'app.column.name',
+			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+				highlightMatch(server.name, query)
+		},
+		{
+			key: 'ipAddress',
+			label: 'IP Address',
+			i18n: 'app.column.ip',
+			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+				highlightMatch(server.ipAddress, query)
+		},
+		{
+			key: 'port',
+			label: 'Port',
+			i18n: 'app.column.port',
+			alignment: 'center',
+			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+				highlightMatch(server.port.toString(), query)
+		},
+		{
+			key: 'bots',
+			label: 'Bots',
+			i18n: 'app.column.bots',
+			alignment: 'center',
+			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+				highlightMatch(server.bots.toString(), query)
+		},
+		{
+			key: 'country',
+			label: 'Country',
+			i18n: 'app.column.country',
+			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+				highlightMatch(server.country, query)
+		},
+		{
+			key: 'mode',
+			label: 'Mode',
+			i18n: 'app.column.mode',
+			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+				highlightMatch(server.mode, query)
+		},
 		{
 			key: 'mapId',
 			label: 'Map',
@@ -47,15 +86,12 @@
 			key: 'playerList',
 			label: 'Player List',
 			i18n: 'app.column.players',
-			headerClass: 'w-96 min-w-96',
-			cellClass: 'w-96 min-w-96',
+			headerClass: 'min-w-96',
+			cellClass: 'min-w-96',
 			alignment: 'top',
-			getValue: (server: IDisplayServerItem) => {
-				if (server.playerList.length === 0) return '';
-				return `<div class="flex flex-wrap gap-1 items-start w-full">${server.playerList
-					.map((player) => `<span class="badge badge-neutral text-xs whitespace-nowrap flex-shrink-0">${player}</span>`)
-					.join(' ')}</div>`;
-			}
+			getValue: (server: IDisplayServerItem) => renderPlayerListWithHighlight(server.playerList),
+			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+				renderPlayerListWithHighlight(server.playerList, query)
 		},
 		{ key: 'comment', label: 'Comment', i18n: 'app.column.comment' },
 		{
@@ -74,21 +110,22 @@
 		{ key: 'version', label: 'Version', i18n: 'app.column.version' },
 		{ key: 'action', label: 'Action', i18n: 'app.column.action' }
 	];
+
 	let visibleColumns = $state<Record<string, boolean>>({
 		name: true,
-		ipAddress: true,
-		port: true,
-		bots: true,
-		country: true,
-		mode: true,
+		ipAddress: false,
+		port: false,
+		bots: false,
+		country: false,
+		mode: false,
 		mapId: true,
 		playerCount: true,
 		playerList: true,
-		comment: true,
-		dedicated: true,
-		mod: true,
-		url: true,
-		version: true,
+		comment: false,
+		dedicated: false,
+		mod: false,
+		url: false,
+		version: false,
 		action: true
 	});
 
@@ -169,9 +206,8 @@
 	});
 </script>
 
-<section aria-label="Server List">
-	<!-- Use a fixed min-height container to prevent layout shifts -->
-	<div class="container mx-auto min-h-[600px] px-4 py-8">
+<section aria-label="Server List" class="flex flex-col items-center justify-center">
+	<div class="container px-4 py-8">
 		<!-- Search component -->
 		<div class="mb-4 flex items-center gap-4">
 			<SearchInput
@@ -184,10 +220,14 @@
 		</div>
 
 		<!-- Content area with consistent height -->
-		<div class="content-area min-h-[500px]">
+		<div class="flex w-full flex-col overflow-x-auto">
 			{#if loading}
 				<!-- Loading state with skeleton UI that matches table structure -->
-				<div class="skeleton-container" role="status" aria-label="Loading server data">
+				<div
+					class="skeleton-container w-full rounded-sm"
+					role="status"
+					aria-label="Loading server data"
+				>
 					<div class="overflow-x-auto">
 						<table class="table w-full">
 							<thead>
@@ -253,30 +293,9 @@
 </section>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	/* Ensure consistent layout to prevent CLS */
-	.content-area {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-	}
-
-	/* Style for skeleton loading state */
-	.skeleton-container {
-		width: 100%;
-	}
-
 	/* Ensure the skeleton has consistent dimensions */
 	.skeleton {
 		background-color: hsl(var(--b3, var(--b2)) / var(--tw-bg-opacity, 1));
-		border-radius: 0.25rem;
 		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 	}
 
