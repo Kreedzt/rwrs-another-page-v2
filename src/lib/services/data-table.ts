@@ -25,7 +25,7 @@ export const DataTableService: IDataTableService = {
 			names: params?.names ?? 1
 		};
 
-		const url = `${SERVER_API_URL}/server_list?start=${queryParams.start}&size=${queryParams.size}&names=${queryParams.names}`;
+		const reqUrl = `${SERVER_API_URL}/server_list?start=${queryParams.start}&size=${queryParams.size}&names=${queryParams.names}`;
 
 		// Pass timeout if provided
 		const requestOptions: RequestOptions = {};
@@ -35,7 +35,7 @@ export const DataTableService: IDataTableService = {
 
 		try {
 			// Add a timestamp to prevent caching
-			const timestampedUrl = `${url}&_t=${Date.now()}`;
+			const timestampedUrl = `${reqUrl}&_t=${Date.now()}`;
 			const data = await request<string>(timestampedUrl, requestOptions, 'text');
 			return parseServerListFromString(data);
 		} catch (error: any) {

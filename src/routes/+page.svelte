@@ -3,12 +3,13 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { DataTableService } from '$lib/services/data-table';
 	import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
+	import { columns } from '$lib/config/columns';
 	import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highlight';
 
 	// Import components
-	import SearchInput from '@/lib/components/SearchInput.svelte';
-	import Pagination from '@/lib/components/Pagination.svelte';
-	import DataTable from '@/lib/components/DataTable.svelte';
+	import SearchInput from '$lib/components/SearchInput.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 
 	// State variables
@@ -20,96 +21,6 @@
 	// Pagination state
 	const itemsPerPage = 20;
 	let currentPage = $state(1);
-
-	// Column definitions
-	const columns: IColumn[] = [
-		{
-			key: 'name',
-			label: 'Name',
-			i18n: 'app.column.name',
-			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-				highlightMatch(server.name, query)
-		},
-		{
-			key: 'ipAddress',
-			label: 'IP Address',
-			i18n: 'app.column.ip',
-			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-				highlightMatch(server.ipAddress, query)
-		},
-		{
-			key: 'port',
-			label: 'Port',
-			i18n: 'app.column.port',
-			alignment: 'center',
-			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-				highlightMatch(server.port.toString(), query)
-		},
-		{
-			key: 'bots',
-			label: 'Bots',
-			i18n: 'app.column.bots',
-			alignment: 'center',
-			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-				highlightMatch(server.bots.toString(), query)
-		},
-		{
-			key: 'country',
-			label: 'Country',
-			i18n: 'app.column.country',
-			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-				highlightMatch(server.country, query)
-		},
-		{
-			key: 'mode',
-			label: 'Mode',
-			i18n: 'app.column.mode',
-			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-				highlightMatch(server.mode, query)
-		},
-		{
-			key: 'mapId',
-			label: 'Map',
-			i18n: 'app.column.map',
-			getValue: (server: IDisplayServerItem) => {
-				return server.mapId.split('/').pop() || '';
-			}
-		},
-		{
-			key: 'playerCount',
-			label: 'Players',
-			i18n: 'app.column.capacity',
-			alignment: 'center',
-			getValue: (server: IDisplayServerItem) => `${server.currentPlayers}/${server.maxPlayers}`
-		},
-		{
-			key: 'playerList',
-			label: 'Player List',
-			i18n: 'app.column.players',
-			headerClass: 'min-w-96',
-			cellClass: 'min-w-96',
-			alignment: 'top',
-			getValue: (server: IDisplayServerItem) => renderPlayerListWithHighlight(server.playerList),
-			getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-				renderPlayerListWithHighlight(server.playerList, query)
-		},
-		{ key: 'comment', label: 'Comment', i18n: 'app.column.comment' },
-		{
-			key: 'dedicated',
-			label: 'Dedicated',
-			i18n: 'app.column.dedicated',
-			getValue: (server: IDisplayServerItem) => (server.dedicated ? 'Yes' : 'No')
-		},
-		{
-			key: 'mod',
-			label: 'Mod',
-			i18n: 'app.column.mod',
-			getValue: (server: IDisplayServerItem) => (server.mod ? 'Yes' : 'No')
-		},
-		{ key: 'url', label: 'URL', i18n: 'app.column.url' },
-		{ key: 'version', label: 'Version', i18n: 'app.column.version' },
-		{ key: 'action', label: 'Action', i18n: 'app.column.action' }
-	];
 
 	let visibleColumns = $state<Record<string, boolean>>({
 		name: true,
@@ -130,11 +41,10 @@
 	});
 
 	// Derived values
-	const filteredServers = $derived(
-		searchQuery
+	const derivedData = $derived(() => {
+		const filtered = searchQuery
 			? servers.filter((server) => {
 					const query = searchQuery.toLowerCase();
-					console.log('Filtering servers for query:', query, server);
 					return (
 						server.name.toLowerCase().includes(query) ||
 						server.ipAddress.toLowerCase().includes(query) ||
@@ -146,25 +56,25 @@
 						server.playerList.some((player: string) => player.toLowerCase().includes(query))
 					);
 				})
-			: servers
-	);
+			: servers;
 
-	const totalPages = $derived(Math.ceil(filteredServers.length / itemsPerPage));
+		const totalPages = Math.ceil(filtered.length / itemsPerPage);
+		const paginatedServers = filtered.slice(
+			(currentPage - 1) * itemsPerPage,
+			currentPage * itemsPerPage
+		);
 
-	const paginatedServers = $derived(
-		filteredServers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-	);
-
-	// Reset to first page when search query changes
-	$effect(() => {
-		if (searchQuery) {
-			currentPage = 1;
-		}
+		return {
+			filteredServers: filtered,
+			totalPages,
+			paginatedServers
+		};
 	});
 
 	// Event handlers
 	function handleSearch(query: string) {
 		searchQuery = query;
+		currentPage = 1;
 	}
 
 	function handlePageChange(page: number) {
@@ -278,13 +188,19 @@
 				</div>
 			{:else}
 				<!-- Data table component -->
-				<DataTable data={paginatedServers} {columns} {searchQuery} {onRowAction} {visibleColumns} />
+				<DataTable
+					data={derivedData().paginatedServers}
+					{columns}
+					{searchQuery}
+					{onRowAction}
+					{visibleColumns}
+				/>
 
 				<!-- Pagination component -->
 				<Pagination
 					{currentPage}
-					{totalPages}
-					totalItems={filteredServers.length}
+					totalPages={derivedData().totalPages}
+					totalItems={derivedData().filteredServers.length}
 					pageChange={handlePageChange}
 				/>
 			{/if}
