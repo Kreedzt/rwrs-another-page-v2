@@ -34,7 +34,7 @@ export function highlightInBadge(text: string, query: string): string {
 	const regex = new RegExp(`(${escapedQuery})`, 'gi');
 
 	// Use a simple span with inline styles to avoid spacing issues
-	return text.replace(regex, `<span style="background-color: hsl(var(--a)); color: hsl(var(--ac)); font-weight: bold;">$1</span>`);
+	return text.replace(regex, `<span class="bg-accent">$1</span>`);
 }
 
 /**
@@ -48,7 +48,7 @@ export function renderPlayerListWithHighlight(players: string[], query: string =
 
 	const playerBadges = players.map((player) => {
 		const displayText = query ? highlightInBadge(player, query) : player;
-		return `<span class="badge badge-neutral text-xs whitespace-nowrap flex-shrink-0">${displayText}</span>`;
+		return `<span class="badge gap-0 badge-neutral text-xs whitespace-nowrap flex-shrink-0">${displayText}</span>`;
 	});
 
 	return `<div class="flex flex-wrap gap-1 items-start w-full">${playerBadges.join('')}</div>`;

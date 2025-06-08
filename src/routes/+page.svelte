@@ -4,8 +4,6 @@
 	import { DataTableService } from '$lib/services/data-table';
 	import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
 	import { columns } from '$lib/config/columns';
-	import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highlight';
-
 	// Import components
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
@@ -102,8 +100,7 @@
 		visibleColumns[column.key] = visible;
 	}
 
-	// Load data
-	onMount(async () => {
+	async function refreshList() {
 		try {
 			loading = true;
 			servers = await DataTableService.listAll();
@@ -113,6 +110,11 @@
 		} finally {
 			loading = false;
 		}
+	}
+
+	// Load data
+	onMount(async () => {
+		await refreshList();
 	});
 </script>
 
@@ -126,7 +128,12 @@
 				search={handleSearch}
 			/>
 
-			<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
+			<div class="flex">
+				<button class="btn btn-neutral mr-2" onclick={refreshList}>
+					Refresh
+				</button>
+				<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
+			</div>
 		</div>
 
 		<!-- Content area with consistent height -->
