@@ -50,6 +50,11 @@ export const columns: IColumn[] = [
 		key: 'mapId',
 		label: 'Map',
 		i18n: 'app.column.map',
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) => {
+			const mapId = server.mapId.split('/').pop() || '';
+
+			return highlightMatch(mapId, query);
+		},
 		getValue: (server: IDisplayServerItem) => {
 			return server.mapId.split('/').pop() || '';
 		}
@@ -88,4 +93,4 @@ export const columns: IColumn[] = [
 	{ key: 'url', label: 'URL', i18n: 'app.column.url' },
 	{ key: 'version', label: 'Version', i18n: 'app.column.version' },
 	{ key: 'action', label: 'Action', i18n: 'app.column.action' }
-]; 
+];
