@@ -14,6 +14,9 @@ export default defineConfig({
 			outdir: './src/lib/paraglide'
 		})
 	],
+	build: {
+		assetsInlineLimit: Infinity
+	},
 	resolve: {
 		alias: { '@': path.resolve(__dirname, './src') }
 	},

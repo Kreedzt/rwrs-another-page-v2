@@ -75,5 +75,12 @@
 	"app.guide.helpGuide.title": "Help Guide",
 	"app.guide.helpGuide.description": "Click this button anytime to replay the help guide and refresh your memory about the available features.",
 	"app.guide.quickFilters.title": "Quick Filters",
-	"app.guide.quickFilters.description": "Apply filters to quickly find servers matching specific criteria. You can use multiple filters together and combine them with the search box for powerful queries!"
+	"app.guide.quickFilters.description": "Apply filters to quickly find servers matching specific criteria. You can use multiple filters together and combine them with the search box for powerful queries!",
+
+	"app.autoRefresh.toggle": "Auto Refresh",
+	"app.autoRefresh.interval": "Interval",
+
+	"app.stats.servers.display": "{filtered} / {total} servers",
+	"app.stats.players.display": "{filtered} / {total} players",
+	"app.stats.filteredBy": "Filtered by: \"{query}\""
 }
