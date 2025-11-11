@@ -47,11 +47,15 @@ class UserSettingsService {
 
 	// Load settings from localStorage
 	private loadSettings(): UserSettings {
-		if (typeof window === 'undefined') {
+		if (typeof globalThis !== 'undefined' && !globalThis.window) {
 			return DEFAULT_SETTINGS;
 		}
 
 		try {
+			if (typeof localStorage === 'undefined') {
+				return DEFAULT_SETTINGS;
+			}
+
 			const stored = localStorage.getItem(STORAGE_KEY);
 			if (stored) {
 				const parsedSettings = JSON.parse(stored);
@@ -67,11 +71,11 @@ class UserSettingsService {
 
 	// Save settings to localStorage
 	private saveSettings(): void {
-		if (typeof window === 'undefined') {
-			return;
-		}
-
 		try {
+			if (typeof localStorage === 'undefined') {
+				return;
+			}
+
 			localStorage.setItem(STORAGE_KEY, JSON.stringify(this.settings));
 		} catch (error) {
 			console.warn('Failed to save user settings to localStorage:', error);
@@ -135,13 +139,15 @@ class UserSettingsService {
 
 	// Reset all settings to defaults
 	reset(): void {
-		this.settings = { ...DEFAULT_SETTINGS };
+		// Deep copy DEFAULT_SETTINGS to avoid reference issues
+		this.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
 		this.saveSettings();
 	}
 
 	// Reset specific setting to default
 	resetKey<K extends keyof UserSettings>(key: K): void {
-		this.settings[key] = DEFAULT_SETTINGS[key];
+		// Deep copy the specific setting to avoid reference issues
+		this.settings[key] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS[key]));
 		this.saveSettings();
 	}
 

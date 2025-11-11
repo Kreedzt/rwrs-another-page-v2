@@ -7,6 +7,12 @@ function getCapacityStyling(server: IDisplayServerItem, query?: string): string 
 	const occupancy = maxPlayers > 0 ? (currentPlayers / maxPlayers) : 0;
 	const playerText = query ? highlightMatch(`${currentPlayers}/${maxPlayers}`, query) : `${currentPlayers}/${maxPlayers}`;
 
+	// Check for empty servers first
+	if (currentPlayers === 0) {
+		// Empty server - gray with dimmed effect
+		return `<span class="badge bg-gray-100 text-gray-500 border-gray-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm opacity-60" title="Empty server">${playerText}</span>`;
+	}
+
 	// Determine color based on occupancy
 	if (occupancy >= 1.0 || currentPlayers >= maxPlayers) {
 		// Full server - red

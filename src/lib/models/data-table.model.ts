@@ -15,7 +15,7 @@ export interface IResServerItem {
 	country: string;
 	current_players: number;
 	timeStamp: number;
-	version: number;
+	version: string;
 	dedicated: number;
 	mod: number;
 	// [AAA, BBB] | AAA
@@ -44,7 +44,7 @@ export interface IDisplayServerItem {
 	country: string;
 	currentPlayers: number;
 	timeStamp: Nullable<number>;
-	version: number;
+	version: string;
 	dedicated: boolean;
 	// TODO: unknown value
 	mod: Nullable<any>;
