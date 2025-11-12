@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import { DataTableService } from '$lib/services/data-table';
+	import { userSettingsService, type UserSettings } from '$lib/services/user-settings';
 	import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
 	import { columns } from '$lib/config/columns';
 	// Import components
@@ -9,6 +10,8 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
+	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
+	import TranslatedText from '$lib/components/TranslatedText.svelte';
 
 	// State variables
 	let servers = $state<IDisplayServerItem[]>([]);
@@ -16,27 +19,30 @@
 	let error = $state<string | null>(null);
 	let searchQuery = $state('');
 
+	// User settings from localStorage
+	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
+
+	// Auto refresh state (from user settings)
+	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
+	let refreshInterval = $state(userSettings.autoRefresh.interval);
+
+	// Sort state
+	let sortColumn = $state<string | null>(null);
+	let sortDirection = $state<'asc' | 'desc' | null>(null); // null means no sort
+
 	// Pagination state
 	const itemsPerPage = 20;
 	let currentPage = $state(1);
 
-	let visibleColumns = $state<Record<string, boolean>>({
-		name: true,
-		ipAddress: false,
-		port: false,
-		bots: false,
-		country: false,
-		mode: false,
-		mapId: true,
-		playerCount: true,
-		playerList: true,
-		comment: false,
-		dedicated: false,
-		mod: false,
-		url: false,
-		version: false,
-		action: true
-	});
+	// Visible columns (from user settings)
+	let visibleColumns = $state<Record<string, boolean>>({ ...userSettings.visibleColumns });
+
+	// Calculate statistics
+	const calculateStats = (serverList: IDisplayServerItem[]) => {
+		const totalServers = serverList.length;
+		const totalPlayers = serverList.reduce((sum, server) => sum + server.currentPlayers, 0);
+		return { totalServers, totalPlayers };
+	};
 
 	// Derived values
 	const derivedData = $derived(() => {
@@ -56,16 +62,25 @@
 				})
 			: servers;
 
-		const totalPages = Math.ceil(filtered.length / itemsPerPage);
-		const paginatedServers = filtered.slice(
+		// Apply sorting to filtered servers
+		const sortedFiltered = sortServers(filtered);
+
+		// Calculate statistics
+		const totalStats = calculateStats(servers);
+		const filteredStats = calculateStats(sortedFiltered);
+
+		const totalPages = Math.ceil(sortedFiltered.length / itemsPerPage);
+		const paginatedServers = sortedFiltered.slice(
 			(currentPage - 1) * itemsPerPage,
 			currentPage * itemsPerPage
 		);
 
 		return {
-			filteredServers: filtered,
+			filteredServers: sortedFiltered,
 			totalPages,
-			paginatedServers
+			paginatedServers,
+			totalStats,
+			filteredStats
 		};
 	});
 
@@ -98,6 +113,114 @@
 
 	function onColumnToggle(column: IColumn, visible: boolean) {
 		visibleColumns[column.key] = visible;
+		// Save to user settings
+		userSettingsService.updateNested('visibleColumns', column.key, visible);
+	}
+
+	function handleAutoRefreshToggle(enabled: boolean) {
+		autoRefreshEnabled = enabled;
+		// Save to user settings
+		userSettingsService.updateNested('autoRefresh', 'enabled', enabled);
+	}
+
+	function handleIntervalChange(interval: number) {
+		refreshInterval = interval;
+		// Save to user settings
+		userSettingsService.updateNested('autoRefresh', 'interval', interval);
+	}
+
+	// Sort functions
+	function handleSort(column: string) {
+		// Define numeric columns
+		const numericColumns = ['bots', 'playerCount', 'port', 'currentPlayers', 'maxPlayers'];
+		const isNumeric = numericColumns.includes(column);
+
+		if (sortColumn === column) {
+			// Same column - cycle through sort directions
+			if (sortDirection === 'desc') {
+				sortDirection = 'asc'; // Second click - ascending
+			} else if (sortDirection === 'asc') {
+				sortColumn = null; // Third click - reset sort
+				sortDirection = null;
+			} else {
+				sortDirection = 'desc'; // First click - descending
+			}
+		} else {
+			// New column - start with descending
+			sortColumn = column;
+			sortDirection = 'desc';
+		}
+
+		// Reset to first page when sorting changes
+		currentPage = 1;
+	}
+
+	function getSortIcon(column: string) {
+		if (sortColumn !== column) {
+			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
+		}
+
+		if (sortDirection === 'desc') {
+			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
+		} else if (sortDirection === 'asc') {
+			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
+		}
+
+		return '';
+	}
+
+	// Sort the filtered servers
+	function sortServers(serverList: IDisplayServerItem[]): IDisplayServerItem[] {
+		if (!sortColumn || !sortDirection) {
+			return serverList;
+		}
+
+		const numericColumns = ['bots', 'playerCount', 'port', 'currentPlayers', 'maxPlayers'];
+		const isNumeric = numericColumns.includes(sortColumn);
+
+		return [...serverList].sort((a, b) => {
+			let aValue: any;
+			let bValue: any;
+
+			// Get values based on column
+			switch (sortColumn) {
+				case 'bots':
+					aValue = a.bots;
+					bValue = b.bots;
+					break;
+				case 'playerCount':
+				case 'currentPlayers':
+					aValue = a.currentPlayers;
+					bValue = b.currentPlayers;
+					break;
+				case 'maxPlayers':
+					aValue = a.maxPlayers;
+					bValue = b.maxPlayers;
+					break;
+				case 'port':
+					aValue = a.port;
+					bValue = b.port;
+					break;
+				default:
+					// String comparison for other columns
+					aValue = (a as any)[sortColumn!] || '';
+					bValue = (b as any)[sortColumn!] || '';
+					break;
+			}
+
+			// Handle string comparison (case-insensitive)
+			if (!isNumeric) {
+				aValue = String(aValue).toLowerCase();
+				bValue = String(bValue).toLowerCase();
+			}
+
+			// Sort based on direction
+			if (sortDirection === 'desc') {
+				return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+			} else {
+				return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+			}
+		});
 	}
 
 	async function refreshList() {
@@ -121,19 +244,43 @@
 <section aria-label="Server List" class="flex flex-col items-center justify-center">
 	<div class="container px-4 py-8">
 		<!-- Search component -->
-		<div class="mb-4 flex items-center gap-4">
-			<SearchInput
-				placeholder={m['app.search.placeholder']()}
-				value={searchQuery}
-				search={handleSearch}
-			/>
+		<div class="mb-4 flex items-center gap-4 flex-wrap">
+			<div class="flex-1 min-w-64">
+				<SearchInput
+					placeholder={m['app.search.placeholder']()}
+					value={searchQuery}
+					search={handleSearch}
+				/>
+			</div>
 
-			<div class="flex">
-				<button class="btn btn-neutral mr-2" onclick={refreshList}>
-					Refresh
+			<div class="flex items-center gap-2">
+				<button class="btn btn-neutral" onclick={refreshList}>
+					<TranslatedText key="app.button.refresh" />
 				</button>
 				<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
+				<AutoRefresh
+					enabled={autoRefreshEnabled}
+					onRefresh={refreshList}
+					onToggleChange={handleAutoRefreshToggle}
+				/>
 			</div>
+		</div>
+
+		<!-- Statistics display -->
+		<div class="stats-container mb-4 flex items-center justify-between text-sm">
+			<div class="flex items-center gap-4">
+				<span class="font-medium">
+					<span class="stats-number">{derivedData().filteredStats.totalServers}</span> / <span class="stats-number">{derivedData().totalStats.totalServers}</span> servers
+				</span>
+				<span class="font-medium">
+					<span class="stats-number">{derivedData().filteredStats.totalPlayers}</span> / <span class="stats-number">{derivedData().totalStats.totalPlayers}</span> players
+				</span>
+			</div>
+			{#if searchQuery && derivedData().filteredStats.totalServers < derivedData().totalStats.totalServers}
+				<span class="filter-indicator text-xs text-base-content/60 italic">
+					{m['app.stats.filteredBy']({ query: searchQuery })}
+				</span>
+			{/if}
 		</div>
 
 		<!-- Content area with consistent height -->
@@ -201,6 +348,9 @@
 					{searchQuery}
 					{onRowAction}
 					{visibleColumns}
+					onSort={handleSort}
+					sortColumn={sortColumn}
+					sortDirection={sortDirection}
 				/>
 
 				<!-- Pagination component -->
@@ -230,5 +380,50 @@
 		50% {
 			opacity: 0.5;
 		}
+	}
+
+	/* Enhanced badge styles for mode and map columns */
+	:global(.badge.text-blue-600) {
+		background-color: white !important;
+		border: 1px solid rgb(147 197 253) !important; /* border-blue-300 */
+		color: rgb(37 99 235) !important; /* text-blue-600 */
+	}
+
+	:global(.badge.text-green-600) {
+		background-color: white !important;
+		border: 1px solid rgb(134 239 172) !important; /* border-green-300 */
+		color: rgb(22 163 74) !important; /* text-green-600 */
+	}
+
+	/* Highlight text within badges */
+	:global(.badge mark) {
+		background-color: hsl(var(--wa) / 0.3) !important;
+		color: inherit !important;
+		padding: 0 2px !important;
+		border-radius: 2px !important;
+	}
+
+	/* Statistics display styling */
+	.stats-container {
+		background: linear-gradient(135deg, hsl(var(--b1) / 0.5) 0%, hsl(var(--b2) / 0.3) 100%);
+		border: 1px solid hsl(var(--bc) / 0.1);
+		border-radius: 0.5rem;
+		padding: 0.75rem 1rem;
+		box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+		backdrop-filter: blur(8px);
+	}
+
+	/* Stats number highlighting */
+	.stats-number {
+		font-weight: 600;
+		color: hsl(var(--bc));
+	}
+
+	/* Filter indicator styling */
+	.filter-indicator {
+		background: hsl(var(--wa) / 0.1);
+		border: 1px solid hsl(var(--wa) / 0.2);
+		border-radius: 0.25rem;
+		padding: 0.25rem 0.5rem;
 	}
 </style>

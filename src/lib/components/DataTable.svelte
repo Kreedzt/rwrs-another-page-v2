@@ -10,6 +10,9 @@
 		visibleColumns: Record<string, boolean>;
 		searchQuery: string;
 		onRowAction: (event: { item: IDisplayServerItem; action: string }) => void;
+		onSort?: (column: string) => void;
+		sortColumn?: string | null;
+		sortDirection?: 'asc' | 'desc' | null;
 	}
 
 	let {
@@ -17,7 +20,10 @@
 		columns = [],
 		searchQuery = '',
 		onRowAction = () => {},
-		visibleColumns = {}
+		visibleColumns = {},
+		onSort = () => {},
+		sortColumn = null,
+		sortDirection = null
 	}: Props = $props();
 
 	// Variables to bind row elements for height synchronization
@@ -27,6 +33,26 @@
 	// Handle row action (like connect button click)
 	function handleAction(item: IDisplayServerItem, action: string) {
 		onRowAction({ item, action });
+	}
+
+	// Handle column sort
+	function handleColumnSort(column: string) {
+		onSort(column);
+	}
+
+	// Get sort icon for column
+	function getSortIcon(column: string) {
+		if (sortColumn !== column) {
+			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
+		}
+
+		if (sortDirection === 'desc') {
+			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
+		} else if (sortDirection === 'asc') {
+			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
+		}
+
+		return '';
 	}
 
 	// Helper function to get alignment class based on column configuration
@@ -140,7 +166,17 @@
 							{#each columns as column (column.key)}
 								{#if visibleColumns[column.key] && column.key !== 'action'}
 									<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.headerClass || ''}">
-										{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+										<button
+											class="flex items-center gap-2 w-full text-left hover:bg-base-300 px-2 py-1 rounded transition-colors duration-200"
+											onclick={() => handleColumnSort(column.key)}
+											type="button"
+											title="Click to sort"
+										>
+											<span class="flex-1">
+												{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+											</span>
+											{@html getSortIcon(column.key)}
+										</button>
 									</th>
 								{/if}
 							{/each}

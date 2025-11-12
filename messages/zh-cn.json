@@ -75,5 +75,12 @@
 	"app.guide.helpGuide.title": "帮助指南",
 	"app.guide.helpGuide.description": "随时点击此按钮可重新播放帮助指南，并刷新您对可用功能的记忆。",
 	"app.guide.quickFilters.title": "快速过滤器",
-	"app.guide.quickFilters.description": "应用过滤器快速找到符合特定条件的服务器。您可以同时使用多个过滤器，并将它们与搜索框结合使用，进行强大的查询！"
+	"app.guide.quickFilters.description": "应用过滤器快速找到符合特定条件的服务器。您可以同时使用多个过滤器，并将它们与搜索框结合使用，进行强大的查询！",
+
+	"app.autoRefresh.toggle": "自动刷新",
+	"app.autoRefresh.interval": "间隔",
+
+	"app.stats.servers.display": "{filtered} / {total} 服务器",
+	"app.stats.players.display": "{filtered} / {total} 玩家",
+	"app.stats.filteredBy": "筛选条件: \"{query}\""
 }

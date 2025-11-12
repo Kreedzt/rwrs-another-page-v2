@@ -1,6 +1,34 @@
 import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
 import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highlight';
 
+// Function to get capacity status and styling
+function getCapacityStyling(server: IDisplayServerItem, query?: string): string {
+	const { currentPlayers, maxPlayers } = server;
+	const occupancy = maxPlayers > 0 ? (currentPlayers / maxPlayers) : 0;
+	const playerText = query ? highlightMatch(`${currentPlayers}/${maxPlayers}`, query) : `${currentPlayers}/${maxPlayers}`;
+
+	// Check for empty servers first
+	if (currentPlayers === 0) {
+		// Empty server - gray with dimmed effect
+		return `<span class="badge bg-gray-100 text-gray-500 border-gray-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm opacity-60" title="Empty server">${playerText}</span>`;
+	}
+
+	// Determine color based on occupancy
+	if (occupancy >= 1.0 || currentPlayers >= maxPlayers) {
+		// Full server - red
+		return `<span class="badge bg-red-100 text-red-700 border-red-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" title="Full server">${playerText}</span>`;
+	} else if (occupancy >= 0.8) {
+		// 80% or more - orange
+		return `<span class="badge bg-orange-100 text-orange-700 border-orange-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" title="${Math.round(occupancy * 100)}% full">${playerText}</span>`;
+	} else if (occupancy >= 0.6) {
+		// 60-79% - yellow (warning)
+		return `<span class="badge bg-amber-100 text-amber-700 border-amber-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" title="${Math.round(occupancy * 100)}% full">${playerText}</span>`;
+	} else {
+		// Less than 60% - green (available)
+		return `<span class="badge bg-green-100 text-green-700 border-green-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" title="${Math.round(occupancy * 100)}% full">${playerText}</span>`;
+	}
+}
+
 export const columns: IColumn[] = [
 	{
 		key: 'name',
@@ -43,20 +71,28 @@ export const columns: IColumn[] = [
 		key: 'mode',
 		label: 'Mode',
 		i18n: 'app.column.mode',
-		getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
-			highlightMatch(server.mode, query)
+		getValue: (server: IDisplayServerItem) => {
+			const modeText = server.mode || 'Unknown';
+			return `<span class="badge badge-outline bg-white text-blue-600 border-blue-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${modeText}</span>`;
+		},
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) => {
+			const modeText = server.mode || 'Unknown';
+			const highlightedText = highlightMatch(modeText, query);
+			return `<span class="badge badge-outline bg-white text-blue-600 border-blue-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${highlightedText}</span>`;
+		}
 	},
 	{
 		key: 'mapId',
 		label: 'Map',
 		i18n: 'app.column.map',
+		getValue: (server: IDisplayServerItem) => {
+			const mapId = server.mapId.split('/').pop() || '';
+			return `<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-map="map">${mapId}</span>`;
+		},
 		getValueWithHighlight: (server: IDisplayServerItem, query: string) => {
 			const mapId = server.mapId.split('/').pop() || '';
-
-			return highlightMatch(mapId, query);
-		},
-		getValue: (server: IDisplayServerItem) => {
-			return server.mapId.split('/').pop() || '';
+			const highlightedText = highlightMatch(mapId, query);
+			return `<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-map="map">${highlightedText}</span>`;
 		}
 	},
 	{
@@ -64,7 +100,8 @@ export const columns: IColumn[] = [
 		label: 'Players',
 		i18n: 'app.column.capacity',
 		alignment: 'center',
-		getValue: (server: IDisplayServerItem) => `${server.currentPlayers}/${server.maxPlayers}`
+		getValue: (server: IDisplayServerItem) => getCapacityStyling(server),
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) => getCapacityStyling(server, query)
 	},
 	{
 		key: 'playerList',

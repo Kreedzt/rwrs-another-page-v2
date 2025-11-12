@@ -21,27 +21,37 @@ export const parseServerListFromString = (resString: string): IDisplayServerItem
 	const parser = new XMLParser();
 	const res = parser.parse(resString) as IRes;
 
-	const serverList: IDisplayServerItem[] = res.result.server.map((server: any, index) => {
+	// Handle both XML structures: direct <server> array or nested <server_list>
+	const servers = res.result?.server_list?.server || res.result?.server || [];
+
+	// Handle case where parser returns object instead of array for single server
+	const serverArray = Array.isArray(servers) ? servers : (servers ? [servers] : []);
+
+	if (serverArray.length === 0) {
+		return [];
+	}
+
+	const serverList: IDisplayServerItem[] = serverArray.map((server: any, index) => {
 		const block: IDisplayServerItem = {
 			id: index.toString(),
-			name: server.name.toString(),
-			ipAddress: server.address,
-			port: server.port,
-			mapId: server.map_id.toString(),
-			mapName: server.map_name.toString(),
-			bots: server.bots,
-			country: server.country,
-			currentPlayers: server.current_players,
-			timeStamp: server.timeStamp,
-			version: server.version,
+			name: server.name?.toString() || '',
+			ipAddress: server.address || '',
+			port: server.port || 0,
+			mapId: server.map_id?.toString() || '',
+			mapName: server.map_name?.toString() || '',
+			bots: Number(server.bots) || 0,
+			country: server.country?.toString() || '',
+			currentPlayers: Number(server.current_players) || 0,
+			timeStamp: Number(server.timestamp) || 0,
+			version: server.version?.toString() || '',
 			dedicated: server.dedicated === 1,
 			mod: server.mod === 1,
 			playerList: fixPlayerList(server.player),
-			comment: server.comment,
-			url: server.url,
-			maxPlayers: server.max_players,
-			mode: server.mode.toString(),
-			realm: server.realm
+			comment: server.comment?.toString() || '',
+			url: server.url?.toString() || '',
+			maxPlayers: Number(server.max_players) || 0,
+			mode: server.mode?.toString() || '',
+			realm: server.realm?.toString() || null
 		};
 
 		return block;
