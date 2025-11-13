@@ -9,6 +9,7 @@
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import DataTable from '$lib/components/DataTable.svelte';
+	import MobileDataTable from '$lib/components/MobileDataTable.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
@@ -341,8 +342,8 @@
 					<span>{error}</span>
 				</div>
 			{:else}
-				<!-- Data table component -->
-				<DataTable
+				<!-- Mobile-first data table component -->
+				<MobileDataTable
 					data={derivedData().paginatedServers}
 					{columns}
 					{searchQuery}
