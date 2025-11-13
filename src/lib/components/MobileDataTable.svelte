@@ -143,9 +143,11 @@
 								{@html getDisplayValue(item, columns.find(col => col.key === 'name')!)}
 							</h3>
 
-							<!-- Player count -->
-							<div class="flex-shrink-0">
-								{@html getDisplayValue(item, columns.find(col => col.key === 'playerCount')!)}
+							<!-- Player count with forced wrapping -->
+							<div class="flex-shrink-0 min-w-0">
+								<div class="flex flex-wrap gap-1 justify-end max-w-24 sm:max-w-32">
+									{@html getDisplayValue(item, columns.find(col => col.key === 'playerCount')!)}
+								</div>
 							</div>
 
 							<!-- Map -->
@@ -177,9 +179,11 @@
 								{@html getDisplayValue(item, columns.find(col => col.key === 'name')!)}
 							</h3>
 
-							<!-- Player count -->
-							<div class="flex-shrink-0">
-								{@html getDisplayValue(item, columns.find(col => col.key === 'playerCount')!)}
+							<!-- Player count with forced wrapping -->
+							<div class="flex-shrink-0 min-w-0">
+								<div class="flex flex-wrap gap-1 justify-end max-w-24 sm:max-w-32">
+									{@html getDisplayValue(item, columns.find(col => col.key === 'playerCount')!)}
+								</div>
 							</div>
 
 							<!-- Map -->
@@ -228,86 +232,59 @@
 	<!-- Desktop table view (hidden on mobile) -->
 	<div class="hidden md:block">
 		<div class="w-full">
-			<div class="flex w-full rounded-lg overflow-hidden">
-				<!-- Scrollable table for all columns except action -->
-				<div class="flex-1 overflow-x-auto min-w-0">
-					<table class="table table-pin-rows mb-0 border-0">
-						<thead>
-							<tr>
-								{#each columns as column (column.key)}
-									{#if visibleColumns[column.key] && column.key !== 'action'}
-										<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.headerClass || ''}">
-											<button
-												class="flex items-center gap-2 w-full text-left hover:bg-base-300 px-2 py-1 rounded transition-colors duration-200"
-												onclick={() => handleColumnSort(column.key)}
-												type="button"
-												title="Click to sort"
-											>
-												<span class="flex-1">
-													{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
-												</span>
-												{@html getSortIcon(column.key)}
-											</button>
-										</th>
-									{/if}
-								{/each}
-							</tr>
-						</thead>
-						<tbody>
-							{#each data as item (item.id)}
-								<tr class="hover hover:bg-base-300 min-h-12">
-									{#each columns as column (column.key)}
-										{#if visibleColumns[column.key] && column.key !== 'action'}
-											<td class="px-4 py-2 align-middle {column.cellClass || ''}">
-												{#if column.key === 'url' && item.url}
-													<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6" title={item.url}>
-														{item.url.length > 50 ? item.url.substring(0, 47) + '...' : item.url}
-													</a>
-												{:else}
-													{@html getDisplayValue(item, column)}
-												{/if}
-											</td>
-										{/if}
-									{/each}
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-
-				<!-- Fixed action column -->
-				{#if visibleColumns['action']}
-					<div class="flex-shrink-0 w-32 border-l border-base-300">
-						<table class="table table-pin-rows mb-0 border-0">
-							<thead>
-								<tr>
-									<th class="bg-base-200 h-12 px-4 py-2 align-middle top-0 z-10 text-center">
-										{#each columns as column (column.key)}
-											{#if column.key === 'action'}
+			<table class="table table-pin-rows mb-0 border-0">
+				<thead>
+					<tr>
+						{#each columns as column (column.key)}
+							{#if visibleColumns[column.key]}
+								<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.key === 'action' ? 'w-32 text-center' : column.headerClass || ''}">
+									{#if column.key === 'action'}
+										{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+									{:else}
+										<button
+											class="flex items-center gap-2 w-full text-left hover:bg-base-300 px-2 py-1 rounded transition-colors duration-200"
+											onclick={() => handleColumnSort(column.key)}
+											type="button"
+											title="Click to sort"
+										>
+											<span class="flex-1">
 												{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
-											{/if}
-										{/each}
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{#each data as item (item.id)}
-									<tr class="hover hover:bg-base-300">
-										<td class="px-4 py-2 align-middle text-center">
+											</span>
+											{@html getSortIcon(column.key)}
+										</button>
+									{/if}
+								</th>
+							{/if}
+						{/each}
+					</tr>
+				</thead>
+				<tbody>
+					{#each data as item (item.id)}
+						<tr class="hover hover:bg-base-300 min-h-12">
+							{#each columns as column (column.key)}
+								{#if visibleColumns[column.key]}
+									<td class="px-4 py-2 align-middle {column.key === 'action' ? 'text-center w-32' : column.cellClass || ''} {column.key === 'playerList' ? 'align-top' : ''}">
+										{#if column.key === 'action'}
 											<button
 												class="btn btn-sm btn-primary"
 												onclick={() => handleAction(item, 'join')}
 											>
 												Join
 											</button>
-										</td>
-									</tr>
-								{/each}
-							</tbody>
-						</table>
-					</div>
-				{/if}
-			</div>
+										{:else if column.key === 'url' && item.url}
+											<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6" title={item.url}>
+												{item.url.length > 50 ? item.url.substring(0, 47) + '...' : item.url}
+											</a>
+										{:else}
+											{@html getDisplayValue(item, column)}
+										{/if}
+									</td>
+								{/if}
+							{/each}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
 	</div>
 {/if}
