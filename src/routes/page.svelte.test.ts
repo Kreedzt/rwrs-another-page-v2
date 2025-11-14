@@ -191,4 +191,98 @@ describe('Server data loading', () => {
 			expect(columnsToggleContainer?.children.length).toBeGreaterThan(0);
 		});
 	});
+
+	describe('Loading state without preview', () => {
+		test('should show enhanced loading animation without preview skeleton', async () => {
+			// Mock delayed response to test loading state
+			vi.mocked(DataTableService.listAll).mockImplementation(
+				() => new Promise((resolve) => setTimeout(() => resolve(createMockDisplayServers(1)), 2000))
+			);
+
+			render(Page);
+
+			// Should show loading container immediately
+			const loadingContainer = document.querySelector('.loading-container');
+			expect(loadingContainer).toBeInTheDocument();
+
+			// Should show loading animation dots
+			const loadingDots = document.querySelectorAll('.loading-dot');
+			expect(loadingDots.length).toBe(3);
+
+			// Should show loading title
+			const loadingTitle = screen.getByText(/loading servers/i);
+			expect(loadingTitle).toBeInTheDocument();
+
+			// Should show loading description
+			const loadingDescription = screen.getByText(/fetching latest server data/i);
+			expect(loadingDescription).toBeInTheDocument();
+
+			// Should show progress indicator
+			const progressBar = document.querySelector('.progress');
+			expect(progressBar).toBeInTheDocument();
+
+			// Should show progress text
+			const progressText = screen.getByText(/connecting to server/i);
+			expect(progressText).toBeInTheDocument();
+
+			// IMPORTANT: Should NOT show preview skeleton (removed feature)
+			const previewSkeleton = document.querySelector('.bg-base-200.opacity-60');
+			expect(previewSkeleton).not.toBeInTheDocument();
+
+			const previewText = screen.queryByText(/preview/i);
+			expect(previewText).not.toBeInTheDocument();
+		});
+
+		test('should maintain proper loading structure after preview removal', async () => {
+			// Mock very slow response to ensure loading state is fully rendered
+			vi.mocked(DataTableService.listAll).mockImplementation(
+				() => new Promise((resolve) => setTimeout(() => resolve(createMockDisplayServers(1)), 3000))
+			);
+
+			render(Page);
+
+			// Verify loading container has correct structure
+			const loadingContainer = document.querySelector('.loading-container');
+			expect(loadingContainer).toBeInTheDocument();
+
+			// Check that loading content is properly structured
+			const loadingAnimation = loadingContainer?.querySelector('.loading-animation');
+			expect(loadingAnimation).toBeInTheDocument();
+
+			const loadingTextSection = loadingContainer?.querySelector('h3')?.parentElement;
+			expect(loadingTextSection).toBeInTheDocument();
+
+			const progressSection = loadingContainer?.querySelector('.progress')?.parentElement;
+			expect(progressSection).toBeInTheDocument();
+
+			// Ensure no orphaned elements from removed preview
+			const orphanedElements = loadingContainer?.querySelectorAll(':empty');
+			const emptyDivs = Array.from(orphanedElements || []).filter(el =>
+				el.tagName === 'DIV' && !el.classList.length && !el.id
+			);
+			expect(emptyDivs.length).toBe(0);
+		});
+
+		test('should properly transition from loading to data display', async () => {
+			const mockServers = createMockDisplayServers(2);
+
+			// Mock fast response after initial loading state
+			vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
+
+			render(Page);
+
+			// Initially should show loading state
+			expect(document.querySelector('.loading-container')).toBeInTheDocument();
+
+			// Wait for data to load
+			await new Promise((resolve) => setTimeout(resolve, 100));
+
+			// Should transition to show data
+			const tableElements = await screen.findAllByRole('table', {}, { timeout: 3000 });
+			expect(tableElements.length).toBeGreaterThan(0);
+
+			// Loading container should be gone
+			expect(document.querySelector('.loading-container')).not.toBeInTheDocument();
+		});
+	});
 });

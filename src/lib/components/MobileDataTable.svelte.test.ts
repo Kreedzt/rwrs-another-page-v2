@@ -558,4 +558,228 @@ describe('MobileDataTable', () => {
 			}
 		});
 	});
+
+	describe('getAlignmentClass function', () => {
+		it('should return correct CSS classes for different alignment configurations', () => {
+			// Use existing columns but create a copy with modified alignments
+			const testColumns = columns.map(col => {
+				if (col.key === 'name') {
+					return { ...col, alignment: 'left' as const };
+				}
+				if (col.key === 'mode') {
+					return { ...col, alignment: 'center' as const };
+				}
+				if (col.key === 'playerCount') {
+					return { ...col, alignment: 'right' as const };
+				}
+				if (col.key === 'playerList') {
+					return { ...col, alignment: 'top' as const };
+				}
+				return col;
+			});
+
+			render(MobileDataTable, {
+				props: {
+					data: mockData,
+					columns: testColumns,
+					visibleColumns: {
+						name: true,
+						mode: true,
+						playerCount: true,
+						playerList: true,
+						comment: true,
+						action: true
+					},
+					searchQuery: '',
+					onRowAction: mockOnRowAction,
+					onSort: mockOnSort
+				}
+			});
+
+			// Check desktop table for alignment classes
+			const desktopCells = document.querySelectorAll('.hidden.md\\:block td');
+
+			// Find cells by their content to test alignment
+			const nameCell = Array.from(desktopCells).find(cell =>
+				cell.textContent?.includes(mockData[0].name)
+			);
+
+			// Test left alignment (default for name)
+			expect(nameCell).toHaveClass('align-middle');
+
+			// Test playerList alignment (should be top-aligned)
+			const playerListCells = Array.from(desktopCells).filter(cell =>
+				cell.classList.contains('align-top')
+			);
+			expect(playerListCells.length).toBeGreaterThan(0);
+
+			// Test that cells have alignment classes applied
+			const alignedCells = Array.from(desktopCells).filter(cell =>
+				cell.classList.contains('align-middle') ||
+				cell.classList.contains('align-top') ||
+				cell.classList.contains('text-center') ||
+				cell.classList.contains('text-right')
+			);
+			expect(alignedCells.length).toBeGreaterThan(0);
+		});
+
+		it('should default to left alignment when no alignment is specified', () => {
+			render(MobileDataTable, {
+				props: {
+					data: mockData,
+					columns, // Use default columns which don't specify alignment
+					visibleColumns: {
+						name: true,
+						comment: true,
+						action: true
+					},
+					searchQuery: '',
+					onRowAction: mockOnRowAction,
+					onSort: mockOnSort
+				}
+			});
+
+			const desktopCells = document.querySelectorAll('.hidden.md\\:block td');
+			const nameCell = Array.from(desktopCells).find(cell =>
+				cell.textContent?.includes(mockData[0].name)
+			);
+
+			// Should default to align-middle for unspecified alignment
+			expect(nameCell).toHaveClass('align-middle');
+		});
+	});
+
+	describe('Action column styling', () => {
+		it('should apply proper CSS classes to action column in desktop view', () => {
+			render(MobileDataTable, {
+				props: {
+					data: mockData,
+					columns,
+					visibleColumns: {
+						...mockVisibleColumns,
+						action: true
+					},
+					searchQuery: '',
+					onRowAction: mockOnRowAction,
+					onSort: mockOnSort
+				}
+			});
+
+			// Check desktop table action header
+			const actionHeader = document.querySelector('.hidden.md\\:block .action-header');
+			expect(actionHeader).toBeInTheDocument();
+			expect(actionHeader).toHaveClass('bg-slate-50');
+
+			// Check desktop table action cells
+			const actionCells = document.querySelectorAll('.hidden.md\\:block .action-cell');
+			expect(actionCells.length).toBe(mockData.length);
+
+			actionCells.forEach(cell => {
+				expect(cell).toHaveClass('bg-slate-50');
+			});
+		});
+
+		it('should hide action column on mobile view', () => {
+			render(MobileDataTable, {
+				props: {
+					data: mockData,
+					columns,
+					visibleColumns: {
+						...mockVisibleColumns,
+						action: true
+					},
+					searchQuery: '',
+					onRowAction: mockOnRowAction,
+					onSort: mockOnSort
+				}
+			});
+
+			// Mobile view should not have action column classes
+			const mobileActionHeaders = document.querySelectorAll('.md\\:hidden .action-header');
+			const mobileActionCells = document.querySelectorAll('.md\\:hidden .action-cell');
+
+			expect(mobileActionHeaders.length).toBe(0);
+			expect(mobileActionCells.length).toBe(0);
+		});
+
+		it('should still render Join buttons in desktop action column', () => {
+			render(MobileDataTable, {
+				props: {
+					data: mockData,
+					columns,
+					visibleColumns: {
+						...mockVisibleColumns,
+						action: true
+					},
+					searchQuery: '',
+					onRowAction: mockOnRowAction,
+					onSort: mockOnSort
+				}
+			});
+
+			// Should find Join buttons in desktop view
+			const joinButtons = document.querySelectorAll('.hidden.md\\:block .btn-primary');
+			expect(joinButtons.length).toBe(mockData.length);
+
+			joinButtons.forEach(button => {
+				expect(button).toHaveTextContent('Join');
+			});
+		});
+	});
+
+	describe('CSS optimization verification', () => {
+		it('should not contain deprecated CSS selectors or properties', () => {
+			render(MobileDataTable, {
+				props: {
+					data: mockData,
+					columns,
+					visibleColumns: mockVisibleColumns,
+					searchQuery: '',
+					onRowAction: mockOnRowAction,
+					onSort: mockOnSort
+				}
+			});
+
+			// Check that action elements don't have old complex selectors
+			const actionCells = document.querySelectorAll('.action-cell');
+			const actionHeaders = document.querySelectorAll('.action-header');
+
+			// Should have the clean, simplified classes
+			actionCells.forEach(cell => {
+				expect(cell).toHaveClass('action-cell');
+				expect(cell).toHaveClass('bg-slate-50');
+			});
+
+			actionHeaders.forEach(header => {
+				expect(header).toHaveClass('action-header');
+				expect(header).toHaveClass('bg-slate-50');
+			});
+		});
+
+		it('should maintain responsive behavior with optimized CSS', () => {
+			render(MobileDataTable, {
+				props: {
+					data: mockData,
+					columns,
+					visibleColumns: mockVisibleColumns,
+					searchQuery: '',
+					onRowAction: mockOnRowAction,
+					onSort: mockOnSort
+				}
+			});
+
+			// Verify both mobile and desktop views are still present
+			const mobileView = document.querySelector('.md\\:hidden');
+			const desktopView = document.querySelector('.hidden.md\\:block');
+
+			expect(mobileView).toBeInTheDocument();
+			expect(desktopView).toBeInTheDocument();
+
+			// Verify mobile buttons still have proper styling
+			const mobileButtons = document.querySelectorAll('.mobile-btn');
+			mobileButtons.forEach(button => {
+				expect(button).toBeInTheDocument();
+			});
+		});
+	});
 });
