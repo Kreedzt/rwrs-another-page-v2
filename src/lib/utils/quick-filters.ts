@@ -1,0 +1,48 @@
+import type { IDisplayServerItem } from '$lib/models/data-table.model';
+
+// Regex patterns for filtering
+const CASTLING_REGEX = /^\[Castling](\[Global])?\[[\w!\\?]+(-\d)?\s(LV\d|FOV)]/;
+const HELDDIVERS_REGEX = /^\[地狱潜兵]/;
+
+export const filters = [
+	{
+		id: 'invasion',
+		labelKey: 'app.filter.officialInvasion',
+		defaultLabel: 'Official Invasion',
+		filter: (data: IDisplayServerItem) => {
+			return data.realm === 'official_invasion';
+		}
+	},
+	{
+		id: 'ww2_invasion',
+		labelKey: 'app.filter.officialWW2Invasion',
+		defaultLabel: 'Official WW2 Invasion',
+		filter: (data: IDisplayServerItem) => {
+			return data.realm === 'official_pacific';
+		}
+	},
+	{
+		id: 'dominance',
+		labelKey: 'app.filter.officialDominance',
+		defaultLabel: 'Official Dominance',
+		filter: (data: IDisplayServerItem) => {
+			return data.realm === 'official_dominance';
+		}
+	},
+	{
+		id: 'castling',
+		labelKey: 'app.filter.officialModCastling',
+		defaultLabel: 'Official Mod Castling',
+		filter: (data: IDisplayServerItem) => {
+			return data.mode.toLowerCase().includes('castling') && CASTLING_REGEX.test(data.name);
+		}
+	},
+	{
+		id: 'helldivers',
+		labelKey: 'app.filter.officialModHellDivers',
+		defaultLabel: 'Official Mod HellDivers',
+		filter: (data: IDisplayServerItem) => {
+			return data.mode.toLowerCase().includes('hd') && HELDDIVERS_REGEX.test(data.name);
+		}
+	}
+];

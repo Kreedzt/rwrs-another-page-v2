@@ -1,234 +1,234 @@
 {
-    "invasion": [
-        {
-            "id": "map6",
-            "name": "Rattlesnake Crescent"
-        },
-        {
-            "id": "map2",
-            "name": "Keepsake Bay"
-        },
-        {
-            "id": "map9",
-            "name": "Black Gold Estuary"
-        },
-        {
-            "id": "map8_2",
-            "name": "Tropical Blizzard"
-        },
-        {
-            "id": "map7",
-            "name": "Power Junction"
-        },
-        {
-            "id": "map1_2",
-            "name": "Moorland Apocalypse"
-        },
-        {
-            "id": "map14",
-            "name": "Misty Heights"
-        },
-        {
-            "id": "map20",
-            "name": "Elk Island"
-        },
-        {
-            "id": "map10",
-            "name": "Railroad Gap"
-        },
-        {
-            "id": "map17",
-            "name": "Gotcha Island"
-        },
-        {
-            "id": "map13_2",
-            "name": "Dry Enclave"
-        },
-        {
-            "id": "map3",
-            "name": "Old Fort Creek"
-        },
-        {
-            "id": "map16",
-            "name": "Green Coast"
-        },
-        {
-            "id": "map11",
-            "name": "Copehill Down"
-        },
-        {
-            "id": "map8",
-            "name": "Vigil Island"
-        },
-        {
-            "id": "map6_2",
-            "name": "Rattlesnake Crescent"
-        },
-        {
-            "id": "map4",
-            "name": "Fridge Valley"
-        },
-        {
-            "id": "map19",
-            "name": "Swan River"
-        },
-        {
-            "id": "map1",
-            "name": "Moorland Trenches"
-        },
-        {
-            "id": "map5",
-            "name": "Bootleg Islands"
-        },
-        {
-            "id": "map12",
-            "name": "Frozen Canyon"
-        },
-        {
-            "id": "map18",
-            "name": "Warsalt Legacy"
-        },
-        {
-            "id": "map13",
-            "name": "Iron Enclave"
-        },
-        {
-            "id": "map21",
-            "name": "Route 666"
-        }
-    ],
-    "ww2_invasion": [],
-    "dominance": [
-        {
-            "id": "pvp1",
-            "name": "Islet Of Eflen"
-        }
-    ],
-    "castling": [
-        {
-            "id": "map2_c",
-            "name": "Casake Bay"
-        },
-        {
-            "id": "map10",
-            "name": "Railroad Gap"
-        },
-        {
-            "id": "map21",
-            "name": "Hell's High Way"
-        },
-        {
-            "id": "mapxmas",
-            "name": "A Snowy Night Capriccio"
-        },
-        {
-            "id": "map20",
-            "name": "Elk Island"
-        },
-        {
-            "id": "map8",
-            "name": "Vigil Island"
-        },
-        {
-            "id": "map18",
-            "name": "Warsalt Legacy"
-        },
-        {
-            "id": "map5",
-            "name": "Corrupt lefands"
-        },
-        {
-            "id": "map16",
-            "name": "Green Coast"
-        },
-        {
-            "id": "map4_c",
-            "name": "Fridge Valley"
-        },
-        {
-            "id": "map103",
-            "name": "Palo Island"
-        },
-        {
-            "id": "map9",
-            "name": "Black Gold Estuary"
-        },
-        {
-            "id": "map13_2",
-            "name": "Holy Enclave"
-        },
-        {
-            "id": "Chapter01",
-            "name": "Awakening"
-        },
-        {
-            "id": "Chapter02",
-            "name": "Echo"
-        },
-        {
-            "id": "map14",
-            "name": "Misty Heights"
-        },
-        {
-            "id": "map106",
-            "name": "Route E30"
-        },
-        {
-            "id": "map12",
-            "name": "Operation Homecoming"
-        },
-        {
-            "id": "map17",
-            "name": "Gotcha Island"
-        },
-        {
-            "id": "map110",
-            "name": "Rising Sand"
-        },
-        {
-            "id": "map1_2",
-            "name": "Moorland Apocalypse"
-        },
-        {
-            "id": "map11",
-            "name": "Final mission I"
-        },
-        {
-            "id": "map105_1",
-            "name": "Zone Attack"
-        },
-        {
-            "id": "map105_2",
-            "name": "Shock Zone"
-        },
-        {
-            "id": "map105_3",
-            "name": "setupDeadZone"
-        },
-        {
-            "id": "map3_c",
-            "name": "Raining Fort Creek"
-        },
-        {
-            "id": "map8_2",
-            "name": "Tropical Blizzard"
-        },
-        {
-            "id": "map19",
-            "name": "Swan River"
-        },
-        {
-            "id": "mydevilsfrontline",
-            "name": "Kanda jimbocho"
-        },
-        {
-            "id": "map7",
-            "name": "Power Junction"
-        },
-        {
-            "id": "map2",
-            "name": "Keepsake Bay"
-        }
-    ],
-    "helldivers": []
+	"invasion": [
+		{
+			"id": "map6",
+			"name": "Rattlesnake Crescent"
+		},
+		{
+			"id": "map2",
+			"name": "Keepsake Bay"
+		},
+		{
+			"id": "map9",
+			"name": "Black Gold Estuary"
+		},
+		{
+			"id": "map8_2",
+			"name": "Tropical Blizzard"
+		},
+		{
+			"id": "map7",
+			"name": "Power Junction"
+		},
+		{
+			"id": "map1_2",
+			"name": "Moorland Apocalypse"
+		},
+		{
+			"id": "map14",
+			"name": "Misty Heights"
+		},
+		{
+			"id": "map20",
+			"name": "Elk Island"
+		},
+		{
+			"id": "map10",
+			"name": "Railroad Gap"
+		},
+		{
+			"id": "map17",
+			"name": "Gotcha Island"
+		},
+		{
+			"id": "map13_2",
+			"name": "Dry Enclave"
+		},
+		{
+			"id": "map3",
+			"name": "Old Fort Creek"
+		},
+		{
+			"id": "map16",
+			"name": "Green Coast"
+		},
+		{
+			"id": "map11",
+			"name": "Copehill Down"
+		},
+		{
+			"id": "map8",
+			"name": "Vigil Island"
+		},
+		{
+			"id": "map6_2",
+			"name": "Rattlesnake Crescent"
+		},
+		{
+			"id": "map4",
+			"name": "Fridge Valley"
+		},
+		{
+			"id": "map19",
+			"name": "Swan River"
+		},
+		{
+			"id": "map1",
+			"name": "Moorland Trenches"
+		},
+		{
+			"id": "map5",
+			"name": "Bootleg Islands"
+		},
+		{
+			"id": "map12",
+			"name": "Frozen Canyon"
+		},
+		{
+			"id": "map18",
+			"name": "Warsalt Legacy"
+		},
+		{
+			"id": "map13",
+			"name": "Iron Enclave"
+		},
+		{
+			"id": "map21",
+			"name": "Route 666"
+		}
+	],
+	"ww2_invasion": [],
+	"dominance": [
+		{
+			"id": "pvp1",
+			"name": "Islet Of Eflen"
+		}
+	],
+	"castling": [
+		{
+			"id": "map2_c",
+			"name": "Casake Bay"
+		},
+		{
+			"id": "map10",
+			"name": "Railroad Gap"
+		},
+		{
+			"id": "map21",
+			"name": "Hell's High Way"
+		},
+		{
+			"id": "mapxmas",
+			"name": "A Snowy Night Capriccio"
+		},
+		{
+			"id": "map20",
+			"name": "Elk Island"
+		},
+		{
+			"id": "map8",
+			"name": "Vigil Island"
+		},
+		{
+			"id": "map18",
+			"name": "Warsalt Legacy"
+		},
+		{
+			"id": "map5",
+			"name": "Corrupt lefands"
+		},
+		{
+			"id": "map16",
+			"name": "Green Coast"
+		},
+		{
+			"id": "map4_c",
+			"name": "Fridge Valley"
+		},
+		{
+			"id": "map103",
+			"name": "Palo Island"
+		},
+		{
+			"id": "map9",
+			"name": "Black Gold Estuary"
+		},
+		{
+			"id": "map13_2",
+			"name": "Holy Enclave"
+		},
+		{
+			"id": "Chapter01",
+			"name": "Awakening"
+		},
+		{
+			"id": "Chapter02",
+			"name": "Echo"
+		},
+		{
+			"id": "map14",
+			"name": "Misty Heights"
+		},
+		{
+			"id": "map106",
+			"name": "Route E30"
+		},
+		{
+			"id": "map12",
+			"name": "Operation Homecoming"
+		},
+		{
+			"id": "map17",
+			"name": "Gotcha Island"
+		},
+		{
+			"id": "map110",
+			"name": "Rising Sand"
+		},
+		{
+			"id": "map1_2",
+			"name": "Moorland Apocalypse"
+		},
+		{
+			"id": "map11",
+			"name": "Final mission I"
+		},
+		{
+			"id": "map105_1",
+			"name": "Zone Attack"
+		},
+		{
+			"id": "map105_2",
+			"name": "Shock Zone"
+		},
+		{
+			"id": "map105_3",
+			"name": "setupDeadZone"
+		},
+		{
+			"id": "map3_c",
+			"name": "Raining Fort Creek"
+		},
+		{
+			"id": "map8_2",
+			"name": "Tropical Blizzard"
+		},
+		{
+			"id": "map19",
+			"name": "Swan River"
+		},
+		{
+			"id": "mydevilsfrontline",
+			"name": "Kanda jimbocho"
+		},
+		{
+			"id": "map7",
+			"name": "Power Junction"
+		},
+		{
+			"id": "map2",
+			"name": "Keepsake Bay"
+		}
+	],
+	"helldivers": []
 }

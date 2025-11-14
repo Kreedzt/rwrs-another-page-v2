@@ -17,10 +17,23 @@
 	"app.viewMode.map": "Switch to Table View",
 	"app.help.title": "Show Help Guide",
 	"app.loading": "Loading server data...",
+	"app.loading.title": "Loading Servers",
+	"app.loading.description": "Fetching latest server data from the API...",
+	"app.loading.progress": "Connecting to server...",
+	"app.loading.preview": "Preview",
+	"app.button.join": "Join",
+	"app.column.name": "Server Name",
+	"app.column.ip": "IP Address",
+	"app.column.port": "Port",
+	"app.column.bots": "Bots",
+	"app.column.country": "Country",
+	"app.column.map": "Map",
+	"app.column.capacity": "Capacity",
+	"app.column.players": "Players",
+	"app.column.action": "Action",
 
 	"app.columns.button": "Columns",
 	"app.columns.toggle": "Toggle visible columns",
-	"app.button.join": "Join",
 
 	"app.column.name": "Name",
 	"app.column.ip": "IP",
@@ -82,5 +95,7 @@
 
 	"app.stats.servers.display": "{filtered} / {total} servers",
 	"app.stats.players.display": "{filtered} / {total} players",
-	"app.stats.filteredBy": "Filtered by: \"{query}\""
+	"app.stats.filteredBy": "Filtered by: \"{query}\"",
+	"app.mobile.endOfContent": "End of content",
+	"app.button.loadMore": "Load More"
 }

@@ -8,11 +8,7 @@
 		onToggleChange?: (enabled: boolean) => void;
 	}
 
-	let {
-		enabled = false,
-		onRefresh,
-		onToggleChange = () => {}
-	}: Props = $props();
+	let { enabled = false, onRefresh, onToggleChange = () => {} }: Props = $props();
 
 	let intervalId: number | null = null;
 	let nextRefreshCountdown = $state(0);
@@ -76,20 +72,20 @@
 </script>
 
 <!-- 简化的自动刷新开关 -->
-<label class="flex items-center gap-2 cursor-pointer">
+<label class="flex cursor-pointer items-center gap-3 sm:gap-2">
 	<input
 		type="checkbox"
 		checked={enabled}
 		onchange={handleToggleChange}
-		class="toggle toggle-primary toggle-sm"
+		class="toggle toggle-primary toggle-md sm:toggle-sm"
 	/>
-	<span class="text-sm whitespace-nowrap">
+	<span class="text-sm whitespace-nowrap sm:text-xs">
 		{m['app.autoRefresh.toggle']()}
 	</span>
 	{#if enabled}
-		<div class="flex items-center gap-1 ml-2">
-			<div class="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-			<span class="text-xs text-base-content/70">
+		<div class="ml-2 flex items-center gap-2 sm:ml-2 sm:gap-1">
+			<div class="bg-success h-3 w-3 animate-pulse rounded-full sm:h-2 sm:w-2"></div>
+			<span class="text-base-content/70 text-sm font-medium sm:text-xs sm:font-normal">
 				{nextRefreshCountdown}s
 			</span>
 		</div>

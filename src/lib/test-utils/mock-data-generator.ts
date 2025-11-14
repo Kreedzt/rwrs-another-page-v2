@@ -6,23 +6,62 @@ export class MockDataGenerator {
 
 	// Sample data from real API response
 	private static sampleServerNames = [
-		'InvasionASIA6', '[Castling][Temp LV4]', '[Castling][GFL-5 LV4]', 'InvasionEU1',
-		'InvasionASIA5', 'InvasionUSWest1', 'WW2InvasionCN2', 'InvasionJP2',
-		'[GFLNP][CN14][Extreme][Loot]', '[地狱潜兵] 挂机/抽卡/赛车服',
-		'RATBUG', 'WEKILLEVERYBODY', 'DominanceASIA2', 'RWTD - Outbreak Gaming'
+		'InvasionASIA6',
+		'[Castling][Temp LV4]',
+		'[Castling][GFL-5 LV4]',
+		'InvasionEU1',
+		'InvasionASIA5',
+		'InvasionUSWest1',
+		'WW2InvasionCN2',
+		'InvasionJP2',
+		'[GFLNP][CN14][Extreme][Loot]',
+		'[地狱潜兵] 挂机/抽卡/赛车服',
+		'RATBUG',
+		'WEKILLEVERYBODY',
+		'DominanceASIA2',
+		'RWTD - Outbreak Gaming'
 	];
 
 	private static samplePlayerNames = [
-		'HP', 'REPAIR COMING!!', 'CHEN WAN', 'PONKOTSUTENSHI', 'MR.BIGPY',
-		'CLOWNPIECE', 'S_X', 'MR. FOKING', 'SUBWAY', 'MR.MSRX97',
-		'CONSTANT', 'BLACKANDREW', 'DAMOCLÉS', 'RIHO', 'MR. GREEN92',
-		'LUOXUANZAO', 'MIYING', 'WCSSSSS', 'BEETCHER', 'MR. 1374',
-		'RAY SPHERELLI', 'BIKABAKA', 'PANZER3', '2006YT', 'WARP NSA'
+		'HP',
+		'REPAIR COMING!!',
+		'CHEN WAN',
+		'PONKOTSUTENSHI',
+		'MR.BIGPY',
+		'CLOWNPIECE',
+		'S_X',
+		'MR. FOKING',
+		'SUBWAY',
+		'MR.MSRX97',
+		'CONSTANT',
+		'BLACKANDREW',
+		'DAMOCLÉS',
+		'RIHO',
+		'MR. GREEN92',
+		'LUOXUANZAO',
+		'MIYING',
+		'WCSSSSS',
+		'BEETCHER',
+		'MR. 1374',
+		'RAY SPHERELLI',
+		'BIKABAKA',
+		'PANZER3',
+		'2006YT',
+		'WARP NSA'
 	];
 
 	private static sampleCountries = [
-		'Asia', 'China', 'Germany', 'USA, LA', 'Japan', 'Australia',
-		'Canada', 'United States', 'Not set', 'Nederland', 'United Kingdom'
+		'Asia',
+		'China',
+		'Germany',
+		'USA, LA',
+		'Japan',
+		'Australia',
+		'Canada',
+		'United States',
+		'Not set',
+		'Nederland',
+		'United Kingdom'
 	];
 
 	private static sampleMapIds = [
@@ -45,8 +84,16 @@ export class MockDataGenerator {
 	];
 
 	private static sampleModes = [
-		'COOP', 'Castling', 'GFL [INF]', 'DOM', 'PvE', 'HD Race',
-		'HD L15', 'HD L9', 'HD Vanilla', ''
+		'COOP',
+		'Castling',
+		'GFL [INF]',
+		'DOM',
+		'PvE',
+		'HD Race',
+		'HD L15',
+		'HD L9',
+		'HD Vanilla',
+		''
 	];
 
 	private static sampleComments = [
@@ -63,7 +110,8 @@ export class MockDataGenerator {
 	];
 
 	private static generateUniqueServerName(): string {
-		const baseName = this.sampleServerNames[Math.floor(Math.random() * this.sampleServerNames.length)];
+		const baseName =
+			this.sampleServerNames[Math.floor(Math.random() * this.sampleServerNames.length)];
 		const suffix = Math.floor(Math.random() * 1000);
 		return `${baseName}_${suffix}`;
 	}
@@ -79,7 +127,9 @@ export class MockDataGenerator {
 	private static generatePlayerList(currentPlayers: number): string[] {
 		const players: string[] = [];
 		for (let i = 0; i < currentPlayers; i++) {
-			players.push(this.samplePlayerNames[Math.floor(Math.random() * this.samplePlayerNames.length)]);
+			players.push(
+				this.samplePlayerNames[Math.floor(Math.random() * this.samplePlayerNames.length)]
+			);
 		}
 		return players;
 	}
@@ -114,7 +164,10 @@ export class MockDataGenerator {
 		return { ...server, ...overrides };
 	}
 
-	static generateMockServers(count: number, overrides: Partial<IResServerItem> = {}): IResServerItem[] {
+	static generateMockServers(
+		count: number,
+		overrides: Partial<IResServerItem> = {}
+	): IResServerItem[] {
 		const servers: IResServerItem[] = [];
 		for (let i = 0; i < count; i++) {
 			servers.push(this.generateMockServer(overrides));
@@ -144,7 +197,7 @@ export class MockDataGenerator {
 				this.generateMockServer({ current_players: 2, max_players: 32 }), // 6%
 				this.generateMockServer({ current_players: 15, max_players: 32 }), // 47%
 				this.generateMockServer({ current_players: 28, max_players: 32 }), // 87%
-				this.generateMockServer({ current_players: 32, max_players: 32 })  // 100%
+				this.generateMockServer({ current_players: 32, max_players: 32 }) // 100%
 			],
 			serversWithBots: this.generateMockServers(5, { bots: 100 }),
 			noBotsServers: this.generateMockServers(5, { bots: 0 }),
@@ -156,7 +209,10 @@ export class MockDataGenerator {
 	}
 
 	// Generate display server items (after processing)
-	static generateDisplayServers(count: number, overrides: Partial<IDisplayServerItem> = {}): IDisplayServerItem[] {
+	static generateDisplayServers(
+		count: number,
+		overrides: Partial<IDisplayServerItem> = {}
+	): IDisplayServerItem[] {
 		const mockServers = this.generateMockServers(count);
 		return mockServers.map((server, index) => ({
 			id: `server_${index}_${Date.now()}`,
@@ -188,38 +244,48 @@ export class MockDataGenerator {
 		const scenarios = this.generateTestScenarios();
 
 		// 30% empty servers
-		servers.push(...this.generateDisplayServers(Math.floor(totalServers * 0.3), {
-			currentPlayers: 0,
-			bots: Math.floor(Math.random() * 200)
-		}));
+		servers.push(
+			...this.generateDisplayServers(Math.floor(totalServers * 0.3), {
+				currentPlayers: 0,
+				bots: Math.floor(Math.random() * 200)
+			})
+		);
 
 		// 20% low population (1-5 players)
-		servers.push(...this.generateDisplayServers(Math.floor(totalServers * 0.2), {
-			currentPlayers: Math.floor(Math.random() * 5) + 1,
-			maxPlayers: Math.floor(Math.random() * 30) + 10,
-			bots: Math.floor(Math.random() * 150) + 50
-		}));
+		servers.push(
+			...this.generateDisplayServers(Math.floor(totalServers * 0.2), {
+				currentPlayers: Math.floor(Math.random() * 5) + 1,
+				maxPlayers: Math.floor(Math.random() * 30) + 10,
+				bots: Math.floor(Math.random() * 150) + 50
+			})
+		);
 
 		// 30% medium population (6-15 players)
-		servers.push(...this.generateDisplayServers(Math.floor(totalServers * 0.3), {
-			currentPlayers: Math.floor(Math.random() * 10) + 6,
-			maxPlayers: Math.floor(Math.random() * 40) + 20,
-			bots: Math.floor(Math.random() * 100) + 100
-		}));
+		servers.push(
+			...this.generateDisplayServers(Math.floor(totalServers * 0.3), {
+				currentPlayers: Math.floor(Math.random() * 10) + 6,
+				maxPlayers: Math.floor(Math.random() * 40) + 20,
+				bots: Math.floor(Math.random() * 100) + 100
+			})
+		);
 
 		// 15% high population (16-30 players)
-		servers.push(...this.generateDisplayServers(Math.floor(totalServers * 0.15), {
-			currentPlayers: Math.floor(Math.random() * 15) + 16,
-			maxPlayers: Math.floor(Math.random() * 20) + 32,
-			bots: Math.floor(Math.random() * 50) + 200
-		}));
+		servers.push(
+			...this.generateDisplayServers(Math.floor(totalServers * 0.15), {
+				currentPlayers: Math.floor(Math.random() * 15) + 16,
+				maxPlayers: Math.floor(Math.random() * 20) + 32,
+				bots: Math.floor(Math.random() * 50) + 200
+			})
+		);
 
 		// 5% nearly full servers
-		servers.push(...this.generateDisplayServers(Math.floor(totalServers * 0.05), {
-			currentPlayers: (server) => Math.floor(server.maxPlayers * 0.9),
-			maxPlayers: Math.floor(Math.random() * 20) + 32,
-			bots: Math.floor(Math.random() * 50) + 250
-		}));
+		servers.push(
+			...this.generateDisplayServers(Math.floor(totalServers * 0.05), {
+				currentPlayers: (server) => Math.floor(server.maxPlayers * 0.9),
+				maxPlayers: Math.floor(Math.random() * 20) + 32,
+				bots: Math.floor(Math.random() * 50) + 250
+			})
+		);
 
 		return servers;
 	}
@@ -227,12 +293,13 @@ export class MockDataGenerator {
 	// Generate XML string that matches the API response format
 	static generateMockXmlResponse(serverCount = 20): string {
 		const servers = this.generateMockServers(serverCount);
-		const serverXml = servers.map((server) => {
-			const playerXml = Array.isArray(server.player)
-				? server.player.map(player => `<player>${player}</player>`).join('\n\t\t\t\t')
-				: `<player>${server.player}</player>`;
+		const serverXml = servers
+			.map((server) => {
+				const playerXml = Array.isArray(server.player)
+					? server.player.map((player) => `<player>${player}</player>`).join('\n\t\t\t\t')
+					: `<player>${server.player}</player>`;
 
-			return `<server>
+				return `<server>
 <name>${server.name}</name>
 <address>${server.address}</address>
 <port>${server.port}</port>
@@ -252,7 +319,8 @@ ${playerXml}
 <mode>${server.mode}</mode>
 <realm>${server.realm}</realm>
 </server>`;
-		}).join('\n');
+			})
+			.join('\n');
 
 		return `<?xml version="1.0" encoding="UTF-8"?>
 <result value="1">

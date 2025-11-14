@@ -12,7 +12,7 @@
 		tag?: keyof HTMLElementTagNameMap;
 		className?: string;
 	}>();
-	
+
 	const hasKey = $derived(key in m);
 </script>
 

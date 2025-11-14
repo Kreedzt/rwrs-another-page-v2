@@ -1,6 +1,11 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DataTableService } from './data-table';
-import { createMockServers, createMockDisplayServers, createTestScenarios, createMockXmlResponse } from '$lib/test-utils/mock-data-generator';
+import {
+	createMockServers,
+	createMockDisplayServers,
+	createTestScenarios,
+	createMockXmlResponse
+} from '$lib/test-utils/mock-data-generator';
 
 // Mock fetch API
 global.fetch = vi.fn();
@@ -8,6 +13,8 @@ global.fetch = vi.fn();
 describe('DataTableService', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		// Mock console.error to suppress expected error messages
+		vi.spyOn(console, 'error').mockImplementation(() => {});
 		// Reset fetch mock
 		vi.mocked(fetch).mockClear();
 	});
@@ -68,13 +75,17 @@ describe('DataTableService', () => {
 			});
 			const xmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
 <result value="1">
-${mockServers.map(server => `<server>
+${mockServers
+	.map(
+		(server) => `<server>
 <name>${server.name}</name>
 <address>${server.address}</address>
 <port>${server.port}</port>
 <current_players>0</current_players>
 <max_players>${server.max_players}</max_players>
-</server>`).join('\n')}
+</server>`
+	)
+	.join('\n')}
 </result>`;
 
 			vi.mocked(fetch).mockResolvedValueOnce({
@@ -99,13 +110,17 @@ ${mockServers.map(server => `<server>
 			});
 			const xmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
 <result value="1">
-${mockServers.map(server => `<server>
+${mockServers
+	.map(
+		(server) => `<server>
 <name>${server.name}</name>
 <address>${server.address}</address>
 <port>${server.port}</port>
 <current_players>0</current_players>
 <max_players>${server.max_players}</max_players>
-</server>`).join('\n')}
+</server>`
+	)
+	.join('\n')}
 </result>`;
 
 			vi.mocked(fetch).mockResolvedValueOnce({
@@ -119,7 +134,7 @@ ${mockServers.map(server => `<server>
 			expect(result).toHaveLength(2);
 
 			// Verify that 0-player servers have currentPlayers = 0
-			result.forEach(server => {
+			result.forEach((server) => {
 				expect(server.currentPlayers).toBe(0);
 				expect(server.maxPlayers).toBe(20);
 			});
@@ -241,7 +256,9 @@ ${mockServers.map(server => `<server>
 			const xmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
 <result value="1">
 <server_list>
-${fullServers.map(server => `
+${fullServers
+	.map(
+		(server) => `
 <server>
 <name>${server.name}</name>
 <address>${server.address}</address>
@@ -250,7 +267,9 @@ ${fullServers.map(server => `
 <max_players>${server.max_players}</max_players>
 <bots>${server.bots}</bots>
 <mode>${server.mode}</mode>
-</server>`).join('')}
+</server>`
+	)
+	.join('')}
 </server_list>
 </result>`;
 
@@ -263,7 +282,7 @@ ${fullServers.map(server => `
 			const result = await DataTableService.listAll();
 
 			expect(result).toHaveLength(3);
-			result.forEach(server => {
+			result.forEach((server) => {
 				// All should be at full capacity (100%)
 				expect(server.currentPlayers).toBe(server.maxPlayers);
 				expect(server.currentPlayers).toBeGreaterThan(0);
@@ -347,7 +366,7 @@ ${fullServers.map(server => `
 			const result = await DataTableService.listAll();
 
 			expect(result).toHaveLength(4);
-			const modes = result.map(s => s.mode);
+			const modes = result.map((s) => s.mode);
 			expect(modes).toContain('COOP');
 			expect(modes).toContain('Castling');
 			expect(modes).toContain('GFL [INF]');

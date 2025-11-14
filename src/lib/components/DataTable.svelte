@@ -26,10 +26,6 @@
 		sortDirection = null
 	}: Props = $props();
 
-	// Variables to bind row elements for height synchronization
-	let scrollableRows: Record<string, HTMLElement> = {};
-	let fixedRows: Record<string, HTMLElement> = {};
-
 	// Handle row action (like connect button click)
 	function handleAction(item: IDisplayServerItem, action: string) {
 		onRowAction({ item, action });
@@ -84,57 +80,6 @@
 
 		return (item as any)[column.key] ?? '-';
 	}
-
-	// Sync row heights between scrollable and fixed tables
-	function syncRowHeights() {
-		if (typeof window === 'undefined') return;
-
-		// Reset heights first
-		Object.values(scrollableRows).forEach(row => {
-			if (row) row.style.height = 'auto';
-		});
-		Object.values(fixedRows).forEach(row => {
-			if (row) row.style.height = 'auto';
-		});
-
-		// Get natural heights and apply the maximum to both
-		data.forEach(item => {
-			const scrollableRow = scrollableRows[item.id];
-			const fixedRow = fixedRows[item.id];
-
-			if (scrollableRow && fixedRow) {
-				const scrollableHeight = scrollableRow.offsetHeight;
-				const fixedHeight = fixedRow.offsetHeight;
-				const maxHeight = Math.max(scrollableHeight, fixedHeight);
-
-				scrollableRow.style.height = `${maxHeight}px`;
-				fixedRow.style.height = `${maxHeight}px`;
-			}
-		});
-	}
-
-	// Sync heights after data changes
-	$effect(() => {
-		if (data.length > 0) {
-			// Use setTimeout to ensure DOM is updated
-			setTimeout(syncRowHeights, 0);
-		}
-	});
-
-	// Also sync on window resize
-	$effect(() => {
-		if (typeof window === 'undefined') return;
-
-		const handleResize = () => {
-			setTimeout(syncRowHeights, 100);
-		};
-
-		window.addEventListener('resize', handleResize);
-
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	});
 </script>
 
 {#if data.length === 0}
@@ -155,88 +100,78 @@
 		<span>No data found{searchQuery ? ' matching your search' : ''}.</span>
 	</div>
 {:else}
-	<!-- Fixed table layout with scrollable content and fixed action column -->
-	<div class="w-full">
-		<div class="flex w-full rounded-lg overflow-hidden">
-			<!-- Scrollable table for all columns except action -->
-			<div class="flex-1 overflow-x-auto min-w-0">
-				<table class="table table-pin-rows mb-0 border-0">
-					<thead>
-						<tr>
-							{#each columns as column (column.key)}
-								{#if visibleColumns[column.key] && column.key !== 'action'}
-									<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.headerClass || ''}">
-										<button
-											class="flex items-center gap-2 w-full text-left hover:bg-base-300 px-2 py-1 rounded transition-colors duration-200"
-											onclick={() => handleColumnSort(column.key)}
-											type="button"
-											title="Click to sort"
-										>
-											<span class="flex-1">
-												{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
-											</span>
-											{@html getSortIcon(column.key)}
-										</button>
-									</th>
+	<!-- Single table with sticky action column -->
+	<div class="w-full overflow-x-auto rounded-lg">
+		<table class="table-pin-rows mb-0 table w-full border-0">
+			<thead>
+				<tr>
+					{#each columns as column (column.key)}
+						{#if visibleColumns[column.key]}
+							<th
+								class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle {column.headerClass ||
+									''}"
+								class:action-header={column.key === 'action'}
+							>
+								{#if column.key === 'action'}
+									<div class="text-center">
+										{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+									</div>
+								{:else}
+									<button
+										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
+										onclick={() => handleColumnSort(column.key)}
+										type="button"
+										title="Click to sort"
+									>
+										<span class="flex-1">
+											{#if column.i18n}<TranslatedText
+													key={column.i18n}
+												/>{:else}{column.label}{/if}
+										</span>
+										{@html getSortIcon(column.key)}
+									</button>
 								{/if}
-							{/each}
-						</tr>
-					</thead>
-					<tbody>
-						{#each data as item (item.id)}
-							<tr class="hover hover:bg-base-300 min-h-12" bind:this={scrollableRows[item.id]}>
-								{#each columns as column (column.key)}
-									{#if visibleColumns[column.key] && column.key !== 'action'}
-										<td class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass || ''}">
-											{#if column.key === 'url' && item.url}
-												<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6">
-													{@html getDisplayValue(item, column)}
-												</a>
-											{:else}
-												{@html getDisplayValue(item, column)}
-											{/if}
-										</td>
-									{/if}
-								{/each}
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-
-			<!-- Fixed action column -->
-			{#if visibleColumns['action']}
-				<div class="flex-shrink-0 w-32 border-l border-base-300 hidden md:block">
-					<table class="table table-pin-rows mb-0 border-0">
-						<thead>
-							<tr>
-								<th class="bg-base-200 h-12 px-4 py-2 align-middle top-0 z-10 text-center">
-									{#each columns as column (column.key)}
-										{#if column.key === 'action'}
-											{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
-										{/if}
-									{/each}
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each data as item (item.id)}
-								<tr class="hover hover:bg-base-300" bind:this={fixedRows[item.id]}>
-									<td class="px-4 py-2 align-middle text-center">
-										<button
-											class="btn btn-sm btn-primary mobile-btn"
-											onclick={() => handleAction(item, 'join')}
+							</th>
+						{/if}
+					{/each}
+				</tr>
+			</thead>
+			<tbody>
+				{#each data as item (item.id)}
+					<tr class="hover hover:bg-base-300 min-h-12">
+						{#each columns as column (column.key)}
+							{#if visibleColumns[column.key]}
+								<td
+									class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass || ''}"
+									class:action-cell={column.key === 'action'}
+								>
+									{#if column.key === 'action'}
+										<div class="flex min-h-[3rem] items-center justify-center text-center">
+											<button
+												class="btn btn-sm btn-primary mobile-btn"
+												onclick={() => handleAction(item, 'join')}
+											>
+												Join
+											</button>
+										</div>
+									{:else if column.key === 'url' && item.url}
+										<a
+											href={item.url}
+											target="_blank"
+											class="link link-primary inline-flex min-h-6 items-center"
 										>
-											Join
-										</button>
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/if}
-		</div>
+											{@html getDisplayValue(item, column)}
+										</a>
+									{:else}
+										{@html getDisplayValue(item, column)}
+									{/if}
+								</td>
+							{/if}
+						{/each}
+					</tr>
+				{/each}
+			</tbody>
+		</table>
 	</div>
 {/if}
 
@@ -251,24 +186,116 @@
 		max-width: none;
 	}
 
-	/* Responsive adjustments for mobile */
+	/* Action column specific styling for single table - use highest specificity */
+	:global(div table tbody tr td.action-cell) {
+		position: sticky !important;
+		right: 0 !important;
+		background: hsl(var(--b1)) !important;
+		background-color: hsl(var(--b1)) !important;
+		z-index: 999 !important;
+		min-width: 8rem !important;
+		width: 8rem !important;
+		border-left: 2px solid hsl(var(--bc) / 0.3) !important;
+		/* Add stronger shadow for better separation */
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25) !important;
+		/* Add gradient overlay for better text visibility */
+		background-image: linear-gradient(
+			to right,
+			hsla(var(--b1), 0.7) 0%,
+			hsla(var(--b1), 0.85) 20%,
+			hsla(var(--b1), 0.95) 50%,
+			hsl(var(--b1)) 100%
+		) !important;
+		/* Ensure proper stacking context */
+		transform: translateZ(0) !important;
+		/* Double background ensure coverage */
+		background-blend-mode: normal !important;
+		mix-blend-mode: normal !important;
+	}
+
+	:global(div table thead tr th.action-header) {
+		position: sticky !important;
+		right: 0 !important;
+		background: hsl(var(--b2)) !important;
+		background-color: hsl(var(--b2)) !important;
+		z-index: 1000 !important;
+		min-width: 8rem !important;
+		width: 8rem !important;
+		border-left: 2px solid hsl(var(--bc) / 0.4) !important;
+		/* Add stronger shadow for better separation */
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3) !important;
+		/* Add gradient overlay for better text visibility */
+		background-image: linear-gradient(
+			to right,
+			hsla(var(--b2), 0.8) 0%,
+			hsla(var(--b2), 0.9) 20%,
+			hsla(var(--b2), 0.98) 50%,
+			hsl(var(--b2)) 100%
+		) !important;
+		/* Ensure proper stacking context */
+		transform: translateZ(0) !important;
+		/* Double background ensure coverage */
+		background-blend-mode: normal !important;
+		mix-blend-mode: normal !important;
+	}
+
+	/* Fallback with maximum specificity */
+	:global(body > div > table tbody tr td.action-cell),
+	:global(body table tbody tr td.action-cell) {
+		position: sticky !important;
+		right: 0 !important;
+		background: hsl(var(--b1)) !important;
+		background-color: hsl(var(--b1)) !important;
+		z-index: 999 !important;
+		min-width: 8rem !important;
+		width: 8rem !important;
+		border-left: 2px solid hsl(var(--bc) / 0.3) !important;
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25) !important;
+		background-image: linear-gradient(
+			to right,
+			hsla(var(--b1), 0.7) 0%,
+			hsla(var(--b1), 0.85) 20%,
+			hsla(var(--b1), 0.95) 50%,
+			hsl(var(--b1)) 100%
+		) !important;
+	}
+
+	:global(body > div > table thead tr th.action-header),
+	:global(body table thead tr th.action-header) {
+		position: sticky !important;
+		right: 0 !important;
+		background: hsl(var(--b2)) !important;
+		background-color: hsl(var(--b2)) !important;
+		z-index: 1000 !important;
+		min-width: 8rem !important;
+		width: 8rem !important;
+		border-left: 2px solid hsl(var(--bc) / 0.4) !important;
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3) !important;
+		background-image: linear-gradient(
+			to right,
+			hsla(var(--b2), 0.8) 0%,
+			hsla(var(--b2), 0.9) 20%,
+			hsla(var(--b2), 0.98) 50%,
+			hsl(var(--b2)) 100%
+		) !important;
+	}
+
+	/* Hide action column on mobile */
 	@media (max-width: 768px) {
-		/* Action column responsive width */
-		.w-32 {
-			width: 6rem;
+		:global(.action-cell),
+		:global(.action-header) {
+			display: none;
 		}
+	}
 
-		/* Player list column responsive width */
-		.w-96 {
-			width: 20rem;
-		}
-
-		.min-w-96 {
+	/* Player list column responsive width */
+	@media (max-width: 768px) {
+		:global(.min-w-96) {
 			min-width: 20rem;
 		}
 
 		/* Mobile button styling */
-		.mobile-btn {
+		:global(.mobile-btn) {
 			font-size: 0.75rem;
 			padding: 0.25rem 0.5rem;
 		}

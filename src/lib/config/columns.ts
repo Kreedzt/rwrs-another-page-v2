@@ -4,8 +4,10 @@ import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highli
 // Function to get capacity status and styling
 function getCapacityStyling(server: IDisplayServerItem, query?: string): string {
 	const { currentPlayers, maxPlayers } = server;
-	const occupancy = maxPlayers > 0 ? (currentPlayers / maxPlayers) : 0;
-	const playerText = query ? highlightMatch(`${currentPlayers}/${maxPlayers}`, query) : `${currentPlayers}/${maxPlayers}`;
+	const occupancy = maxPlayers > 0 ? currentPlayers / maxPlayers : 0;
+	const playerText = query
+		? highlightMatch(`${currentPlayers}/${maxPlayers}`, query)
+		: `${currentPlayers}/${maxPlayers}`;
 
 	// Check for empty servers first
 	if (currentPlayers === 0) {
@@ -101,7 +103,8 @@ export const columns: IColumn[] = [
 		i18n: 'app.column.capacity',
 		alignment: 'center',
 		getValue: (server: IDisplayServerItem) => getCapacityStyling(server),
-		getValueWithHighlight: (server: IDisplayServerItem, query: string) => getCapacityStyling(server, query)
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+			getCapacityStyling(server, query)
 	},
 	{
 		key: 'playerList',

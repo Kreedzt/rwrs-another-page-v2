@@ -5,12 +5,12 @@ export default defineConfig({
 		{
 			command: 'node e2e/mock-server.cjs',
 			port: 5800,
-			reuseExistingServer: false,
+			reuseExistingServer: false
 		},
 		{
 			command: 'npm run build && npm run preview',
 			port: 4173,
-			reuseExistingServer: false,
+			reuseExistingServer: false
 		}
 	],
 	testDir: 'e2e',
@@ -18,6 +18,6 @@ export default defineConfig({
 		// Retry tests on failure
 		retry: 1,
 		// Timeout for each test
-		timeout: 30000,
-	},
+		timeout: 30000
+	}
 });

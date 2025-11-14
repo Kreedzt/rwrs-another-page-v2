@@ -235,7 +235,9 @@ describe('MobileDataTable', () => {
 			});
 
 			// Mobile should always show capacity badges regardless of user settings
-			const capacityBadges = document.querySelectorAll('.bg-red-100, .bg-orange-100, .bg-amber-100, .bg-green-100, .bg-gray-100');
+			const capacityBadges = document.querySelectorAll(
+				'.bg-red-100, .bg-orange-100, .bg-amber-100, .bg-green-100, .bg-gray-100'
+			);
 			expect(capacityBadges.length).toBeGreaterThan(0);
 		});
 
@@ -315,14 +317,16 @@ describe('MobileDataTable', () => {
 			});
 
 			// Should find mobile sort controls (with md:hidden class)
-			const mobileSortButtons = document.querySelectorAll('.md\\:hidden button[class*="btn-outline"]');
+			const mobileSortButtons = document.querySelectorAll(
+				'.md\\:hidden button[class*="btn-outline"]'
+			);
 			expect(mobileSortButtons.length).toBeGreaterThanOrEqual(3);
 
 			// Should not find sort buttons outside mobile section (desktop)
 			const desktopSortButtons = document.querySelectorAll('.hidden.md\\:block button');
 			// Desktop should only have table structure, no standalone sort buttons
-			const standaloneSortButtons = Array.from(desktopSortButtons).filter(btn =>
-				btn.closest('table') === null
+			const standaloneSortButtons = Array.from(desktopSortButtons).filter(
+				(btn) => btn.closest('table') === null
 			);
 			expect(standaloneSortButtons.length).toBe(0);
 		});
@@ -380,7 +384,7 @@ describe('MobileDataTable', () => {
 			});
 
 			const expandButtons = document.querySelectorAll('button[aria-expanded]');
-			expandButtons.forEach(button => {
+			expandButtons.forEach((button) => {
 				expect(button).toHaveAttribute('aria-label');
 				expect(button).toHaveAttribute('aria-expanded');
 			});
@@ -485,14 +489,16 @@ describe('MobileDataTable', () => {
 			const serverWithAllData: IDisplayServerItem = {
 				...mockData[0],
 				mode: 'CTF',
-				comment: 'This is a test server with a very long comment that should wrap properly on mobile devices',
+				comment:
+					'This is a test server with a very long comment that should wrap properly on mobile devices',
 				url: 'https://example.com/very-long-url-that-needs-to-break-properly/on-mobile-screens/with-multiple-segments',
 				mod: true,
 				dedicated: true,
 				version: '1.5.0'
 			};
 
-			const longUrl = 'https://example.com/very-long-url-that-needs-to-break-properly/on-mobile-screens/with-multiple-segments';
+			const longUrl =
+				'https://example.com/very-long-url-that-needs-to-break-properly/on-mobile-screens/with-multiple-segments';
 			const expectedMobileUrl = 'https://example.com/very-lo...'; // 30 chars max for mobile
 			const expectedDesktopUrl = 'https://example.com/very-long-url-that-needs...'; // 50 chars max for desktop
 

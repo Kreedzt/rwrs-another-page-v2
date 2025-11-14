@@ -17,10 +17,23 @@
 	"app.viewMode.map": "切换到表格视图",
 	"app.help.title": "显示帮助指南",
 	"app.loading": "加载服务器数据...",
+	"app.loading.title": "加载服务器",
+	"app.loading.description": "正在从API获取最新的服务器数据...",
+	"app.loading.progress": "连接服务器中...",
+	"app.loading.preview": "预览",
+	"app.button.join": "加入",
+	"app.column.name": "服务器名称",
+	"app.column.ip": "IP地址",
+	"app.column.port": "端口",
+	"app.column.bots": "机器人",
+	"app.column.country": "国家",
+	"app.column.map": "地图",
+	"app.column.capacity": "容量",
+	"app.column.players": "玩家",
+	"app.column.action": "操作",
 
 	"app.columns.button": "列",
 	"app.columns.toggle": "切换可见列",
-	"app.button.join": "加入",
 
 	"app.column.name": "名称",
 	"app.column.ip": "IP",
@@ -82,5 +95,7 @@
 
 	"app.stats.servers.display": "{filtered} / {total} 服务器",
 	"app.stats.players.display": "{filtered} / {total} 玩家",
-	"app.stats.filteredBy": "筛选条件: \"{query}\""
+	"app.stats.filteredBy": "筛选条件: \"{query}\"",
+	"app.mobile.endOfContent": "已到底部",
+	"app.button.loadMore": "加载更多"
 }

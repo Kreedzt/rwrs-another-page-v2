@@ -19,6 +19,7 @@ RWRS Another Page provides a pure and efficient way to browse Running with Rifle
 ## Dependencies
 
 This project requires the following backend:
+
 - [rwrs-server](https://github.com/Kreedzt/rwrs-server) - Provides the API for server data
 
 ## Development
@@ -31,12 +32,14 @@ This project requires the following backend:
 ### Setup
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/rwrs-another-page-v2.git
    cd rwrs-another-page-v2
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    ```
@@ -65,17 +68,20 @@ There are two ways to deploy using Docker:
 #### Option 1: Separate Containers with Network
 
 1. Create a Docker network:
+
    ```bash
    docker network create rwrs-network
    ```
 
 2. Start the rwrs-server container:
+
    ```bash
    docker pull zhaozisong0/rwrs-server:latest
    docker run -d --name rwrs-server --network rwrs-network -e "HOST=0.0.0.0" -e "PORT=80" zhaozisong0/rwrs-server:latest
    ```
 
 3. Start the rwrs-another-page-v2 container:
+
    ```bash
    docker pull zhaozisong0/rwrs-another-page-v2:latest
    docker run -d --name rwrs-another-page-v2 --network rwrs-network -p 80:80 zhaozisong0/rwrs-another-page-v2:latest
@@ -90,16 +96,19 @@ There are two ways to deploy using Docker:
 You can also deploy by copying the frontend build to the rwrs-server's static directory:
 
 1. Build the frontend:
+
    ```bash
    pnpm build
    ```
 
 2. Copy the contents of the `build` directory to the `/static` directory of the rwrs-server container:
+
    ```bash
    docker cp ./build/. rwrs-server:/static/
    ```
 
    Or mount the directory when starting the container:
+
    ```bash
    docker run -d -p 80:80 -e "HOST=0.0.0.0" -e "PORT=80" -v $(pwd)/build:/static zhaozisong0/rwrs-server:latest
    ```
@@ -113,6 +122,7 @@ docker run -p 80:80 -e "HEADER_SCRIPTS=<script>console.log('Custom script');</sc
 ### Manual Deployment
 
 1. Build the project:
+
    ```bash
    pnpm build
    ```

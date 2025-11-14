@@ -13,13 +13,18 @@
 	<div tabindex="-1" role="button" class="btn btn-sm btn-ghost">
 		{languageNames[currentLocale]?.shortName || currentLocale.toUpperCase()}
 	</div>
-	<ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-lg border border-base-300">
+	<ul
+		tabindex="-1"
+		class="dropdown-content menu bg-base-100 rounded-box border-base-300 z-50 w-52 border p-2 shadow-lg"
+	>
 		{#each locales as locale}
 			<li>
 				<div
 					tabindex={currentLocale === locale ? 0 : -1}
 					role="button"
-					class="flex items-center justify-between {currentLocale === locale ? 'active bg-primary text-primary-content' : ''}"
+					class="flex items-center justify-between {currentLocale === locale
+						? 'active bg-primary text-primary-content'
+						: ''}"
 					onclick={() => setLocale(locale)}
 					onkeydown={(e) => e.key === 'Enter' && setLocale(locale)}
 					aria-label={`Switch to ${languageNames[locale]?.name || locale}`}
