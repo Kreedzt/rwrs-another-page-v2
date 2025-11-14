@@ -8,11 +8,19 @@
 	// Import components
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import DataTable from '$lib/components/DataTable.svelte';
 	import MobileDataTable from '$lib/components/MobileDataTable.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
+	import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
+	import MobileInfiniteScroll from '$lib/components/MobileInfiniteScroll.svelte';
+	import { filters as quickFilters } from '$lib/utils/quick-filters';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import {
+		getUrlState,
+		updateUrlState,
+		createUrlStateSubscriber,
+		type UrlState
+	} from '$lib/utils/url-state';
 
 	// State variables
 	let servers = $state<IDisplayServerItem[]>([]);
@@ -25,7 +33,6 @@
 
 	// Auto refresh state (from user settings)
 	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
-	let refreshInterval = $state(userSettings.autoRefresh.interval);
 
 	// Sort state
 	let sortColumn = $state<string | null>(null);
@@ -35,8 +42,16 @@
 	const itemsPerPage = 20;
 	let currentPage = $state(1);
 
+	// Mobile infinite scroll state
+	let mobileCurrentPage = $state(1);
+	let mobileLoadingMore = $state(false);
+
 	// Visible columns (from user settings)
 	let visibleColumns = $state<Record<string, boolean>>({ ...userSettings.visibleColumns });
+
+	// Quick filter state
+	let activeQuickFilters = $state<string[]>([]);
+	let isMultiSelectFilter = $state(false);
 
 	// Calculate statistics
 	const calculateStats = (serverList: IDisplayServerItem[]) => {
@@ -47,7 +62,7 @@
 
 	// Derived values
 	const derivedData = $derived(() => {
-		const filtered = searchQuery
+		let filtered = searchQuery
 			? servers.filter((server) => {
 					const query = searchQuery.toLowerCase();
 					return (
@@ -63,6 +78,16 @@
 				})
 			: servers;
 
+		// Apply quick filters if any are active
+		if (activeQuickFilters.length > 0) {
+			filtered = filtered.filter((server) => {
+				return activeQuickFilters.some((filterId) => {
+					const filter = quickFilters.find((f) => f.id === filterId);
+					return filter ? filter.filter(server) : false;
+				});
+			});
+		}
+
 		// Apply sorting to filtered servers
 		const sortedFiltered = sortServers(filtered);
 
@@ -76,19 +101,37 @@
 			currentPage * itemsPerPage
 		);
 
+		// Mobile infinite scroll - accumulate all filtered servers
+		const mobilePaginatedServers = sortedFiltered.slice(0, mobileCurrentPage * itemsPerPage);
+		const mobileHasMore = mobilePaginatedServers.length < sortedFiltered.length;
+
 		return {
 			filteredServers: sortedFiltered,
 			totalPages,
 			paginatedServers,
 			totalStats,
-			filteredStats
+			filteredStats,
+			mobilePaginatedServers,
+			mobileHasMore
 		};
 	});
 
-	// Event handlers
-	function handleSearch(query: string) {
-		searchQuery = query;
+	// Handle search query changes for pagination reset only
+	$effect(() => {
+		// Reset pages when search changes
 		currentPage = 1;
+		mobileCurrentPage = 1;
+	});
+
+	function handleSearchInput(value: string) {
+		// Update URL in real-time using History API (no focus loss)
+		// Always update URL to ensure it reflects current input state
+		updateUrlState(
+			{
+				search: value.trim() || undefined
+			},
+			true
+		);
 	}
 
 	function handlePageChange(page: number) {
@@ -97,6 +140,18 @@
 		// Update the current page directly
 		currentPage = page;
 		console.log('Current page after update:', currentPage);
+	}
+
+	// Mobile infinite scroll load more handler
+	function handleLoadMore() {
+		if (!mobileLoadingMore) {
+			mobileLoadingMore = true;
+			mobileCurrentPage++;
+			// Simulate loading delay for better UX
+			setTimeout(() => {
+				mobileLoadingMore = false;
+			}, 500);
+		}
 	}
 
 	function onRowAction(event: { item: IDisplayServerItem; action: string }) {
@@ -124,17 +179,43 @@
 		userSettingsService.updateNested('autoRefresh', 'enabled', enabled);
 	}
 
-	function handleIntervalChange(interval: number) {
-		refreshInterval = interval;
-		// Save to user settings
-		userSettingsService.updateNested('autoRefresh', 'interval', interval);
+	// Quick filter functions
+	function handleQuickFilter(filterId: string) {
+		if (isMultiSelectFilter) {
+			// Multi-select mode: toggle filter
+			if (activeQuickFilters.includes(filterId)) {
+				activeQuickFilters = activeQuickFilters.filter((id) => id !== filterId);
+			} else {
+				activeQuickFilters = [...activeQuickFilters, filterId];
+			}
+		} else {
+			// Single-select mode: replace filter
+			activeQuickFilters = activeQuickFilters.includes(filterId) ? [] : [filterId];
+		}
+		currentPage = 1; // Reset to first page when filter changes
+		mobileCurrentPage = 1; // Reset mobile infinite scroll when filter changes
+
+		// Update URL
+		updateUrlState(
+			{
+				quickFilters: activeQuickFilters.length > 0 ? activeQuickFilters : []
+			},
+			true
+		);
+	}
+
+	function handleMultiSelectChange(checked: boolean) {
+		isMultiSelectFilter = checked;
+		if (!checked && activeQuickFilters.length > 1) {
+			// If switching to single-select mode, keep only the first active filter
+			activeQuickFilters = activeQuickFilters.slice(0, 1);
+		}
 	}
 
 	// Sort functions
 	function handleSort(column: string) {
 		// Define numeric columns
 		const numericColumns = ['bots', 'playerCount', 'port', 'currentPlayers', 'maxPlayers'];
-		const isNumeric = numericColumns.includes(column);
 
 		if (sortColumn === column) {
 			// Same column - cycle through sort directions
@@ -154,20 +235,16 @@
 
 		// Reset to first page when sorting changes
 		currentPage = 1;
-	}
+		mobileCurrentPage = 1; // Reset mobile infinite scroll when sorting changes
 
-	function getSortIcon(column: string) {
-		if (sortColumn !== column) {
-			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
-		}
-
-		if (sortDirection === 'desc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
-		} else if (sortDirection === 'asc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
-		}
-
-		return '';
+		// Update URL
+		updateUrlState(
+			{
+				sortColumn: sortColumn || undefined,
+				sortDirection: sortDirection || undefined
+			},
+			true
+		);
 	}
 
 	// Sort the filtered servers
@@ -228,6 +305,8 @@
 		try {
 			loading = true;
 			servers = await DataTableService.listAll();
+			// Reset mobile infinite scroll when data refreshes
+			mobileCurrentPage = 1;
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load data';
 			console.error('Error loading servers:', err);
@@ -236,29 +315,88 @@
 		}
 	}
 
+	// Initialize state from URL on page load
+	function initializeFromUrl() {
+		const urlState = getUrlState();
+
+		// Set search query from URL
+		if (urlState.search !== undefined) {
+			searchQuery = urlState.search;
+		}
+
+		// Set quick filters from URL
+		if (urlState.quickFilters && urlState.quickFilters.length > 0) {
+			// Validate that all filter IDs exist
+			const validFilters = urlState.quickFilters.filter((filterId) =>
+				quickFilters.some((filter) => filter.id === filterId)
+			);
+			activeQuickFilters = validFilters;
+		}
+
+		// Set sorting from URL
+		if (urlState.sortColumn && urlState.sortDirection) {
+			sortColumn = urlState.sortColumn;
+			sortDirection = urlState.sortDirection;
+		}
+	}
+
 	// Load data
 	onMount(async () => {
+		// Initialize state from URL before loading data
+		initializeFromUrl();
 		await refreshList();
+
+		// Subscribe to URL changes
+		const unsubscribe = createUrlStateSubscriber((urlState: UrlState) => {
+			// Update local state when URL changes (e.g., browser back/forward)
+			// Only update if different to avoid infinite loops
+			if (urlState.search !== undefined && searchQuery !== (urlState.search || '')) {
+				searchQuery = urlState.search || '';
+			}
+
+			if (urlState.quickFilters !== undefined) {
+				const validFilters = urlState.quickFilters.filter((filterId) =>
+					quickFilters.some((filter) => filter.id === filterId)
+				);
+				if (JSON.stringify(activeQuickFilters) !== JSON.stringify(validFilters)) {
+					activeQuickFilters = validFilters;
+				}
+			}
+
+			if (urlState.sortColumn !== undefined && sortColumn !== (urlState.sortColumn || '')) {
+				sortColumn = urlState.sortColumn;
+				sortDirection = urlState.sortDirection || null;
+			}
+		});
+
+		// Cleanup function
+		return () => {
+			unsubscribe?.();
+		};
 	});
 </script>
 
 <section aria-label="Server List" class="flex flex-col items-center justify-center">
 	<div class="container px-4 py-8">
 		<!-- Search component -->
-		<div class="mb-4 flex items-center gap-4 flex-wrap">
-			<div class="flex-1 min-w-64">
+		<div class="mb-4 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center">
+			<div class="min-w-64 flex-1">
 				<SearchInput
 					placeholder={m['app.search.placeholder']()}
-					value={searchQuery}
-					search={handleSearch}
+					bind:value={searchQuery}
+					oninput={handleSearchInput}
 				/>
 			</div>
 
-			<div class="flex items-center gap-2">
-				<button class="btn btn-neutral" onclick={refreshList}>
+			<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+				<button class="btn btn-neutral w-full min-w-20 sm:w-auto" onclick={refreshList}>
 					<TranslatedText key="app.button.refresh" />
 				</button>
-				<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
+
+				<div class="hidden md:block">
+					<ColumnsToggle {columns} {visibleColumns} {onColumnToggle} />
+				</div>
+
 				<AutoRefresh
 					enabled={autoRefreshEnabled}
 					onRefresh={refreshList}
@@ -267,18 +405,29 @@
 			</div>
 		</div>
 
+		<!-- Quick filter buttons -->
+		<QuickFilterButtons
+			isLoading={loading}
+			onQuickFilter={handleQuickFilter}
+			activeFilters={activeQuickFilters}
+			isMultiSelect={isMultiSelectFilter}
+			onMultiSelectChange={handleMultiSelectChange}
+		/>
+
 		<!-- Statistics display -->
 		<div class="stats-container mb-4 flex items-center justify-between text-sm">
 			<div class="flex items-center gap-4">
 				<span class="font-medium">
-					<span class="stats-number">{derivedData().filteredStats.totalServers}</span> / <span class="stats-number">{derivedData().totalStats.totalServers}</span> servers
+					<span class="stats-number">{derivedData().filteredStats.totalServers}</span> /
+					<span class="stats-number">{derivedData().totalStats.totalServers}</span> servers
 				</span>
 				<span class="font-medium">
-					<span class="stats-number">{derivedData().filteredStats.totalPlayers}</span> / <span class="stats-number">{derivedData().totalStats.totalPlayers}</span> players
+					<span class="stats-number">{derivedData().filteredStats.totalPlayers}</span> /
+					<span class="stats-number">{derivedData().totalStats.totalPlayers}</span> players
 				</span>
 			</div>
 			{#if searchQuery && derivedData().filteredStats.totalServers < derivedData().totalStats.totalServers}
-				<span class="filter-indicator text-xs text-base-content/60 italic">
+				<span class="filter-indicator text-base-content/60 text-xs italic">
 					{m['app.stats.filteredBy']({ query: searchQuery })}
 				</span>
 			{/if}
@@ -287,41 +436,51 @@
 		<!-- Content area with consistent height -->
 		<div class="flex w-full flex-col overflow-x-auto">
 			{#if loading}
-				<!-- Loading state with skeleton UI that matches table structure -->
+				<!-- Enhanced Loading state for PC -->
 				<div
-					class="skeleton-container w-full rounded-sm"
+					class="loading-container flex min-h-[400px] w-full flex-col items-center justify-center rounded-lg p-6"
 					role="status"
 					aria-label="Loading server data"
 				>
-					<div class="overflow-x-auto">
-						<table class="table w-full">
-							<thead>
-								<tr>
-									{#each columns as column (column.key)}
-										{#if visibleColumns[column.key]}
-											<th>{column.label}</th>
-										{/if}
-									{/each}
-								</tr>
-							</thead>
-							<tbody>
-								{#each Array(5).map((_, i) => i + 1) as _}
-									<tr>
-										{#each columns as column (column.key)}
-											{#if visibleColumns[column.key]}
-												<td>
-													<div class="skeleton h-4 w-full"></div>
-												</td>
-											{/if}
-										{/each}
-									</tr>
-								{/each}
-							</tbody>
-						</table>
+					<!-- Loading animation -->
+					<div class="loading-animation mb-6">
+						<div class="flex space-x-2">
+							<div
+								class="loading-dot bg-primary h-3 w-3 animate-bounce rounded-full"
+								style="animation-delay: 0ms"
+							></div>
+							<div
+								class="loading-dot bg-primary h-3 w-3 animate-bounce rounded-full"
+								style="animation-delay: 150ms"
+							></div>
+							<div
+								class="loading-dot bg-primary h-3 w-3 animate-bounce rounded-full"
+								style="animation-delay: 300ms"
+							></div>
+						</div>
 					</div>
-					<!-- Skeleton pagination -->
-					<div class="mt-4 flex items-center justify-center">
-						<div class="skeleton h-10 w-64"></div>
+
+					<!-- Loading text -->
+					<div class="mb-4 text-center">
+						<h3 class="text-base-content mb-2 text-lg font-semibold">
+							<TranslatedText key="app.loading.title" fallback="Loading Servers" />
+						</h3>
+						<p class="text-base-content/70 max-w-md text-sm">
+							<TranslatedText
+								key="app.loading.description"
+								fallback="Fetching latest server data from the API..."
+							/>
+						</p>
+					</div>
+
+					<!-- Progress indicator -->
+					<div class="mb-6 w-full max-w-sm">
+						<div class="progress progress-primary h-2 w-full">
+							<div class="progress-bar bg-primary h-2 w-[60%] animate-pulse"></div>
+						</div>
+						<p class="text-base-content/50 mt-2 text-center text-xs">
+							<TranslatedText key="app.loading.progress" fallback="Connecting to server..." />
+						</p>
 					</div>
 				</div>
 			{:else if error}
@@ -344,45 +503,38 @@
 			{:else}
 				<!-- Mobile-first data table component -->
 				<MobileDataTable
-					data={derivedData().paginatedServers}
+					data={derivedData().mobilePaginatedServers}
 					{columns}
 					{searchQuery}
 					{onRowAction}
 					{visibleColumns}
 					onSort={handleSort}
-					sortColumn={sortColumn}
-					sortDirection={sortDirection}
+					{sortColumn}
+					{sortDirection}
 				/>
 
-				<!-- Pagination component -->
-				<Pagination
-					{currentPage}
-					totalPages={derivedData().totalPages}
-					totalItems={derivedData().filteredServers.length}
-					pageChange={handlePageChange}
+				<!-- Mobile infinite scroll component (hidden on desktop) -->
+				<MobileInfiniteScroll
+					hasMore={derivedData().mobileHasMore}
+					isLoading={mobileLoadingMore}
+					onLoadMore={handleLoadMore}
 				/>
+
+				<!-- Desktop pagination component (hidden on mobile) -->
+				<div class="hidden md:block">
+					<Pagination
+						{currentPage}
+						totalPages={derivedData().totalPages}
+						totalItems={derivedData().filteredServers.length}
+						pageChange={handlePageChange}
+					/>
+				</div>
 			{/if}
 		</div>
 	</div>
 </section>
 
 <style>
-	/* Ensure the skeleton has consistent dimensions */
-	.skeleton {
-		background-color: hsl(var(--b3, var(--b2)) / var(--tw-bg-opacity, 1));
-		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-	}
-
-	@keyframes pulse {
-		0%,
-		100% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0.5;
-		}
-	}
-
 	/* Enhanced badge styles for mode and map columns */
 	:global(.badge.text-blue-600) {
 		background-color: white !important;
@@ -426,5 +578,64 @@
 		border: 1px solid hsl(var(--wa) / 0.2);
 		border-radius: 0.25rem;
 		padding: 0.25rem 0.5rem;
+	}
+
+	/* Enhanced loading animations */
+	.loading-container {
+		background: linear-gradient(135deg, hsl(var(--b1)) 0%, hsl(var(--b2)) 100%);
+		border: 1px solid hsl(var(--bc) / 0.1);
+		box-shadow:
+			0 4px 6px -1px rgba(0, 0, 0, 0.1),
+			0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	}
+
+	/* Custom bounce animation for loading dots */
+	@keyframes bounce-custom {
+		0%,
+		80%,
+		100% {
+			transform: scale(0.8);
+			opacity: 0.5;
+		}
+		40% {
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
+
+	.loading-dot {
+		animation: bounce-custom 1.4s infinite ease-in-out both;
+	}
+
+	/* Progress bar animation */
+	@keyframes progress-pulse {
+		0% {
+			width: 30%;
+			opacity: 0.6;
+		}
+		50% {
+			width: 70%;
+			opacity: 1;
+		}
+		100% {
+			width: 90%;
+			opacity: 0.8;
+		}
+	}
+
+	.progress-bar {
+		animation: progress-pulse 2s ease-in-out infinite;
+	}
+
+	/* Skeleton preview fade-in animation */
+	@keyframes fade-in-up {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 0.6;
+			transform: translateY(0);
+		}
 	}
 </style>

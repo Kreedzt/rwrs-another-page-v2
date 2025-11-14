@@ -2,20 +2,14 @@
 	interface Props {
 		placeholder?: string;
 		value?: string;
-		search: (query: string) => void;
+		oninput?: (value: string) => void;
 	}
 
-	let { placeholder, value, search }: Props = $props();
+	let { placeholder = 'Search...', value = $bindable(''), oninput }: Props = $props();
 
-	// Set default values
-	placeholder = placeholder ?? 'Search...';
-	value = value ?? '';
-
-	// Handle input changes
 	function handleInput(e: Event) {
 		const target = e.target as HTMLInputElement;
-		value = target.value;
-		search(value);
+		oninput?.(target.value);
 	}
 </script>
 
@@ -33,7 +27,13 @@
 				<path d="m21 21-4.3-4.3"></path>
 			</g>
 		</svg>
-		<input type="search" {placeholder} class="grow focus:outline-none" {value} oninput={handleInput} />
+		<input
+			type="search"
+			{placeholder}
+			class="grow focus:outline-none"
+			bind:value
+			oninput={handleInput}
+		/>
 	</label>
 </div>
 
@@ -52,7 +52,7 @@
 	}
 
 	/* 移除 search 输入框的特殊样式 */
-	input[type="search"]:focus {
+	input[type='search']:focus {
 		outline: none !important;
 		box-shadow: none !important;
 		border: none !important;
@@ -62,12 +62,10 @@
 	}
 
 	/* 移除 WebKit 浏览器的默认样式 */
-	input[type="search"]::-webkit-search-decoration,
-	input[type="search"]::-webkit-search-cancel-button,
-	input[type="search"]::-webkit-search-results-button,
-	input[type="search"]::-webkit-search-results-decoration {
+	input[type='search']::-webkit-search-decoration,
+	input[type='search']::-webkit-search-cancel-button,
+	input[type='search']::-webkit-search-results-button,
+	input[type='search']::-webkit-search-results-decoration {
 		-webkit-appearance: none !important;
 	}
 </style>
-
-

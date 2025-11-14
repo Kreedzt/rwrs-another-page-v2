@@ -2,299 +2,302 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock localStorage directly before importing the service
 const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-  length: 0,
-  key: vi.fn()
+	getItem: vi.fn(),
+	setItem: vi.fn(),
+	removeItem: vi.fn(),
+	clear: vi.fn(),
+	length: 0,
+	key: vi.fn()
 };
 
 Object.defineProperty(globalThis, 'localStorage', {
-  value: localStorageMock,
-  writable: true
+	value: localStorageMock,
+	writable: true
 });
 
 Object.defineProperty(globalThis, 'window', {
-  value: {
-    localStorage: localStorageMock
-  },
-  writable: true
+	value: {
+		localStorage: localStorageMock
+	},
+	writable: true
 });
 
 // Import after mocking window
 import { userSettingsService, type UserSettings } from './user-settings';
 
 describe('UserSettingsService', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    // Reset localStorage mock completely
-    localStorageMock.getItem.mockClear();
-    localStorageMock.setItem.mockClear();
-    localStorageMock.getItem.mockReturnValue(null);
-    localStorageMock.setItem.mockImplementation(() => {});
+	beforeEach(() => {
+		vi.clearAllMocks();
 
-    // Reset service state after clearing localStorage
-    userSettingsService.reset();
-  });
+		// Mock console.error to suppress expected error messages
+		vi.spyOn(console, 'error').mockImplementation(() => {});
+		// Reset localStorage mock completely
+		localStorageMock.getItem.mockClear();
+		localStorageMock.setItem.mockClear();
+		localStorageMock.getItem.mockReturnValue(null);
+		localStorageMock.setItem.mockImplementation(() => {});
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+		// Reset service state after clearing localStorage
+		userSettingsService.reset();
+	});
 
-  describe('Initialization', () => {
-    test('should load default settings when localStorage is empty', () => {
-      const settings = userSettingsService.getSettings();
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
 
-      expect(settings.autoRefresh.enabled).toBe(false);
-      expect(settings.autoRefresh.interval).toBe(5);
-      expect(settings.visibleColumns.name).toBe(true);
-      expect(settings.visibleColumns.ipAddress).toBe(false);
-    });
+	describe('Initialization', () => {
+		test('should load default settings when localStorage is empty', () => {
+			const settings = userSettingsService.getSettings();
 
-    test('should handle loading settings with valid JSON', () => {
-      const mockSettings: Partial<UserSettings> = {
-        autoRefresh: {
-          enabled: true,
-          interval: 10
-        },
-        visibleColumns: {
-          name: false,
-          ipAddress: true
-        }
-      };
+			expect(settings.autoRefresh.enabled).toBe(false);
+			expect(settings.autoRefresh.interval).toBe(5);
+			expect(settings.visibleColumns.name).toBe(true);
+			expect(settings.visibleColumns.ipAddress).toBe(false);
+		});
 
-      localStorageMock.getItem.mockReturnValue(JSON.stringify(mockSettings));
-      userSettingsService.reset();
+		test('should handle loading settings with valid JSON', () => {
+			const mockSettings: Partial<UserSettings> = {
+				autoRefresh: {
+					enabled: true,
+					interval: 10
+				},
+				visibleColumns: {
+					name: false,
+					ipAddress: true
+				}
+			};
 
-      const settings = userSettingsService.getSettings();
+			localStorageMock.getItem.mockReturnValue(JSON.stringify(mockSettings));
+			userSettingsService.reset();
 
-      // Should use defaults since reset clears everything
-      expect(settings.autoRefresh.enabled).toBe(false);
-      expect(settings.autoRefresh.interval).toBe(5);
-    });
+			const settings = userSettingsService.getSettings();
 
-    test('should handle malformed localStorage data gracefully', () => {
-      localStorageMock.getItem.mockReturnValue('invalid json');
+			// Should use defaults since reset clears everything
+			expect(settings.autoRefresh.enabled).toBe(false);
+			expect(settings.autoRefresh.interval).toBe(5);
+		});
 
-      const settings = userSettingsService.getSettings();
+		test('should handle malformed localStorage data gracefully', () => {
+			localStorageMock.getItem.mockReturnValue('invalid json');
 
-      expect(settings.autoRefresh.enabled).toBe(false);
-      expect(settings.autoRefresh.interval).toBe(5);
-    });
-  });
+			const settings = userSettingsService.getSettings();
 
-  describe('Settings Management', () => {
-    test('should get specific setting value', () => {
-      expect(userSettingsService.get('autoRefresh')).toEqual({
-        enabled: false,
-        interval: 5
-      });
-    });
+			expect(settings.autoRefresh.enabled).toBe(false);
+			expect(settings.autoRefresh.interval).toBe(5);
+		});
+	});
 
-    test('should set specific setting value', () => {
-      // Mock localStorage to track calls
-      const originalSetItem = localStorageMock.setItem;
-      localStorageMock.setItem.mockClear();
+	describe('Settings Management', () => {
+		test('should get specific setting value', () => {
+			expect(userSettingsService.get('autoRefresh')).toEqual({
+				enabled: false,
+				interval: 5
+			});
+		});
 
-      userSettingsService.set('autoRefresh', {
-        enabled: true,
-        interval: 15
-      });
+		test('should set specific setting value', () => {
+			// Mock localStorage to track calls
+			const originalSetItem = localStorageMock.setItem;
+			localStorageMock.setItem.mockClear();
 
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'rwrs-user-settings',
-        expect.any(String)
-      );
+			userSettingsService.set('autoRefresh', {
+				enabled: true,
+				interval: 15
+			});
 
-      // Check the saved JSON content
-      const savedCall = localStorageMock.setItem.mock.calls[0];
-      const savedSettings = JSON.parse(savedCall[1]);
-      expect(savedSettings.autoRefresh.enabled).toBe(true);
-      expect(savedSettings.autoRefresh.interval).toBe(15);
-    });
+			expect(localStorageMock.setItem).toHaveBeenCalledWith(
+				'rwrs-user-settings',
+				expect.any(String)
+			);
 
-    test('should update nested setting values', () => {
-      userSettingsService.updateNested('autoRefresh', 'enabled', true);
+			// Check the saved JSON content
+			const savedCall = localStorageMock.setItem.mock.calls[0];
+			const savedSettings = JSON.parse(savedCall[1]);
+			expect(savedSettings.autoRefresh.enabled).toBe(true);
+			expect(savedSettings.autoRefresh.interval).toBe(15);
+		});
 
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'rwrs-user-settings',
-        expect.stringContaining('"enabled":true')
-      );
+		test('should update nested setting values', () => {
+			userSettingsService.updateNested('autoRefresh', 'enabled', true);
 
-      const settings = userSettingsService.getSettings();
-      expect(settings.autoRefresh.enabled).toBe(true);
-      expect(settings.autoRefresh.interval).toBe(5); // Should keep original value
-    });
+			expect(localStorageMock.setItem).toHaveBeenCalledWith(
+				'rwrs-user-settings',
+				expect.stringContaining('"enabled":true')
+			);
 
-    test('should update visible columns', () => {
-      userSettingsService.updateNested('visibleColumns', 'name', false);
+			const settings = userSettingsService.getSettings();
+			expect(settings.autoRefresh.enabled).toBe(true);
+			expect(settings.autoRefresh.interval).toBe(5); // Should keep original value
+		});
 
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'rwrs-user-settings',
-        expect.stringContaining('"name":false')
-      );
+		test('should update visible columns', () => {
+			userSettingsService.updateNested('visibleColumns', 'name', false);
 
-      const settings = userSettingsService.getSettings();
-      expect(settings.visibleColumns.name).toBe(false);
-    });
-  });
+			expect(localStorageMock.setItem).toHaveBeenCalledWith(
+				'rwrs-user-settings',
+				expect.stringContaining('"name":false')
+			);
 
-  describe('Settings Persistence', () => {
-    test('should save settings to localStorage', () => {
-      const newSettings = {
-        autoRefresh: {
-          enabled: true,
-          interval: 20
-        },
-        visibleColumns: {
-          name: false,
-          ipAddress: true
-        }
-      };
+			const settings = userSettingsService.getSettings();
+			expect(settings.visibleColumns.name).toBe(false);
+		});
+	});
 
-      // Clear mock calls before this test
-      localStorageMock.setItem.mockClear();
+	describe('Settings Persistence', () => {
+		test('should save settings to localStorage', () => {
+			const newSettings = {
+				autoRefresh: {
+					enabled: true,
+					interval: 20
+				},
+				visibleColumns: {
+					name: false,
+					ipAddress: true
+				}
+			};
 
-      userSettingsService.set('autoRefresh', newSettings.autoRefresh);
+			// Clear mock calls before this test
+			localStorageMock.setItem.mockClear();
 
-      // Check that setItem was called
-      expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'rwrs-user-settings',
-        expect.any(String)
-      );
+			userSettingsService.set('autoRefresh', newSettings.autoRefresh);
 
-      // Verify the important parts are saved correctly
-      const savedCall = localStorageMock.setItem.mock.calls[0];
-      const savedSettings = JSON.parse(savedCall[1]);
-      expect(savedSettings.autoRefresh.enabled).toBe(true);
-      expect(savedSettings.autoRefresh.interval).toBe(20);
-    });
+			// Check that setItem was called
+			expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
+			expect(localStorageMock.setItem).toHaveBeenCalledWith(
+				'rwrs-user-settings',
+				expect.any(String)
+			);
 
-    test('should handle localStorage errors gracefully', () => {
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      localStorageMock.setItem.mockImplementation(() => {
-        throw new Error('Storage quota exceeded');
-      });
+			// Verify the important parts are saved correctly
+			const savedCall = localStorageMock.setItem.mock.calls[0];
+			const savedSettings = JSON.parse(savedCall[1]);
+			expect(savedSettings.autoRefresh.enabled).toBe(true);
+			expect(savedSettings.autoRefresh.interval).toBe(20);
+		});
 
-      userSettingsService.set('autoRefresh', { enabled: true, interval: 5 });
+		test('should handle localStorage errors gracefully', () => {
+			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+			localStorageMock.setItem.mockImplementation(() => {
+				throw new Error('Storage quota exceeded');
+			});
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to save user settings to localStorage:',
-        expect.any(Error)
-      );
+			userSettingsService.set('autoRefresh', { enabled: true, interval: 5 });
 
-      consoleSpy.mockRestore();
-    });
-  });
+			expect(consoleSpy).toHaveBeenCalledWith(
+				'Failed to save user settings to localStorage:',
+				expect.any(Error)
+			);
 
-  describe('Settings Reset', () => {
-    test('should reset all settings to defaults', () => {
-      // First modify some settings
-      userSettingsService.set('autoRefresh', { enabled: true, interval: 15 });
-      userSettingsService.updateNested('visibleColumns', 'name', false);
+			consoleSpy.mockRestore();
+		});
+	});
 
-      // Reset all settings
-      userSettingsService.reset();
+	describe('Settings Reset', () => {
+		test('should reset all settings to defaults', () => {
+			// First modify some settings
+			userSettingsService.set('autoRefresh', { enabled: true, interval: 15 });
+			userSettingsService.updateNested('visibleColumns', 'name', false);
 
-      const settings = userSettingsService.getSettings();
-      expect(settings.autoRefresh.enabled).toBe(false);
-      expect(settings.autoRefresh.interval).toBe(5);
-      expect(settings.visibleColumns.name).toBe(true);
-      expect(settings.visibleColumns.ipAddress).toBe(false);
-    });
+			// Reset all settings
+			userSettingsService.reset();
 
-    test('should reset specific setting to default', () => {
-      // Modify autoRefresh settings
-      userSettingsService.set('autoRefresh', { enabled: true, interval: 15 });
+			const settings = userSettingsService.getSettings();
+			expect(settings.autoRefresh.enabled).toBe(false);
+			expect(settings.autoRefresh.interval).toBe(5);
+			expect(settings.visibleColumns.name).toBe(true);
+			expect(settings.visibleColumns.ipAddress).toBe(false);
+		});
 
-      // Reset only autoRefresh
-      userSettingsService.resetKey('autoRefresh');
+		test('should reset specific setting to default', () => {
+			// Modify autoRefresh settings
+			userSettingsService.set('autoRefresh', { enabled: true, interval: 15 });
 
-      const settings = userSettingsService.getSettings();
-      expect(settings.autoRefresh.enabled).toBe(false);
-      expect(settings.autoRefresh.interval).toBe(5);
-    });
-  });
+			// Reset only autoRefresh
+			userSettingsService.resetKey('autoRefresh');
 
-  describe('Settings Import/Export', () => {
-    test('should export settings as JSON', () => {
-      const exportedJson = userSettingsService.export();
+			const settings = userSettingsService.getSettings();
+			expect(settings.autoRefresh.enabled).toBe(false);
+			expect(settings.autoRefresh.interval).toBe(5);
+		});
+	});
 
-      expect(typeof exportedJson).toBe('string');
-      const parsed = JSON.parse(exportedJson);
-      expect(parsed.autoRefresh).toBeDefined();
-      expect(parsed.visibleColumns).toBeDefined();
-    });
+	describe('Settings Import/Export', () => {
+		test('should export settings as JSON', () => {
+			const exportedJson = userSettingsService.export();
 
-    test('should import valid JSON settings', () => {
-      const importData = {
-        autoRefresh: {
-          enabled: true,
-          interval: 30
-        },
-        visibleColumns: {
-          name: false,
-          mapId: false
-        }
-      };
+			expect(typeof exportedJson).toBe('string');
+			const parsed = JSON.parse(exportedJson);
+			expect(parsed.autoRefresh).toBeDefined();
+			expect(parsed.visibleColumns).toBeDefined();
+		});
 
-      const success = userSettingsService.import(JSON.stringify(importData));
+		test('should import valid JSON settings', () => {
+			const importData = {
+				autoRefresh: {
+					enabled: true,
+					interval: 30
+				},
+				visibleColumns: {
+					name: false,
+					mapId: false
+				}
+			};
 
-      expect(success).toBe(true);
+			const success = userSettingsService.import(JSON.stringify(importData));
 
-      const settings = userSettingsService.getSettings();
-      expect(settings.autoRefresh.enabled).toBe(true);
-      expect(settings.autoRefresh.interval).toBe(30);
-      expect(settings.visibleColumns.name).toBe(false);
-      expect(settings.visibleColumns.mapId).toBe(false);
-      expect(settings.visibleColumns.ipAddress).toBe(false); // Should keep default
-    });
+			expect(success).toBe(true);
 
-    test('should reject invalid JSON settings', () => {
-      const success = userSettingsService.import('invalid json');
+			const settings = userSettingsService.getSettings();
+			expect(settings.autoRefresh.enabled).toBe(true);
+			expect(settings.autoRefresh.interval).toBe(30);
+			expect(settings.visibleColumns.name).toBe(false);
+			expect(settings.visibleColumns.mapId).toBe(false);
+			expect(settings.visibleColumns.ipAddress).toBe(false); // Should keep default
+		});
 
-      expect(success).toBe(false);
-    });
+		test('should reject invalid JSON settings', () => {
+			const success = userSettingsService.import('invalid json');
 
-    test('should import partial settings', () => {
-      const partialData = {
-        autoRefresh: {
-          enabled: true
-          // Missing interval
-        }
-      };
+			expect(success).toBe(false);
+		});
 
-      const success = userSettingsService.import(JSON.stringify(partialData));
+		test('should import partial settings', () => {
+			const partialData = {
+				autoRefresh: {
+					enabled: true
+					// Missing interval
+				}
+			};
 
-      expect(success).toBe(true);
+			const success = userSettingsService.import(JSON.stringify(partialData));
 
-      const settings = userSettingsService.getSettings();
-      expect(settings.autoRefresh.enabled).toBe(true);
-      expect(settings.autoRefresh.interval).toBe(5); // Should use default
-    });
-  });
+			expect(success).toBe(true);
 
-  describe('Error Handling', () => {
-    test('should handle extra unknown properties in imported settings', () => {
-      const extraSettings = {
-        autoRefresh: {
-          enabled: true,
-          interval: 10
-        },
-        visibleColumns: {
-          name: true
-        },
-        unknownProperty: 'some value'
-      };
+			const settings = userSettingsService.getSettings();
+			expect(settings.autoRefresh.enabled).toBe(true);
+			expect(settings.autoRefresh.interval).toBe(5); // Should use default
+		});
+	});
 
-      const success = userSettingsService.import(JSON.stringify(extraSettings));
+	describe('Error Handling', () => {
+		test('should handle extra unknown properties in imported settings', () => {
+			const extraSettings = {
+				autoRefresh: {
+					enabled: true,
+					interval: 10
+				},
+				visibleColumns: {
+					name: true
+				},
+				unknownProperty: 'some value'
+			};
 
-      expect(success).toBe(true);
-      const settings = userSettingsService.getSettings();
-      expect(settings.autoRefresh.enabled).toBe(true);
-      expect((settings as any).unknownProperty).toBe('some value');
-    });
-  });
+			const success = userSettingsService.import(JSON.stringify(extraSettings));
+
+			expect(success).toBe(true);
+			const settings = userSettingsService.getSettings();
+			expect(settings.autoRefresh.enabled).toBe(true);
+			expect((settings as any).unknownProperty).toBe('some value');
+		});
+	});
 });

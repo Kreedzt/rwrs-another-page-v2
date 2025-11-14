@@ -50,36 +50,36 @@ const mockServerListResponse = `<?xml version="1.0" encoding="UTF-8"?>
 
 // Create a simple HTTP server
 function startMockServer(port = 5800) {
-  const server = http.createServer((req, res) => {
-    const parsedUrl = parse(req.url || '', true);
-    const pathname = parsedUrl.pathname;
-    
-    console.log(`[Mock Server] Received request: ${req.method} ${pathname}`);
-    
-    // Handle server_list endpoint
-    if (pathname === '/api/server_list') {
-      res.setHeader('Content-Type', 'application/xml');
-      res.writeHead(200);
-      res.end(mockServerListResponse);
-      return;
-    }
-    
-    // Default response for unhandled routes
-    res.writeHead(404);
-    res.end('Not Found');
-  });
-  
-  return new Promise((resolve) => {
-    server.listen(port, () => {
-      console.log(`[Mock Server] Server running at http://localhost:${port}`);
-      resolve(server);
-    });
-  });
+	const server = http.createServer((req, res) => {
+		const parsedUrl = parse(req.url || '', true);
+		const pathname = parsedUrl.pathname;
+
+		console.log(`[Mock Server] Received request: ${req.method} ${pathname}`);
+
+		// Handle server_list endpoint
+		if (pathname === '/api/server_list') {
+			res.setHeader('Content-Type', 'application/xml');
+			res.writeHead(200);
+			res.end(mockServerListResponse);
+			return;
+		}
+
+		// Default response for unhandled routes
+		res.writeHead(404);
+		res.end('Not Found');
+	});
+
+	return new Promise((resolve) => {
+		server.listen(port, () => {
+			console.log(`[Mock Server] Server running at http://localhost:${port}`);
+			resolve(server);
+		});
+	});
 }
 
 // Start the server if this file is run directly
 if (require.main === module) {
-  startMockServer().catch(console.error);
+	startMockServer().catch(console.error);
 }
 
 module.exports = { startMockServer };

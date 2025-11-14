@@ -25,7 +25,7 @@ export const parseServerListFromString = (resString: string): IDisplayServerItem
 	const servers = res.result?.server_list?.server || res.result?.server || [];
 
 	// Handle case where parser returns object instead of array for single server
-	const serverArray = Array.isArray(servers) ? servers : (servers ? [servers] : []);
+	const serverArray = Array.isArray(servers) ? servers : servers ? [servers] : [];
 
 	if (serverArray.length === 0) {
 		return [];

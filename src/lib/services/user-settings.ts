@@ -103,7 +103,7 @@ class UserSettingsService {
 		}
 
 		// Merge other properties
-		Object.keys(stored).forEach(key => {
+		Object.keys(stored).forEach((key) => {
 			if (key !== 'autoRefresh' && key !== 'visibleColumns' && key in stored) {
 				(merged as any)[key] = stored[key];
 			}
@@ -129,7 +129,11 @@ class UserSettingsService {
 	}
 
 	// Update nested setting
-	updateNested<T extends Record<string, unknown>>(parentKey: keyof UserSettings, nestedKey: keyof T, value: T[keyof T]): void {
+	updateNested<T extends Record<string, unknown>>(
+		parentKey: keyof UserSettings,
+		nestedKey: keyof T,
+		value: T[keyof T]
+	): void {
 		const parent = this.settings[parentKey] as T;
 		if (parent && typeof parent === 'object') {
 			(parent as any)[nestedKey] = value;
