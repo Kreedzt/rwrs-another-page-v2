@@ -510,25 +510,6 @@
 							<TranslatedText key="app.loading.progress" fallback="Connecting to server..." />
 						</p>
 					</div>
-
-					<!-- Mini skeleton preview -->
-					<div class="mt-6 hidden w-full max-w-2xl lg:block">
-						<div class="bg-base-200 rounded-lg p-4 opacity-60">
-							<div class="text-base-content/50 mb-3 text-xs">
-								<TranslatedText key="app.loading.preview" fallback="Preview" />
-							</div>
-							<div class="space-y-2">
-								{#each Array(3) as _}
-									<div class="flex space-x-3">
-										<div class="skeleton h-4 w-32"></div>
-										<div class="skeleton h-4 w-24"></div>
-										<div class="skeleton h-4 w-16"></div>
-										<div class="skeleton ml-auto h-4 w-20"></div>
-									</div>
-								{/each}
-							</div>
-						</div>
-					</div>
 				</div>
 			{:else if error}
 				<div class="alert alert-error">
@@ -702,11 +683,7 @@
 		}
 	}
 
-	/* Apply fade-in animation to skeleton preview */
-	.loading-container .bg-base-200 {
-		animation: fade-in-up 0.6s ease-out 0.3s both;
-	}
-
+	
 	/* Enhanced skeleton styling */
 	.skeleton {
 		background: linear-gradient(
