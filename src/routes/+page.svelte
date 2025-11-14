@@ -8,7 +8,6 @@
 	// Import components
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import DataTable from '$lib/components/DataTable.svelte';
 	import MobileDataTable from '$lib/components/MobileDataTable.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
@@ -21,7 +20,6 @@
 		updateUrlState,
 		createUrlStateSubscriber,
 		type UrlState,
-		URL_PARAMS
 	} from '$lib/utils/url-state';
 
 	// State variables
@@ -35,7 +33,6 @@
 
 	// Auto refresh state (from user settings)
 	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
-	let refreshInterval = $state(userSettings.autoRefresh.interval);
 
 	// Sort state
 	let sortColumn = $state<string | null>(null);
@@ -47,7 +44,6 @@
 
 	// Mobile infinite scroll state
 	let mobileCurrentPage = $state(1);
-	let mobileAllServers = $state<IDisplayServerItem[]>([]);
 	let mobileLoadingMore = $state(false);
 
 	// Visible columns (from user settings)
@@ -56,9 +52,6 @@
 	// Quick filter state
 	let activeQuickFilters = $state<string[]>([]);
 	let isMultiSelectFilter = $state(false);
-
-	// For debouncing URL updates
-	let searchTimeoutId: number | undefined;
 
 	// Calculate statistics
 	const calculateStats = (serverList: IDisplayServerItem[]) => {
@@ -186,12 +179,6 @@
 		userSettingsService.updateNested('autoRefresh', 'enabled', enabled);
 	}
 
-	function handleIntervalChange(interval: number) {
-		refreshInterval = interval;
-		// Save to user settings
-		userSettingsService.updateNested('autoRefresh', 'interval', interval);
-	}
-
 	// Quick filter functions
 	function handleQuickFilter(filterId: string) {
 		if (isMultiSelectFilter) {
@@ -229,7 +216,6 @@
 	function handleSort(column: string) {
 		// Define numeric columns
 		const numericColumns = ['bots', 'playerCount', 'port', 'currentPlayers', 'maxPlayers'];
-		const isNumeric = numericColumns.includes(column);
 
 		if (sortColumn === column) {
 			// Same column - cycle through sort directions
@@ -259,20 +245,6 @@
 			},
 			true
 		);
-	}
-
-	function getSortIcon(column: string) {
-		if (sortColumn !== column) {
-			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
-		}
-
-		if (sortDirection === 'desc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
-		} else if (sortDirection === 'asc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
-		}
-
-		return '';
 	}
 
 	// Sort the filtered servers
@@ -563,22 +535,6 @@
 </section>
 
 <style>
-	/* Ensure the skeleton has consistent dimensions */
-	.skeleton {
-		background-color: hsl(var(--b3, var(--b2)) / var(--tw-bg-opacity, 1));
-		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-	}
-
-	@keyframes pulse {
-		0%,
-		100% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0.5;
-		}
-	}
-
 	/* Enhanced badge styles for mode and map columns */
 	:global(.badge.text-blue-600) {
 		background-color: white !important;
@@ -680,28 +636,6 @@
 		to {
 			opacity: 0.6;
 			transform: translateY(0);
-		}
-	}
-
-	
-	/* Enhanced skeleton styling */
-	.skeleton {
-		background: linear-gradient(
-			90deg,
-			hsl(var(--bc) / 0.1) 25%,
-			hsl(var(--bc) / 0.2) 50%,
-			hsl(var(--bc) / 0.1) 75%
-		);
-		background-size: 200% 100%;
-		animation: skeleton-loading 1.5s infinite;
-	}
-
-	@keyframes skeleton-loading {
-		0% {
-			background-position: 200% 0;
-		}
-		100% {
-			background-position: -200% 0;
 		}
 	}
 </style>

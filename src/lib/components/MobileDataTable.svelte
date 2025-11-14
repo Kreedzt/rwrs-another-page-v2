@@ -1,6 +1,5 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
-	import { highlightMatch } from '@/lib/utils/highlight';
 	import type { IDisplayServerItem } from '$lib/models/data-table.model';
 	import type { IColumn } from '$lib/models/data-table.model';
 
@@ -262,6 +261,7 @@
 								<th
 									class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.headerClass || ''}"
 									class:action-header={column.key === 'action'}
+                                    class:bg-slate-50={column.key === 'action'}
 								>
 									{#if column.key === 'action'}
 										<div class="text-center">
@@ -291,7 +291,9 @@
 							{#each columns as column (column.key)}
 								{#if visibleColumns[column.key]}
 									<td class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass || ''} {column.key === 'playerList' ? 'align-top' : ''}"
-									class:action-cell={column.key === 'action'}>
+									class:action-cell={column.key === 'action'}
+                                        class:bg-slate-50={column.key === 'action'}
+                                    >
 										{#if column.key === 'action'}
 											<div class="text-center min-h-[3rem] flex items-center justify-center">
 												<button
@@ -379,117 +381,76 @@
 
 	/* Enhanced badge styles for mode and map columns */
 	:global(.badge.text-blue-600) {
-		background-color: white !important;
-		border: 1px solid rgb(147 197 253) !important;
-		color: rgb(37 99 235) !important;
+		background-color: white;
+		border: 1px solid rgb(147 197 253);
+		color: rgb(37 99 235);
 	}
 
 	:global(.badge.text-green-600) {
-		background-color: white !important;
-		border: 1px solid rgb(134 239 172) !important;
-		color: rgb(22 163 74) !important;
+		background-color: white;
+		border: 1px solid rgb(134 239 172);
+		color: rgb(22 163 74);
 	}
 
 	/* Highlight text within badges */
 	:global(.badge mark) {
-		background-color: hsl(var(--wa) / 0.3) !important;
-		color: inherit !important;
-		padding: 0 2px !important;
-		border-radius: 2px !important;
+		background-color: hsl(var(--wa) / 0.3);
+		color: inherit;
+		padding: 0 2px;
+		border-radius: 2px;
 	}
 
 	/* Action column specific styling for single table - use highest specificity */
 	:global(div table tbody tr td.action-cell) {
-		position: sticky !important;
-		right: 0 !important;
-		background: hsl(var(--b1)) !important;
-		background-color: hsl(var(--b1)) !important;
-		z-index: 999 !important;
-		min-width: 8rem !important;
-		width: 8rem !important;
-		border-left: 2px solid hsl(var(--bc) / 0.3) !important;
+		position: sticky;
+		right: 0;
+		z-index: 999;
+		min-width: 8rem;
+		width: 8rem;
+		border-left: 2px solid hsl(var(--bc) / 0.15);
 		/* Add stronger shadow for better separation */
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25) !important;
-		/* Add gradient overlay for better text visibility */
-		background-image: linear-gradient(
-			to right,
-			hsla(var(--b1), 0.7) 0%,
-			hsla(var(--b1), 0.85) 20%,
-			hsla(var(--b1), 0.95) 50%,
-			hsl(var(--b1)) 100%
-		) !important;
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25);
 		/* Ensure proper stacking context */
-		transform: translateZ(0) !important;
-		/* Double background ensure coverage */
-		background-blend-mode: normal !important;
-		mix-blend-mode: normal !important;
+		transform: translateZ(0);
 	}
 
 	:global(div table thead tr th.action-header) {
-		position: sticky !important;
-		right: 0 !important;
-		background: hsl(var(--b2)) !important;
-		background-color: hsl(var(--b2)) !important;
-		z-index: 1000 !important;
-		min-width: 8rem !important;
-		width: 8rem !important;
-		border-left: 2px solid hsl(var(--bc) / 0.4) !important;
+		position: sticky;
+		right: 0;
+		z-index: 1000;
+		min-width: 8rem;
+		width: 8rem;
+		border-left: 2px solid hsl(var(--bc) / 0.25);
 		/* Add stronger shadow for better separation */
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3) !important;
-		/* Add gradient overlay for better text visibility */
-		background-image: linear-gradient(
-			to right,
-			hsla(var(--b2), 0.8) 0%,
-			hsla(var(--b2), 0.9) 20%,
-			hsla(var(--b2), 0.98) 50%,
-			hsl(var(--b2)) 100%
-		) !important;
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3);
 		/* Ensure proper stacking context */
-		transform: translateZ(0) !important;
+		transform: translateZ(0);
 		/* Double background ensure coverage */
-		background-blend-mode: normal !important;
-		mix-blend-mode: normal !important;
+		background-blend-mode: normal;
+		mix-blend-mode: normal;
 	}
 
 	/* Fallback with maximum specificity */
 	:global(body > div > table tbody tr td.action-cell),
 	:global(body table tbody tr td.action-cell) {
-		position: sticky !important;
-		right: 0 !important;
-		background: hsl(var(--b1)) !important;
-		background-color: hsl(var(--b1)) !important;
-		z-index: 999 !important;
-		min-width: 8rem !important;
-		width: 8rem !important;
-		border-left: 2px solid hsl(var(--bc) / 0.3) !important;
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25) !important;
-		background-image: linear-gradient(
-			to right,
-			hsla(var(--b1), 0.7) 0%,
-			hsla(var(--b1), 0.85) 20%,
-			hsla(var(--b1), 0.95) 50%,
-			hsl(var(--b1)) 100%
-		) !important;
+		position: sticky;
+		right: 0;
+		z-index: 999;
+		min-width: 8rem;
+		width: 8rem;
+		border-left: 2px solid hsl(var(--bc) / 0.15);
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25);
 	}
 
 	:global(body > div > table thead tr th.action-header),
 	:global(body table thead tr th.action-header) {
-		position: sticky !important;
-		right: 0 !important;
-		background: hsl(var(--b2)) !important;
-		background-color: hsl(var(--b2)) !important;
-		z-index: 1000 !important;
-		min-width: 8rem !important;
-		width: 8rem !important;
-		border-left: 2px solid hsl(var(--bc) / 0.4) !important;
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3) !important;
-		background-image: linear-gradient(
-			to right,
-			hsla(var(--b2), 0.8) 0%,
-			hsla(var(--b2), 0.9) 20%,
-			hsla(var(--b2), 0.98) 50%,
-			hsl(var(--b2)) 100%
-		) !important;
+		position: sticky;
+		right: 0;
+		z-index: 1000;
+		min-width: 8rem;
+		width: 8rem;
+		border-left: 2px solid hsl(var(--bc) / 0.25);
+		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3);
 	}
 
 	/* Hide action column on mobile */
