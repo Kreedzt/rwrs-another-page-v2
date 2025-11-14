@@ -54,6 +54,21 @@
 		onRowAction({ item, action });
 	}
 
+	// Helper function to get alignment class based on column configuration
+	function getAlignmentClass(column: IColumn): string {
+		switch (column.alignment) {
+			case 'top':
+				return 'align-top';
+			case 'center':
+				return 'align-middle text-center';
+			case 'right':
+				return 'align-middle text-right';
+			case 'left':
+			default:
+				return 'align-middle';
+		}
+	}
+
 	// Get primary info columns for mobile view
 	// On mobile, show ALL primary columns regardless of user settings
 	function getPrimaryColumns() {
@@ -244,9 +259,14 @@
 					<tr>
 						{#each columns as column (column.key)}
 							{#if visibleColumns[column.key]}
-								<th class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.key === 'action' ? 'w-32 text-center' : column.headerClass || ''}">
+								<th
+									class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.headerClass || ''}"
+									class:action-header={column.key === 'action'}
+								>
 									{#if column.key === 'action'}
-										{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+										<div class="text-center">
+											{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+										</div>
 									{:else}
 										<button
 											class="flex items-center gap-2 w-full text-left hover:bg-base-300 px-2 py-1 rounded transition-colors duration-200"
@@ -270,14 +290,17 @@
 						<tr class="hover hover:bg-base-300 min-h-12">
 							{#each columns as column (column.key)}
 								{#if visibleColumns[column.key]}
-									<td class="px-4 py-2 align-middle {column.key === 'action' ? 'text-center w-32' : column.cellClass || ''} {column.key === 'playerList' ? 'align-top' : ''}">
+									<td class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass || ''} {column.key === 'playerList' ? 'align-top' : ''}"
+									class:action-cell={column.key === 'action'}>
 										{#if column.key === 'action'}
-											<button
-												class="btn btn-sm btn-primary"
-												onclick={() => handleAction(item, 'join')}
-											>
-												Join
-											</button>
+											<div class="text-center min-h-[3rem] flex items-center justify-center">
+												<button
+													class="btn btn-sm btn-primary mobile-btn"
+													onclick={() => handleAction(item, 'join')}
+												>
+													Join
+												</button>
+											</div>
 										{:else if column.key === 'url' && item.url}
 											<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6" title={item.url}>
 												{item.url.length > 50 ? item.url.substring(0, 47) + '...' : item.url}

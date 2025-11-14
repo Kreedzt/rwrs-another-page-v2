@@ -146,7 +146,7 @@
 									class:action-cell={column.key === 'action'}
 								>
 									{#if column.key === 'action'}
-										<div class="flex min-h-[3rem] items-center justify-center text-center">
+										<div class="text-center min-h-[3rem] flex items-center justify-center">
 											<button
 												class="btn btn-sm btn-primary mobile-btn"
 												onclick={() => handleAction(item, 'join')}

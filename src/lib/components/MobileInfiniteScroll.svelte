@@ -52,8 +52,8 @@
 
 	// Re-observe when hasMore changes
 	$effect(() => {
-		if (observer) {
-			if (hasMore && loadMoreTrigger) {
+		if (observer && loadMoreTrigger) {
+			if (hasMore) {
 				observer.observe(loadMoreTrigger);
 			} else {
 				observer.unobserve(loadMoreTrigger);
