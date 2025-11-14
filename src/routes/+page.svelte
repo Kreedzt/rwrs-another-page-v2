@@ -19,7 +19,7 @@
 		getUrlState,
 		updateUrlState,
 		createUrlStateSubscriber,
-		type UrlState,
+		type UrlState
 	} from '$lib/utils/url-state';
 
 	// State variables

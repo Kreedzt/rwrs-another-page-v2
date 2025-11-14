@@ -153,9 +153,9 @@
 							</h3>
 
 							<!-- Player count with forced wrapping -->
-							<div class="flex-shrink-0 min-w-0">
-								<div class="flex flex-wrap gap-1 justify-end max-w-24 sm:max-w-32">
-									{@html getDisplayValue(item, columns.find(col => col.key === 'playerCount')!)}
+							<div class="min-w-0 flex-shrink-0">
+								<div class="flex max-w-24 flex-wrap justify-end gap-1 sm:max-w-32">
+									{@html getDisplayValue(item, columns.find((col) => col.key === 'playerCount')!)}
 								</div>
 							</div>
 
@@ -193,11 +193,10 @@
 								{@html getDisplayValue(item, columns.find((col) => col.key === 'name')!)}
 							</h3>
 
-
 							<!-- Player count with forced wrapping -->
-							<div class="flex-shrink-0 min-w-0">
-								<div class="flex flex-wrap gap-1 justify-end max-w-24 sm:max-w-32">
-									{@html getDisplayValue(item, columns.find(col => col.key === 'playerCount')!)}
+							<div class="min-w-0 flex-shrink-0">
+								<div class="flex max-w-24 flex-wrap justify-end gap-1 sm:max-w-32">
+									{@html getDisplayValue(item, columns.find((col) => col.key === 'playerCount')!)}
 								</div>
 							</div>
 
@@ -253,29 +252,34 @@
 	<!-- Desktop table view (hidden on mobile) -->
 	<div class="hidden md:block">
 		<div class="w-full">
-			<table class="table table-pin-rows mb-0 border-0">
+			<table class="table-pin-rows mb-0 table border-0">
 				<thead>
 					<tr>
 						{#each columns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<th
-									class="bg-base-200 h-12 px-4 py-2 align-middle sticky top-0 z-10 {column.headerClass || ''}"
+									class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle {column.headerClass ||
+										''}"
 									class:action-header={column.key === 'action'}
-                                    class:bg-slate-50={column.key === 'action'}
+									class:bg-slate-50={column.key === 'action'}
 								>
 									{#if column.key === 'action'}
 										<div class="text-center">
-											{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+											{#if column.i18n}<TranslatedText
+													key={column.i18n}
+												/>{:else}{column.label}{/if}
 										</div>
 									{:else}
 										<button
-											class="flex items-center gap-2 w-full text-left hover:bg-base-300 px-2 py-1 rounded transition-colors duration-200"
+											class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
 											onclick={() => handleColumnSort(column.key)}
 											type="button"
 											title="Click to sort"
 										>
 											<span class="flex-1">
-												{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+												{#if column.i18n}<TranslatedText
+														key={column.i18n}
+													/>{:else}{column.label}{/if}
 											</span>
 											{@html getSortIcon(column.key)}
 										</button>
@@ -290,12 +294,14 @@
 						<tr class="hover hover:bg-base-300 min-h-12">
 							{#each columns as column (column.key)}
 								{#if visibleColumns[column.key]}
-									<td class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass || ''} {column.key === 'playerList' ? 'align-top' : ''}"
-									class:action-cell={column.key === 'action'}
-                                        class:bg-slate-50={column.key === 'action'}
-                                    >
+									<td
+										class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass ||
+											''} {column.key === 'playerList' ? 'align-top' : ''}"
+										class:action-cell={column.key === 'action'}
+										class:bg-slate-50={column.key === 'action'}
+									>
 										{#if column.key === 'action'}
-											<div class="text-center min-h-[3rem] flex items-center justify-center">
+											<div class="flex min-h-[3rem] items-center justify-center text-center">
 												<button
 													class="btn btn-sm btn-primary mobile-btn"
 													onclick={() => handleAction(item, 'join')}
@@ -304,7 +310,12 @@
 												</button>
 											</div>
 										{:else if column.key === 'url' && item.url}
-											<a href={item.url} target="_blank" class="link link-primary inline-flex items-center min-h-6" title={item.url}>
+											<a
+												href={item.url}
+												target="_blank"
+												class="link link-primary inline-flex min-h-6 items-center"
+												title={item.url}
+											>
 												{item.url.length > 50 ? item.url.substring(0, 47) + '...' : item.url}
 											</a>
 										{:else}
@@ -400,39 +411,8 @@
 		border-radius: 2px;
 	}
 
-	/* Action column specific styling for single table - use highest specificity */
-	:global(div table tbody tr td.action-cell) {
-		position: sticky;
-		right: 0;
-		z-index: 999;
-		min-width: 8rem;
-		width: 8rem;
-		border-left: 2px solid hsl(var(--bc) / 0.15);
-		/* Add stronger shadow for better separation */
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25);
-		/* Ensure proper stacking context */
-		transform: translateZ(0);
-	}
-
-	:global(div table thead tr th.action-header) {
-		position: sticky;
-		right: 0;
-		z-index: 1000;
-		min-width: 8rem;
-		width: 8rem;
-		border-left: 2px solid hsl(var(--bc) / 0.25);
-		/* Add stronger shadow for better separation */
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3);
-		/* Ensure proper stacking context */
-		transform: translateZ(0);
-		/* Double background ensure coverage */
-		background-blend-mode: normal;
-		mix-blend-mode: normal;
-	}
-
-	/* Fallback with maximum specificity */
-	:global(body > div > table tbody tr td.action-cell),
-	:global(body table tbody tr td.action-cell) {
+	/* Action column styling */
+	:global(.action-cell) {
 		position: sticky;
 		right: 0;
 		z-index: 999;
@@ -442,8 +422,7 @@
 		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25);
 	}
 
-	:global(body > div > table thead tr th.action-header),
-	:global(body table thead tr th.action-header) {
+	:global(.action-header) {
 		position: sticky;
 		right: 0;
 		z-index: 1000;
@@ -453,21 +432,17 @@
 		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3);
 	}
 
-	/* Hide action column on mobile */
+	/* Mobile responsive styles */
 	@media (max-width: 768px) {
 		:global(.action-cell),
 		:global(.action-header) {
 			display: none;
 		}
-	}
 
-	/* Player list column responsive width */
-	@media (max-width: 768px) {
 		:global(.min-w-96) {
 			min-width: 20rem;
 		}
 
-		/* Mobile button styling */
 		:global(.mobile-btn) {
 			font-size: 0.75rem;
 			padding: 0.25rem 0.5rem;

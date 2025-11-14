@@ -20,7 +20,7 @@
 	"app.loading.title": "加载服务器",
 	"app.loading.description": "正在从API获取最新的服务器数据...",
 	"app.loading.progress": "连接服务器中...",
-		"app.button.join": "加入",
+	"app.button.join": "加入",
 	"app.column.name": "服务器名称",
 	"app.column.ip": "IP地址",
 	"app.column.port": "端口",

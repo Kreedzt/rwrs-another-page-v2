@@ -20,7 +20,7 @@
 	"app.loading.title": "Loading Servers",
 	"app.loading.description": "Fetching latest server data from the API...",
 	"app.loading.progress": "Connecting to server...",
-		"app.button.join": "Join",
+	"app.button.join": "Join",
 	"app.column.name": "Server Name",
 	"app.column.ip": "IP Address",
 	"app.column.port": "Port",

@@ -26,7 +26,7 @@
 			<li>
 				<button
 					type="button"
-					class="flex items-center justify-between w-full text-left p-2 hover:bg-base-200 rounded"
+					class="hover:bg-base-200 flex w-full items-center justify-between rounded p-2 text-left"
 					onclick={() => {
 						onColumnToggle(column, !visibleColumns[column.key]);
 					}}
