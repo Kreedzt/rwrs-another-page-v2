@@ -129,6 +129,10 @@
 	});
 
 	function handleSearchInput(value: string) {
+		// Reset to first page when search changes
+		currentPage = 1;
+		mobileCurrentPage = 1;
+
 		// Update URL in real-time using History API (no focus loss)
 		// Always update URL to ensure it reflects current input state
 		updateUrlState(
@@ -142,6 +146,11 @@
 	function handleGlobalSearch(query: string) {
 		// Handle search from global keyboard input
 		searchQuery = query;
+
+		// Reset to first page when global search changes
+		currentPage = 1;
+		mobileCurrentPage = 1;
+
 		handleSearchInput(query);
 	}
 

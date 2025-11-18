@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, waitFor } from '@testing-library/svelte';
+import { render, screen, waitFor, fireEvent } from '@testing-library/svelte';
 import { DataTableService } from '$lib/services/data-table';
 import {
 	createMockServers,
@@ -29,6 +29,13 @@ describe('Server data loading', () => {
 		vi.clearAllMocks(); // Clear only mock call history, not implementations
 		// Mock console.error to suppress expected error messages
 		vi.spyOn(console, 'error').mockImplementation(() => {});
+
+		// Mock IntersectionObserver for MobileInfiniteScroll component
+		global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+			observe: vi.fn(),
+			unobserve: vi.fn(),
+			disconnect: vi.fn()
+		}));
 	});
 
 	test('should show loading state initially', () => {
