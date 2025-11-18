@@ -1,4 +1,6 @@
 <script lang="ts">
+	import TranslatedText from './TranslatedText.svelte';
+
 	interface Props {
 		currentPage: number;
 		totalPages: number;
@@ -36,7 +38,7 @@
 		return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 	}
 
-	// Computed page numbers
+	// Computed page numbers - reactive to page changes
 	const pageNumbers = $derived(generatePageNumbers(currentPage, totalPages, maxVisiblePages));
 
 	// Navigate to a specific page
@@ -95,8 +97,12 @@
 		</div>
 
 		<!-- Page info -->
-		<span class="text-sm">
-			Page {currentPage} of {totalPages} ({totalItems} items)
+		<span class="text-base-content/70 text-sm">
+			<TranslatedText
+				key="app.pagination.info"
+				defaultText="Page {currentPage} of {totalPages} ({totalItems} items)"
+				params={{ currentPage, totalPages, totalItems }}
+			/>
 		</span>
 	</div>
 {/if}

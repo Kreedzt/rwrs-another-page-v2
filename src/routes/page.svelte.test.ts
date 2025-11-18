@@ -257,8 +257,8 @@ describe('Server data loading', () => {
 
 			// Ensure no orphaned elements from removed preview
 			const orphanedElements = loadingContainer?.querySelectorAll(':empty');
-			const emptyDivs = Array.from(orphanedElements || []).filter(el =>
-				el.tagName === 'DIV' && !el.classList.length && !el.id
+			const emptyDivs = Array.from(orphanedElements || []).filter(
+				(el) => el.tagName === 'DIV' && !el.classList.length && !el.id
 			);
 			expect(emptyDivs.length).toBe(0);
 		});

@@ -3,14 +3,29 @@
 		placeholder?: string;
 		value?: string;
 		oninput?: (value: string) => void;
+		onRef?: (input: HTMLInputElement) => void;
 	}
 
-	let { placeholder = 'Search...', value = $bindable(''), oninput }: Props = $props();
+	let { placeholder = 'Search...', value = $bindable(''), oninput, onRef }: Props = $props();
+
+	let inputElement: HTMLInputElement;
 
 	function handleInput(e: Event) {
 		const target = e.target as HTMLInputElement;
 		oninput?.(target.value);
 	}
+
+	// Expose the input element to parent
+	$effect(() => {
+		if (inputElement && onRef) {
+			onRef(inputElement);
+		}
+	});
+
+	// Expose methods to parent component
+	export const focus = () => inputElement?.focus();
+	export const blur = () => inputElement?.blur();
+	export const element = () => inputElement;
 </script>
 
 <div class="form-control flex-1">
@@ -28,6 +43,7 @@
 			</g>
 		</svg>
 		<input
+			bind:this={inputElement}
 			type="search"
 			{placeholder}
 			class="grow focus:outline-none"

@@ -96,5 +96,6 @@
 	"app.stats.players.display": "{filtered} / {total} 玩家",
 	"app.stats.filteredBy": "筛选条件: \"{query}\"",
 	"app.mobile.endOfContent": "已到底部",
-	"app.button.loadMore": "加载更多"
+	"app.button.loadMore": "加载更多",
+	"app.pagination.info": "第 {currentPage} 页，共 {totalPages} 页（{totalItems} 项）"
 }
