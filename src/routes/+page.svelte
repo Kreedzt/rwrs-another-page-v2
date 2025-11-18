@@ -12,6 +12,7 @@
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
 	import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
+	import GlobalKeyboardSearch from '$lib/components/GlobalKeyboardSearch.svelte';
 	import MobileInfiniteScroll from '$lib/components/MobileInfiniteScroll.svelte';
 	import { filters as quickFilters } from '$lib/utils/quick-filters';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
@@ -27,6 +28,7 @@
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let searchQuery = $state('');
+	let searchInputRef = $state<HTMLInputElement | null>(null);
 
 	// User settings from localStorage
 	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
@@ -52,6 +54,9 @@
 	// Quick filter state
 	let activeQuickFilters = $state<string[]>([]);
 	let isMultiSelectFilter = $state(false);
+
+	// Mobile expanded cards state
+	let mobileExpandedCards = $state<Record<string, boolean>>({});
 
 	// Calculate statistics
 	const calculateStats = (serverList: IDisplayServerItem[]) => {
@@ -124,6 +129,10 @@
 	});
 
 	function handleSearchInput(value: string) {
+		// Reset to first page when search changes
+		currentPage = 1;
+		mobileCurrentPage = 1;
+
 		// Update URL in real-time using History API (no focus loss)
 		// Always update URL to ensure it reflects current input state
 		updateUrlState(
@@ -132,6 +141,17 @@
 			},
 			true
 		);
+	}
+
+	function handleGlobalSearch(query: string) {
+		// Handle search from global keyboard input
+		searchQuery = query;
+
+		// Reset to first page when global search changes
+		currentPage = 1;
+		mobileCurrentPage = 1;
+
+		handleSearchInput(query);
 	}
 
 	function handlePageChange(page: number) {
@@ -301,6 +321,45 @@
 		});
 	}
 
+	// Mobile card toggle function
+	function toggleMobileCard(serverId: string) {
+		mobileExpandedCards[serverId] = !mobileExpandedCards[serverId];
+	}
+
+	// Helper function to get the display value for a column
+	function getDisplayValue(
+		item: IDisplayServerItem,
+		column: IColumn,
+		searchQuery?: string
+	): string {
+		// If there's a search query and the column supports highlighting, use that
+		if (searchQuery && column.getValueWithHighlight) {
+			return column.getValueWithHighlight(item, searchQuery);
+		}
+
+		// Otherwise use the regular getValue or fallback to the raw value
+		if (column.getValue) {
+			return column.getValue(item);
+		}
+
+		return (item as any)[column.key] ?? '-';
+	}
+
+	// Get sort icon for column
+	function getSortIcon(column: string) {
+		if (sortColumn !== column) {
+			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
+		}
+
+		if (sortDirection === 'desc') {
+			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
+		} else if (sortDirection === 'asc') {
+			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
+		}
+
+		return '';
+	}
+
 	async function refreshList() {
 		try {
 			loading = true;
@@ -385,6 +444,7 @@
 					placeholder={m['app.search.placeholder']()}
 					bind:value={searchQuery}
 					oninput={handleSearchInput}
+					onRef={(input) => (searchInputRef = input)}
 				/>
 			</div>
 
@@ -434,7 +494,7 @@
 		</div>
 
 		<!-- Content area with consistent height -->
-		<div class="flex w-full flex-col overflow-x-auto">
+		<div class="flex w-full flex-col">
 			{#if loading}
 				<!-- Enhanced Loading state for PC -->
 				<div
@@ -501,17 +561,157 @@
 					<span>{error}</span>
 				</div>
 			{:else}
-				<!-- Mobile-first data table component -->
-				<MobileDataTable
-					data={derivedData().mobilePaginatedServers}
-					{columns}
-					{searchQuery}
-					{onRowAction}
-					{visibleColumns}
-					onSort={handleSort}
-					{sortColumn}
-					{sortDirection}
-				/>
+				<!-- Mobile table cards with collapsible details -->
+				<div class="md:hidden">
+					<!-- Mobile-only sort controls -->
+					<div class="mb-4 flex flex-wrap gap-2">
+						{#each columns.filter( (col) => ['name', 'playerCount', 'mapId'].includes(col.key) ) as column (column.key)}
+							<button
+								class="btn btn-sm btn-outline flex items-center gap-2"
+								onclick={() => handleSort(column.key)}
+								type="button"
+							>
+								{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
+								{@html getSortIcon(column.key)}
+							</button>
+						{/each}
+					</div>
+
+					{#each derivedData().mobilePaginatedServers as item (item.id)}
+						<div class="card bg-base-100 border-base-300 mb-3 overflow-hidden border shadow-lg">
+							<!-- Primary info section - clickable for expand/collapse -->
+							<button
+								class="card-body hover:bg-base-200 w-full p-4 text-left transition-colors duration-200"
+								onclick={() => toggleMobileCard(item.id)}
+								aria-expanded={mobileExpandedCards[item.id]}
+								aria-label="Toggle server details"
+							>
+								<!-- Server name, players, and map on same line -->
+								<div class="flex items-center justify-between gap-2">
+									<!-- Server name -->
+									<h3 class="text-base-content flex-1 truncate text-base font-semibold">
+										{@html getDisplayValue(
+											item,
+											columns.find((col) => col.key === 'name')!,
+											searchQuery
+										)}
+									</h3>
+
+									<!-- Player count with forced wrapping -->
+									<div class="min-w-0 flex-shrink-0">
+										<div class="flex max-w-24 flex-wrap justify-end gap-1 sm:max-w-32">
+											{@html getDisplayValue(
+												item,
+												columns.find((col) => col.key === 'playerCount')!,
+												searchQuery
+											)}
+										</div>
+									</div>
+
+									<!-- Map -->
+									<div class="flex-shrink-0">
+										{@html getDisplayValue(
+											item,
+											columns.find((col) => col.key === 'mapId')!,
+											searchQuery
+										)}
+									</div>
+
+									<!-- Expand indicator -->
+									<div class="flex-shrink-0">
+										<svg
+											class="text-base-content/60 h-4 w-4 transition-transform duration-200"
+											class:rotate-180={mobileExpandedCards[item.id]}
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M19 9l-7 7-7-7"
+											></path>
+										</svg>
+									</div>
+								</div>
+							</button>
+
+							<!-- Collapsible details -->
+							{#if mobileExpandedCards[item.id]}
+								<div class="border-base-200 border-t px-4 pb-4">
+									<div class="space-y-2 pt-3">
+										{#each columns.filter((col) => !['name', 'playerCount', 'mapId', 'action'].includes(col.key)) as column (column.key)}
+											<div class="flex items-center justify-between py-1">
+												<span class="text-base-content/60 min-w-20 flex-shrink-0 text-sm">
+													{#if column.i18n}<TranslatedText
+															key={column.i18n}
+														/>{:else}{column.label}{/if}:
+												</span>
+												<div class="text-base-content ml-3 flex-1 text-right text-sm">
+													{#if column.key === 'url' && item.url}
+														<a
+															href={item.url}
+															target="_blank"
+															class="link link-primary"
+															onclick={(e) => e.stopPropagation()}
+															title={item.url}
+														>
+															{item.url.length > 30 ? item.url.substring(0, 27) + '...' : item.url}
+														</a>
+													{:else if column.key === 'comment' || column.key === 'playerList'}
+														<!-- For potentially long text like comments and player lists -->
+														<div class="text-left break-words whitespace-pre-wrap">
+															{@html getDisplayValue(item, column)}
+														</div>
+													{:else}
+														<!-- For other fields like mode, dedicated, mod, version, etc. -->
+														<div class="flex items-center justify-end">
+															{@html getDisplayValue(item, column)}
+														</div>
+													{/if}
+												</div>
+											</div>
+										{/each}
+									</div>
+								</div>
+							{/if}
+						</div>
+					{/each}
+
+					{#if derivedData().mobilePaginatedServers.length === 0}
+						<div class="alert alert-info">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								class="h-6 w-6 shrink-0 stroke-current"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+								></path>
+							</svg>
+							<span>No data found{searchQuery ? ' matching your search' : ''}.</span>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Desktop table (hidden on mobile) -->
+				<div class="hidden overflow-x-auto md:block">
+					<MobileDataTable
+						data={derivedData().paginatedServers}
+						{columns}
+						{searchQuery}
+						{onRowAction}
+						{visibleColumns}
+						onSort={handleSort}
+						{sortColumn}
+						{sortDirection}
+					/>
+				</div>
 
 				<!-- Mobile infinite scroll component (hidden on desktop) -->
 				<MobileInfiniteScroll
@@ -532,6 +732,9 @@
 			{/if}
 		</div>
 	</div>
+
+	<!-- Global keyboard search functionality -->
+	<GlobalKeyboardSearch searchInput={searchInputRef} onSearch={handleGlobalSearch} />
 </section>
 
 <style>

@@ -96,5 +96,6 @@
 	"app.stats.players.display": "{filtered} / {total} players",
 	"app.stats.filteredBy": "Filtered by: \"{query}\"",
 	"app.mobile.endOfContent": "End of content",
-	"app.button.loadMore": "Load More"
+	"app.button.loadMore": "Load More",
+	"app.pagination.info": "Page {currentPage} of {totalPages} ({totalItems} items)"
 }

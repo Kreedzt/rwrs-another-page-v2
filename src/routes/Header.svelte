@@ -1,6 +1,7 @@
 <script lang="ts">
 	import github from '$lib/images/github.svg';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 </script>
 
@@ -14,6 +15,7 @@
 			></TranslatedText>
 
 			<div class="flex items-center gap-4">
+				<ThemeToggle />
 				<LanguageSwitcher />
 
 				<a
