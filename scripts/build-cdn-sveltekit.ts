@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, readdirSync, statSync, unlinkSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, unlinkSync, existsSync, mkdirSync } from 'fs';
 import { join, basename, extname } from 'path';
 import { createHash } from 'crypto';
 
@@ -23,7 +23,8 @@ interface CDNManifest {
 function buildCDNForSvelteKit() {
 	console.log('🚀 Starting SvelteKit CDN build process...\n');
 
-	const cdnBaseUrl = process.env.CDN_URL || 'https://assets.kreedzt.cn/rwrs-web-assets';
+	const cdnBaseUrl = process.env.CDN_URL || 'https://assets.kreedzt.cn/rwrs-v2-web-assets';
+	const cdnImageUrl = process.env.CDN_IMAGE_URL || cdnBaseUrl;
 	const buildDir = 'build';
 
 	try {
@@ -40,7 +41,7 @@ function buildCDNForSvelteKit() {
 
 		// Step 2: 处理资源文件
 		console.log('📦 Step 2: Processing assets for CDN...');
-		const manifest = processAssetsForCDN(buildDir, cdnBaseUrl);
+		const manifest = processAssetsForCDN(buildDir, cdnBaseUrl, cdnImageUrl);
 		console.log('✅ Asset processing completed\n');
 
 		// Step 3: 处理HTML文件
@@ -92,7 +93,7 @@ function buildCDNForSvelteKit() {
 	}
 }
 
-function processAssetsForCDN(buildDir: string, cdnBaseUrl: string): CDNManifest {
+function processAssetsForCDN(buildDir: string, cdnBaseUrl: string, cdnImageUrl: string): CDNManifest {
 	const manifest: CDNManifest = {
 		assets: {},
 		buildTime: new Date().toISOString(),
@@ -102,6 +103,7 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string): CDNManifest 
 	};
 
 	const assetExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
+	const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico'];
 
 	function processDirectory(dir: string, relativePath: string = '') {
 		const items = readdirSync(dir);
@@ -113,8 +115,9 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string): CDNManifest 
 
 			if (stat.isDirectory() && item !== '.git' && item !== 'node_modules') {
 				// 跳过 SvelteKit 生成的 _app 目录，因为它们已经包含了哈希并且由 SvelteKit 管理引用
-				if (item === '_app') {
-					console.log(`  ⏭️  Skipping SvelteKit app directory: ${itemRelativePath}`);
+				// 但如果 _app 内部有 images 目录 (由 vite.config.ts 生成)，我们也不需要处理它，因为它是 Vite 管理的
+				if (item === '_app' || item === 'images') {
+					console.log(`  ⏭️  Skipping managed directory: ${itemRelativePath}`);
 					continue;
 				}
 				processDirectory(fullPath, itemRelativePath);
@@ -132,14 +135,34 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string): CDNManifest 
 						const content = readFileSync(fullPath);
 						const md5Hash = createHash('md5').update(content).digest('hex');
 						const shortHash = md5Hash.substring(0, 8);
+						
+						const isImage = imageExtensions.includes(ext);
+						
+						let cdnFileName: string;
+						let cdnUrl: string;
+						let targetPath: string;
+						
+						if (isImage) {
+							// 图片移动到 images 目录
+							const imagesDir = join(buildDir, 'images');
+							if (!existsSync(imagesDir)) {
+								mkdirSync(imagesDir, { recursive: true });
+							}
+							
+							cdnFileName = `${shortHash}${ext}`; // 纯哈希文件名
+							targetPath = join(imagesDir, cdnFileName);
+							cdnUrl = `${cdnImageUrl}/images/${cdnFileName}`;
+						} else {
+							// 其他文件（如果在 static 下）原地重命名
+							const nameWithoutExt = basename(item, ext);
+							cdnFileName = `${nameWithoutExt}-${shortHash}${ext}`;
+							targetPath = join(dir, cdnFileName);
+							// 注意：这里假设非图片资源仍然在原目录结构中
+							cdnUrl = `${cdnBaseUrl}/${itemRelativePath.replace(item, cdnFileName)}`;
+						}
 
-						const nameWithoutExt = basename(item, ext);
-						const cdnFileName = `${nameWithoutExt}-${shortHash}${ext}`;
-						const cdnUrl = `${cdnBaseUrl}/${itemRelativePath.replace(item, cdnFileName)}`;
-
-						// 创建 CDN 版本文件
-						const cdnPath = join(dir, cdnFileName);
-						writeFileSync(cdnPath, content);
+						// 写入新文件
+						writeFileSync(targetPath, content);
 
 						// 更新清单
 						manifest.assets[itemRelativePath] = {
@@ -151,8 +174,8 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string): CDNManifest 
 							size: content.length
 						};
 
-						// 如果文件名不同，删除原文件
-						if (item !== cdnFileName) {
+						// 删除原文件 (如果目标路径不同，或者文件名不同)
+						if (fullPath !== targetPath) {
 							unlinkSync(fullPath);
 						}
 
@@ -218,6 +241,18 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 		}
 	);
 
+	// 强制替换 SvelteKit 生成的 _app 引用 (修复 SvelteKit 配置在某些情况下不生效的问题)
+	const baseUrl = manifest.cdnBaseUrl.endsWith('/') ? manifest.cdnBaseUrl.slice(0, -1) : manifest.cdnBaseUrl;
+	
+	// 1. 替换 import("./_app/...") 或 import("/_app/...")
+	// 2. 替换 href="./_app/..." 或 href="/_app/..."
+	// 3. 替换 src="./_app/..." 或 src="/_app/..."
+	// 使用正则匹配所有以 ./-app/ 或 /_app/ 开头的路径引用
+	content = content.replace(/["'](\.?\/_app\/)([^"']+)["']/g, (match, prefix, path) => {
+		const quote = match[0];
+		return `${quote}${baseUrl}/_app/${path}${quote}`;
+	});
+
 	// 替换所有资源引用（包括相对路径和绝对路径）
 	for (const [relativePath, assetInfo] of Object.entries(manifest.assets)) {
 		// 替换 ./ 开头的相对路径
@@ -240,90 +275,6 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 	}
 
 	return content;
-}
-
-function createCDNDeploymentStructure(buildDir: string): void {
-	// 创建目录结构说明
-	const structureInfo = `
-CDN Deployment Structure
-========================
-
-Upload Instructions:
-- Upload ALL files in the build/ directory to your OSS bucket
-- The -cdn.html files are the main files to serve as index.html
-- Original files have been renamed with MD5 hashes
-- All asset references in HTML files point to CDN URLs
-
-Directory: ${buildDir}
-- HTML files: *.html and *-cdn.html (use -cdn.html for deployment)
-- Asset files: renamed with MD5 hashes
-- Manifest: cdn-manifest.json
-`;
-
-	const structurePath = join(buildDir, 'cdn-structure-info.txt');
-	writeFileSync(structurePath, structureInfo);
-}
-
-function generateSvelteKitDeploymentGuide(buildDir: string, manifest: CDNManifest, htmlFiles: string[]): string {
-	const totalAssets = Object.keys(manifest.assets).length;
-	const totalSize = Object.values(manifest.assets).reduce((sum, asset) => sum + asset.size, 0);
-	const sizeInMB = (totalSize / 1024 / 1024).toFixed(2);
-
-	return `
-# SvelteKit CDN Deployment Guide
-
-## 📊 Build Summary
-- **CDN Base URL**: ${manifest.cdnBaseUrl}
-- **Total Assets**: ${totalAssets} files
-- **Total Size**: ${sizeInMB} MB
-- **HTML Files**: ${htmlFiles.length}
-- **Build Time**: ${manifest.buildTime}
-
-## 📁 Deployment Files
-
-### HTML Files (Deploy to Web Server)
-${htmlFiles.map(file => `- \`${file}\` → Rename to \`index.html\``).join('\n')}
-
-### Asset Files (Upload to CDN/OSS)
-${Object.values(manifest.assets).slice(0, 10).map(asset =>
-	`- \`${asset.cdnFileName}\` (${asset.cdnUrl})`
-).join('\n')}
-${Object.values(manifest.assets).length > 10 ? `\n... and ${Object.values(manifest.assets).length - 10} more files` : ''}
-
-## 🚀 Deployment Steps
-
-### 1. Upload Assets to CDN/OSS
-\`\`\`bash
-# Upload entire build directory to your OSS
-# All files are ready for CDN deployment
-# Example for Alibaba Cloud OSS:
-ossutil cp -r ${buildDir}/ oss://your-bucket/
-\`\`\`
-
-### 2. Deploy HTML Files
-\`\`\`bash
-# Deploy the CDN-processed HTML as your main index.html
-cp ${buildDir}/*-cdn.html /var/www/html/index.html
-\`\`\`
-
-### 3. Configure CDN Domain
-Make sure your domain \`${manifest.cdnBaseUrl}\` points to your OSS bucket.
-
-## ✅ Verification
-1. Visit your website
-2. Check browser DevTools Network tab
-3. Verify all resources load from \`${manifest.cdnBaseUrl}\`
-4. Ensure no 404 errors for asset files
-
-## 🔄 Updates
-When updating:
-1. Run \`pnpm build:cdn\` again
-2. Upload all files from build/ directory
-3. Deploy the new *-cdn.html file
-4. Old assets are automatically handled by MD5 naming
-
-Generated: ${new Date().toISOString()}
-`;
 }
 
 // Run if executed directly
