@@ -77,7 +77,7 @@
 				<div class="flex items-center gap-3">
 					<div class="loading loading-spinner loading-sm"></div>
 					<span class="text-base-content/70 text-sm">
-						<TranslatedText key="app.loading" />
+						<TranslatedText key="app.loading.text" />
 					</span>
 				</div>
 			{:else}
@@ -93,7 +93,7 @@
 			<div class="flex items-center gap-3">
 				<div class="loading loading-spinner loading-sm"></div>
 				<span class="text-base-content/70 text-sm">
-					<TranslatedText key="app.loading" />
+					<TranslatedText key="app.loading.text" />
 				</span>
 			</div>
 		</div>
