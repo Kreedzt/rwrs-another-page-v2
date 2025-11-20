@@ -134,7 +134,6 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string, cdnImageUrl: 
 					try {
 						const content = readFileSync(fullPath);
 						const md5Hash = createHash('md5').update(content).digest('hex');
-						const shortHash = md5Hash.substring(0, 8);
 						
 						const isImage = imageExtensions.includes(ext);
 						
@@ -149,11 +148,12 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string, cdnImageUrl: 
 								mkdirSync(imagesDir, { recursive: true });
 							}
 							
-							cdnFileName = `${shortHash}${ext}`; // 纯哈希文件名
+							cdnFileName = `${md5Hash}${ext}`; // 使用完整 MD5 哈希文件名
 							targetPath = join(imagesDir, cdnFileName);
 							cdnUrl = `${cdnImageUrl}/images/${cdnFileName}`;
 						} else {
 							// 其他文件（如果在 static 下）原地重命名
+							const shortHash = md5Hash.substring(0, 8); // 其他文件保持短哈希以保留可读性
 							const nameWithoutExt = basename(item, ext);
 							cdnFileName = `${nameWithoutExt}-${shortHash}${ext}`;
 							targetPath = join(dir, cdnFileName);
