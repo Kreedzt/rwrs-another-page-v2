@@ -1,101 +1,133 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"app.title": "RWRS Another Page(V2)",
-	"app.search.placeholder": "搜索服务器、地图、玩家、模式、国家等...",
-	"app.button.reset": "重置",
-	"app.button.refresh": "刷新",
-	"app.switch.autoRefresh": "自动刷新",
-	"app.switch.multipleSelect": "多选",
-	"app.stats.servers": "{filtered} / {total} 服务器",
-	"app.stats.players": "{filtered} / {total} 玩家",
-	"app.filter.officialInvasion": "官方入侵",
-	"app.filter.officialWW2Invasion": "官方二战入侵",
-	"app.filter.officialDominance": "官方 PVP",
-	"app.filter.officialModCastling": "官方模组: Castling",
-	"app.filter.officialModHellDivers": "官方模组: HellDivers",
-	"app.viewMode.table": "切换到地图视图",
-	"app.viewMode.map": "切换到表格视图",
-	"app.help.title": "显示帮助指南",
-	"app.loading": "加载服务器数据...",
-	"app.loading.title": "加载服务器",
-	"app.loading.description": "正在从API获取最新的服务器数据...",
-	"app.loading.progress": "连接服务器中...",
-	"app.button.join": "加入",
-	"app.column.name": "服务器名称",
-	"app.column.ip": "IP地址",
-	"app.column.port": "端口",
-	"app.column.bots": "机器人",
-	"app.column.country": "国家",
-	"app.column.map": "地图",
-	"app.column.capacity": "容量",
-	"app.column.players": "玩家",
-	"app.column.action": "操作",
-
-	"app.columns.button": "列",
-	"app.columns.toggle": "切换可见列",
-
-	"app.column.name": "名称",
-	"app.column.ip": "IP",
-	"app.column.port": "端口",
-	"app.column.bots": "机器人数",
-	"app.column.country": "国家/地区",
-	"app.column.mode": "模式",
-	"app.column.map": "地图",
-	"app.column.capacity": "容量",
-	"app.column.players": "玩家",
-	"app.column.comment": "备注",
-	"app.column.dedicated": "专用服务器",
-	"app.column.mod": "模组",
-	"app.column.url": "网址",
-	"app.column.version": "版本",
-	"app.column.action": "操作",
-	"app.column.timestamp": "时间戳",
-
-	"app.mobile.loadMore": "加载更多 (还剩 {remaining} 个)",
-	"app.mobile.noServers": "未找到服务器",
-
-	"app.mapView.title": "地图排序: {filters}",
-	"app.mapView.allMaps": "所有地图",
-	"app.mapView.selectFilters": "选择快速过滤器以查看地图排序",
-	"app.mapView.chooseCategories": "在快速过滤器中选择您喜欢的地图类别以显示相应的服务器列表",
-	"app.mapView.noMaps": "所选过滤器未找到地图。",
-	"app.mapView.servers": "{count} 个服务器",
-	"app.mapView.bots": "{count} 个机器人",
-
-	"app.serverItem.ip": "IP:",
-	"app.serverItem.port": "端口:",
-	"app.serverItem.country": "国家/地区:",
-	"app.serverItem.bots": "机器人数:",
-	"app.serverItem.comment": "备注:",
-	"app.serverItem.url": "网址:",
-	"app.serverItem.version": "版本:",
-	"app.serverItem.players": "玩家:",
-
-	"app.toast.refreshing.title": "刷新服务器列表",
-	"app.toast.refreshing.description": "请稍等，正在获取最新数据...",
-	"app.toast.refreshSuccess.title": "刷新服务器列表成功",
-	"app.toast.refreshSuccess.description": "数据获取成功，时间：{time}。找到 {count} 个服务器。",
-	"app.toast.refreshFailed.title": "刷新服务器列表失败",
-	"app.toast.refreshFailed.description": "请求超时或失败：{error}",
-
-	"app.guide.searchInput.title": "搜索输入框",
-	"app.guide.searchInput.description": "使用此搜索框查找服务器、地图、玩家、模式、国家等。输入时结果将实时更新！",
-	"app.guide.columnVisibility.title": "列可见性",
-	"app.guide.columnVisibility.description": "自定义表格中显示的列。只显示对您重要的数据！",
-	"app.guide.viewModeToggle.title": "视图模式切换",
-	"app.guide.viewModeToggle.description": "在列表和地图视图模式之间切换，以您喜欢的方式找到服务器。列表视图以表格形式提供详细信息，而地图视图提供地理视角。",
-	"app.guide.helpGuide.title": "帮助指南",
-	"app.guide.helpGuide.description": "随时点击此按钮可重新播放帮助指南，并刷新您对可用功能的记忆。",
-	"app.guide.quickFilters.title": "快速过滤器",
-	"app.guide.quickFilters.description": "应用过滤器快速找到符合特定条件的服务器。您可以同时使用多个过滤器，并将它们与搜索框结合使用，进行强大的查询！",
-
-	"app.autoRefresh.toggle": "自动刷新",
-	"app.autoRefresh.interval": "间隔",
-
-	"app.stats.servers.display": "{filtered} / {total} 服务器",
-	"app.stats.players.display": "{filtered} / {total} 玩家",
-	"app.stats.filteredBy": "筛选条件: \"{query}\"",
-	"app.mobile.endOfContent": "已到底部",
-	"app.button.loadMore": "加载更多",
-	"app.pagination.info": "第 {currentPage} 页，共 {totalPages} 页（{totalItems} 项）"
+	"app": {
+		"loading": {
+			"text": "加载服务器数据...",
+			"title": "加载服务器",
+			"description": "正在从API获取最新的服务器数据...",
+			"progress": "连接服务器中..."
+		},
+		"title": "RWRS Another Page(V2)",
+		"search": {
+			"placeholder": "搜索服务器、地图、玩家、模式、国家等..."
+		},
+		"button": {
+			"reset": "重置",
+			"refresh": "刷新",
+			"join": "加入",
+			"loadMore": "加载更多"
+		},
+		"switch": {
+			"autoRefresh": "自动刷新",
+			"multipleSelect": "多选"
+		},
+		"stats": {
+			"servers": "{filtered} / {total} 服务器",
+			"players": "{filtered} / {total} 玩家",
+			"filteredBy": "筛选条件: \"{query}\""
+		},
+		"filter": {
+			"officialInvasion": "官方入侵",
+			"officialWW2Invasion": "官方二战入侵",
+			"officialDominance": "官方 PVP",
+			"officialModCastling": "官方模组: Castling",
+			"officialModHellDivers": "官方模组: HellDivers"
+		},
+		"viewMode": {
+			"table": "切换到地图视图",
+			"map": "切换到表格视图"
+		},
+		"help": {
+			"title": "显示帮助指南"
+		},
+		"column": {
+			"name": "名称",
+			"ip": "IP",
+			"port": "端口",
+			"bots": "机器人数",
+			"country": "国家/地区",
+			"mode": "模式",
+			"map": "地图",
+			"capacity": "容量",
+			"players": "玩家",
+			"comment": "备注",
+			"dedicated": "专用服务器",
+			"mod": "模组",
+			"url": "网址",
+			"version": "版本",
+			"action": "操作",
+			"timestamp": "时间戳"
+		},
+		"columns": {
+			"button": "列",
+			"toggle": "切换可见列"
+		},
+		"mobile": {
+			"loadMore": "加载更多 (还剩 {remaining} 个)",
+			"noServers": "未找到服务器",
+			"endOfContent": "已到底部"
+		},
+		"mapView": {
+			"title": "地图排序: {filters}",
+			"allMaps": "所有地图",
+			"selectFilters": "选择快速过滤器以查看地图排序",
+			"chooseCategories": "在快速过滤器中选择您喜欢的地图类别以显示相应的服务器列表",
+			"noMaps": "所选过滤器未找到地图。",
+			"servers": "{count} 个服务器",
+			"bots": "{count} 个机器人"
+		},
+		"serverItem": {
+			"ip": "IP:",
+			"port": "端口:",
+			"country": "国家/地区:",
+			"bots": "机器人数:",
+			"comment": "备注:",
+			"url": "网址:",
+			"version": "版本:",
+			"players": "玩家:"
+		},
+		"toast": {
+			"refreshing": {
+				"title": "刷新服务器列表",
+				"description": "请稍等，正在获取最新数据..."
+			},
+			"refreshSuccess": {
+				"title": "刷新服务器列表成功",
+				"description": "数据获取成功，时间：{time}。找到 {count} 个服务器。"
+			},
+			"refreshFailed": {
+				"title": "刷新服务器列表失败",
+				"description": "请求超时或失败：{error}"
+			}
+		},
+		"guide": {
+			"searchInput": {
+				"title": "搜索输入框",
+				"description": "使用此搜索框查找服务器、地图、玩家、模式、国家等。输入时结果将实时更新！"
+			},
+			"columnVisibility": {
+				"title": "列可见性",
+				"description": "自定义表格中显示的列。只显示对您重要的数据！"
+			},
+			"viewModeToggle": {
+				"title": "视图模式切换",
+				"description": "在列表和地图视图模式之间切换，以您喜欢的方式找到服务器。列表视图以表格形式提供详细信息，而地图视图提供地理视角。"
+			},
+			"helpGuide": {
+				"title": "帮助指南",
+				"description": "随时点击此按钮可重新播放帮助指南，并刷新您对可用功能的记忆。"
+			},
+			"quickFilters": {
+				"title": "快速过滤器",
+				"description": "应用过滤器快速找到符合特定条件的服务器。您可以同时使用多个过滤器，并将它们与搜索框结合使用，进行强大的查询！"
+			}
+		},
+		"autoRefresh": {
+			"toggle": "自动刷新",
+			"interval": "间隔"
+		},
+		"pagination": {
+			"info": "第 {currentPage} 页，共 {totalPages} 页（{totalItems} 项）"
+		}
+	}
 }

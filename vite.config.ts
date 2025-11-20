@@ -5,6 +5,10 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import path from 'path';
 
+const isCdnBuild = process.env.CDN_BUILD === 'true';
+const cdnImageUrl = process.env.CDN_IMAGE_URL;
+const cdnUrl = process.env.CDN_URL;
+
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
@@ -14,8 +18,56 @@ export default defineConfig({
 			outdir: './src/lib/paraglide'
 		})
 	],
+	experimental: {
+		renderBuiltUrl(filename) {
+			if (isCdnBuild) {
+				const ext = path.extname(filename).toLowerCase();
+				
+				// 图片资源处理
+				if (cdnImageUrl && /\.(png|jpe?g|svg|gif|tiff|bmp|ico|webp)$/i.test(ext)) {
+					// 确保 URL 正确拼接，避免双重斜杠
+					const baseUrl = cdnImageUrl.endsWith('/') ? cdnImageUrl.slice(0, -1) : cdnImageUrl;
+					const path = filename.startsWith('/') ? filename.slice(1) : filename;
+					return { runtime: JSON.stringify(`${baseUrl}/${path}`) };
+				}
+				
+				// 其他资源处理 (JS/CSS)
+				if (cdnUrl) {
+					const baseUrl = cdnUrl.endsWith('/') ? cdnUrl.slice(0, -1) : cdnUrl;
+					const path = filename.startsWith('/') ? filename.slice(1) : filename;
+					return { runtime: JSON.stringify(`${baseUrl}/${path}`) };
+				}
+			}
+			// Return undefined to let SvelteKit/Vite handle standard assets based on 'base' config
+			return;
+		}
+	},
 	build: {
-		assetsInlineLimit: Infinity
+		// Use default inline limit (4kb) to avoid bloating JS files
+		// assetsInlineLimit: 4096,
+		rollupOptions: {
+			output: {
+				// Separate images into their own directory with hash-only filenames for CDN builds
+				assetFileNames: (assetInfo) => {
+					if (!isCdnBuild) return 'assets/[name]-[hash][extname]';
+					
+					if (assetInfo.name) {
+						const info = assetInfo.name.split('.');
+						const ext = info[info.length - 1].toLowerCase();
+						if (/png|jpe?g|svg|gif|tiff|bmp|ico|webp/i.test(ext)) {
+							return 'images/[hash][extname]';
+						}
+					}
+					return 'assets/[name]-[hash][extname]';
+				},
+				// Vendor splitting
+				manualChunks: (id) => {
+					if (id.includes('node_modules')) {
+						return 'vendor';
+					}
+				}
+			}
+		}
 	},
 	resolve: {
 		alias: { '@': path.resolve(__dirname, './src') }

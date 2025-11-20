@@ -59,6 +59,18 @@ To build for production:
 pnpm build
 ```
 
+To build with CDN support (assets served from a CDN):
+
+```bash
+# Scenario 1: All assets (JS/CSS/Images) on the same CDN path
+CDN_URL=https://assets.kreedzt.cn pnpm build:cdn
+
+# Scenario 2: Separate CDN for images (e.g. OSS bucket for images)
+# JS/CSS -> https://assets.kreedzt.cn/rwrs-v2-web-assets/...
+# Images -> https://img.kreedzt.cn/images/...
+CDN_URL=https://assets.kreedzt.cn/rwrs-v2-web-assets CDN_IMAGE_URL=https://img.kreedzt.cn/ pnpm build:cdn
+```
+
 ## Deployment
 
 ### Docker
