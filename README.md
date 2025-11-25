@@ -143,6 +143,23 @@ docker run -p 80:80 -e "HEADER_SCRIPTS=<script>console.log('Custom script');</sc
    - Deploy the contents of the `build` directory to your web server and configure it to proxy API requests to the rwrs-server backend.
    - Copy the contents of the `build` directory to the `/static` directory of your rwrs-server installation.
 
+## Disclaimer
+
+This project is an independent work and is **not affiliated, associated, authorized, endorsed by, or in any way officially connected with the original "rwrs" project or its authors**.  
+The only relation is that this project was **inspired by the idea of rwrs**, but it is written entirely from scratch and does not contain any code, documentation, or resources from the original repository.
+
+All data used by this project is obtained transparently and directly from the public API provided by the official RWR service.  
+This project:
+
+- Does not store, cache, modify, or permanently retain any external data.
+- Acts only as a live data viewer/relay querying the official API at request time.
+- Does not operate any independent backend database or persistent storage.
+- Does not claim ownership over the data provided by the official RWR API.
+
+All trademarks, service names, and project names mentioned belong to their respective owners. Their use here is purely for **identification and reference purposes**, and does not imply any form of partnership or endorsement.
+
+Users should refer to the official RWR project and its documentation for authoritative information.
+
 ## License
 
 - [MIT](LICENSE)
