@@ -7,6 +7,16 @@
 			"description": "正在从API获取最新的服务器数据...",
 			"progress": "连接服务器中..."
 		},
+		"map": {
+			"preview": "预览地图",
+			"noPreview": "无地图预览",
+			"viewFullSize": "查看完整尺寸",
+			"close": "关闭",
+			"buttonPreviewMap": "预览地图",
+			"loading": "加载地图中...",
+			"loadError": "加载地图图片失败",
+			"retry": "重试"
+		},
 		"title": "RWRS Another Page(V2)",
 		"search": {
 			"placeholder": "搜索服务器、地图、玩家、模式、国家等..."

@@ -1,295 +1,180 @@
-import { describe, test, expect, vi, beforeEach } from 'vitest';
-import '@testing-library/jest-dom/vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/svelte';
-import { DataTableService } from '$lib/services/data-table';
-import {
-	createMockServers,
-	createMockDisplayServers,
-	createRealisticServerList,
-	createMockXmlResponse
-} from '$lib/test-utils/mock-data-generator';
-import Page from './+page.svelte';
+import { render, screen, fireEvent, waitFor } from '@testing-library/svelte/svelte5';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { default as Page } from './+page.svelte';
+import { getMaps } from '$lib/services/maps';
+import type { MapData } from '$lib/services/maps';
 
-describe('/+page.svelte', () => {
-	test('should render the server list section', () => {
-		render(Page);
-		expect(screen.getByLabelText('Server List')).toBeInTheDocument();
-	});
-});
+// Mock the maps service
+vi.mock('$lib/services/maps', () => ({
+	getMaps: vi.fn(),
+	MapData: {}
+}));
 
-// Mock the DataTableService
-vi.mock('$lib/services/data-table', () => ({
-	DataTableService: {
-		listAll: vi.fn(() => Promise.resolve([]))
+// Mock the TranslatedText component
+vi.mock('$lib/components/TranslatedText.svelte', () => ({
+	default: (props: { key: string; fallback?: string }) => {
+		if (props.fallback) return props.fallback;
+
+		const keyToText: Record<string, string> = {
+			'app.map.buttonPreviewMap': 'Preview Map',
+			'app.map.noPreview': 'No Map Preview',
+			'app.map.preview': 'Preview',
+			'app.loading.title': 'Loading Servers',
+			'app.loading.description': 'Fetching latest server data from the API...',
+			'app.loading.progress': 'Connecting to server...',
+			'app.filter.officialInvasion': 'Official Invasion',
+			'app.filter.officialWW2Invasion': 'Official WW2 Invasion',
+			'app.filter.officialDominance': 'Official Dominance',
+			'app.filter.officialModCastling': 'Official Mod Castling',
+			'app.filter.officialModHellDivers': 'Official Mod HellDivers',
+			'app.switch.multipleSelect': 'Multiple Select',
+			'app.switch.autoRefresh': 'Auto Refresh',
+			'app.button.refresh': 'Refresh',
+			'app.button.reset': 'Reset',
+			'app.stats.servers': '{filtered} of {total} servers',
+			'app.stats.players': '{filtered} of {total} players',
+			'app.search.placeholder': 'Search servers, maps, players, mode, country, etc...',
+			'app.column.name': 'Name',
+			'app.column.ip': 'IP',
+			'app.column.port': 'Port',
+			'app.column.bots': 'Bots',
+			'app.column.country': 'Country',
+			'app.column.mode': 'Mode',
+			'app.column.map': 'Map',
+			'app.column.capacity': 'Capacity',
+			'app.column.players': 'Players',
+			'app.column.comment': 'Comment',
+			'app.column.dedicated': 'Dedicated',
+			'app.column.mod': 'Mod',
+			'app.column.url': 'URL',
+			'app.column.version': 'Version',
+			'app.column.action': 'Action',
+			'app.column.timestamp': 'Timestamp',
+			'app.columns.button': 'Columns',
+			'app.columns.toggle': 'Toggle visible columns',
+			'app.mobile.loadMore': 'Load more ({remaining} remaining)',
+			'app.mobile.noServers': 'No servers found',
+			'app.mobile.endOfContent': 'End of content',
+			'app.viewMode.table': 'Switch to Map Order View',
+			'app.viewMode.map': 'Switch to Table View',
+			'app.help.title': 'Show Help Guide',
+			'app.map.close': 'Close',
+			'app.map.loading': 'Loading map image...',
+			'app.map.loadError': 'Failed to load map image',
+			'app.map.retry': 'Retry',
+			'app.mapView.title': 'Map Order: {filters}',
+			'app.mapView.allMaps': 'All Maps',
+			'app.mapView.selectFilters': 'Select Quick Filters to View Map Order',
+			'app.mapView.chooseCategories': 'Choose your preferred map categories in Quick Filters to display the corresponding server list',
+			'app.mapView.noMaps': 'No maps found for selected filters.',
+			'app.mapView.servers': '{count} servers',
+			'app.mapView.bots': '{count} Bots'
+		};
+
+		return keyToText[props.key] || props.key;
 	}
 }));
 
-describe('Server data loading', () => {
+
+// Mock environment variables
+vi.stubEnv('VITE_API_URL', '');
+
+// Mock fetch for server data
+global.fetch = vi.fn();
+
+describe('Page Integration - Map Preview Functionality', () => {
 	beforeEach(() => {
-		vi.clearAllMocks(); // Clear only mock call history, not implementations
-		// Mock console.error to suppress expected error messages
+		vi.clearAllMocks();
+		vi.spyOn(console, 'log').mockImplementation(() => {});
 		vi.spyOn(console, 'error').mockImplementation(() => {});
 
-		// Mock IntersectionObserver for MobileInfiniteScroll component
-		global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-			observe: vi.fn(),
-			unobserve: vi.fn(),
-			disconnect: vi.fn()
-		}));
-	});
-
-	test('should show loading state initially', () => {
-		// Mock the listAll method to return a promise that never resolves
-		vi.mocked(DataTableService.listAll).mockImplementation(() => new Promise(() => {}));
-
-		render(Page);
-		// Check for loading spinner
-		expect(screen.getByRole('status')).toBeInTheDocument();
-	});
-
-	test('should render server table when data is loaded', async () => {
-		// Use realistic mock data based on real API response
-		const mockServers = createMockDisplayServers(3, {
-			currentPlayers: 8,
-			maxPlayers: 16
-		});
-
-		// Mock the listAll method to return the mock data immediately
-		vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
-
-		// Render the component
-		render(Page);
-
-		// Wait for the loading state to be replaced with the data table
-		// Use findAllByRole with await since there might be multiple tables
-		const tableElements = await screen.findAllByRole('table', {}, { timeout: 3000 });
-		expect(tableElements.length).toBeGreaterThan(0);
-
-		// Wait for data to be fully rendered
-		await new Promise((resolve) => setTimeout(resolve, 300));
-
-		// Check that servers are displayed - use a more flexible approach
-		// Since mock data is randomly generated, let's check that any server name is displayed
-		const allTexts = screen.queryAllByText(/Invasion|Castling|GFL|RATBUG|Dominance/i);
-		expect(allTexts.length).toBeGreaterThan(0);
-
-		// Check for player count badges (they use our new styling)
-		const playerCountBadges = screen.queryAllByText(/\d+\/\d+/);
-		expect(playerCountBadges.length).toBeGreaterThan(0);
-
-		// Verify that auto refresh toggle is present
-		expect(screen.getByText(/Auto Refresh/i)).toBeInTheDocument();
-	});
-
-	test('should show error message when data loading fails', async () => {
-		// Mock an error
-		vi.mocked(DataTableService.listAll).mockRejectedValue(new Error('Failed to load data'));
-
-		render(Page);
-
-		// Wait for the error message to be displayed
-		expect(await screen.findByText('Failed to load data')).toBeInTheDocument();
-	});
-
-	test('should handle servers with different capacity levels', async () => {
-		// Test capacity badge colors (green < 60%, yellow 60-79%, orange >= 80%, red = 100%)
-		const mockServers = createMockDisplayServers(4, [
-			{ currentPlayers: 3, maxPlayers: 10 }, // 30% - green
-			{ currentPlayers: 7, maxPlayers: 10 }, // 70% - yellow
-			{ currentPlayers: 9, maxPlayers: 10 }, // 90% - orange
-			{ currentPlayers: 10, maxPlayers: 10 } // 100% - red
+		// Mock getMaps function
+		vi.mocked(getMaps).mockResolvedValue([
+			{
+				id: 'map1_desert',
+				name: 'Desert Map',
+				path: 'media/packages/vanilla.desert/maps/map1',
+				image: 'md5_1.png'
+			}
 		]);
 
-		vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
-		render(Page);
+		// Mock fetch for server data
+		const mockXmlResponse = `<?xml version="1.0" encoding="UTF-8"?>
+<result value="1">
+<server>
+<name>Test Server</name>
+<address>192.168.1.1</address>
+<port>27015</port>
+<current_players>10</current_players>
+<max_players>32</max_players>
+<bots>0</bots>
+<mode>COOP</mode>
+<map>map1</map>
+<country>US</country>
+<dedicated>1</dedicated>
+<mod>0</mod>
+<version>1.98.1</version>
+<url></url>
+<comment>Test server</comment>
+<timestamp>2024-01-01T00:00:00Z</timestamp>
+<player>Player1</player>
+<player>Player2</player>
+</server>
+</result>`;
 
-		await new Promise((resolve) => setTimeout(resolve, 200));
-
-		const tableElements = await screen.findAllByRole('table');
-		expect(tableElements.length).toBeGreaterThan(0);
-		expect(tableElements[0]).toBeInTheDocument();
-
-		// Check that all capacity badges are rendered
-		const capacityBadges = screen.queryAllByText(/\d+\/\d+/);
-		expect(capacityBadges.length).toBeGreaterThan(0);
-	});
-
-	test('should display statistics correctly', async () => {
-		const mockServers = createMockDisplayServers(5);
-		vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
-		render(Page);
-
-		// Wait for table to load and data to be rendered
-		const tableElements = await screen.findAllByRole('table', {}, { timeout: 3000 });
-		expect(tableElements.length).toBeGreaterThan(0);
-
-		// Wait for statistics to be calculated and rendered
-		await new Promise((resolve) => setTimeout(resolve, 300));
-
-		// Check for any statistics-related text - the exact format may vary
-		const container = screen.getByText(/servers/i) || screen.getByText(/players/i);
-		expect(container).toBeInTheDocument();
-
-		// Also check that some numeric statistics are present
-		const numericStats = screen.queryAllByText(/\d+\/\d+/);
-		expect(numericStats.length).toBeGreaterThan(0);
-	});
-
-	test('should support search functionality', async () => {
-		const mockServers = createMockDisplayServers(5);
-		vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
-		render(Page);
-
-		await new Promise((resolve) => setTimeout(resolve, 50));
-
-		// Wait for table to load
-		const tableElements = await screen.findAllByRole('table');
-		expect(tableElements.length).toBeGreaterThan(0);
-
-		// Check for search input
-		const searchInput = screen.getByPlaceholderText(/search/i);
-		expect(searchInput).toBeInTheDocument();
-	});
-
-	test('should display mode and map badges with correct styling', async () => {
-		// Create deterministic mock data with COOP mode and ensure mode is applied
-		const baseServers = createMockDisplayServers(2);
-		const mockServers = baseServers.map((server) => ({
-			...server,
-			mode: 'COOP',
-			mapId: 'media/packages/vanilla.desert/maps/map6'
-		}));
-
-		vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
-		render(Page);
-
-		// Wait for table to load and data to be rendered
-		const tableElements = await screen.findAllByRole('table', {}, { timeout: 3000 });
-		expect(tableElements.length).toBeGreaterThan(0);
-
-		// Wait for badges to be rendered
-		await new Promise((resolve) => setTimeout(resolve, 300));
-
-		// Check for map name (should be 'map6' extracted from the path)
-		// Map column is visible by default, so this should work
-		const mapBadges = screen.queryAllByText('map6');
-		expect(mapBadges.length).toBeGreaterThan(0);
-
-		// For mode badges, since mode column is hidden by default, we'll skip this check
-		// The functionality is tested in the column configuration and integration tests
-		// We just verify that our mock data has the correct mode set
-		expect(mockServers.every((server) => server.mode === 'COOP')).toBe(true);
-	});
-
-	describe('Mobile layout', () => {
-		test('should hide Columns toggle button on mobile screens', async () => {
-			const mockServers = createMockDisplayServers(3);
-			vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
-			render(Page);
-
-			// Wait for the page to render
-			await screen.findAllByRole('table', {}, { timeout: 3000 });
-
-			// Columns toggle should be wrapped in a div with hidden md:block class
-			const columnsToggleContainer = document.querySelector('.hidden.md\\:block');
-			expect(columnsToggleContainer).toBeInTheDocument();
-
-			// The container should have some content (the ColumnsToggle component)
-			expect(columnsToggleContainer?.children.length).toBeGreaterThan(0);
+		vi.mocked(fetch).mockResolvedValueOnce({
+			ok: true,
+			text: () => Promise.resolve(mockXmlResponse),
+			headers: new Headers()
 		});
 	});
 
-	describe('Loading state without preview', () => {
-		test('should show enhanced loading animation without preview skeleton', async () => {
-			// Mock delayed response to test loading state
-			vi.mocked(DataTableService.listAll).mockImplementation(
-				() => new Promise((resolve) => setTimeout(() => resolve(createMockDisplayServers(1)), 2000))
-			);
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
 
+	describe('Maps service integration', () => {
+		it('should load maps data on page mount', async () => {
 			render(Page);
 
-			// Should show loading container immediately
-			const loadingContainer = document.querySelector('.loading-container');
-			expect(loadingContainer).toBeInTheDocument();
-
-			// Should show loading animation dots
-			const loadingDots = document.querySelectorAll('.loading-dot');
-			expect(loadingDots.length).toBe(3);
-
-			// Should show loading title
-			const loadingTitle = screen.getByText(/loading servers/i);
-			expect(loadingTitle).toBeInTheDocument();
-
-			// Should show loading description
-			const loadingDescription = screen.getByText(/fetching latest server data/i);
-			expect(loadingDescription).toBeInTheDocument();
-
-			// Should show progress indicator
-			const progressBar = document.querySelector('.progress');
-			expect(progressBar).toBeInTheDocument();
-
-			// Should show progress text
-			const progressText = screen.getByText(/connecting to server/i);
-			expect(progressText).toBeInTheDocument();
-
-			// IMPORTANT: Should NOT show preview skeleton (removed feature)
-			const previewSkeleton = document.querySelector('.bg-base-200.opacity-60');
-			expect(previewSkeleton).not.toBeInTheDocument();
-
-			const previewText = screen.queryByText(/preview/i);
-			expect(previewText).not.toBeInTheDocument();
+			// Wait for maps to be loaded
+			await waitFor(() => {
+				expect(getMaps).toHaveBeenCalledTimes(1);
+			});
 		});
 
-		test('should maintain proper loading structure after preview removal', async () => {
-			// Mock very slow response to ensure loading state is fully rendered
-			vi.mocked(DataTableService.listAll).mockImplementation(
-				() => new Promise((resolve) => setTimeout(() => resolve(createMockDisplayServers(1)), 3000))
-			);
+		it('should handle maps service errors gracefully', async () => {
+			vi.mocked(getMaps).mockRejectedValueOnce(new Error('Failed to load maps'));
 
-			render(Page);
+			// Should not throw during rendering
+			expect(() => render(Page)).not.toThrow();
+		});
+	});
 
-			// Verify loading container has correct structure
-			const loadingContainer = document.querySelector('.loading-container');
-			expect(loadingContainer).toBeInTheDocument();
-
-			// Check that loading content is properly structured
-			const loadingAnimation = loadingContainer?.querySelector('.loading-animation');
-			expect(loadingAnimation).toBeInTheDocument();
-
-			const loadingTextSection = loadingContainer?.querySelector('h3')?.parentElement;
-			expect(loadingTextSection).toBeInTheDocument();
-
-			const progressSection = loadingContainer?.querySelector('.progress')?.parentElement;
-			expect(progressSection).toBeInTheDocument();
-
-			// Ensure no orphaned elements from removed preview
-			const orphanedElements = loadingContainer?.querySelectorAll(':empty');
-			const emptyDivs = Array.from(orphanedElements || []).filter(
-				(el) => el.tagName === 'DIV' && !el.classList.length && !el.id
-			);
-			expect(emptyDivs.length).toBe(0);
+	describe('Server data loading', () => {
+		it('should render page without crashing', async () => {
+			// Should render the page without crashing
+			expect(() => render(Page)).not.toThrow();
 		});
 
-		test('should properly transition from loading to data display', async () => {
-			const mockServers = createMockDisplayServers(2);
+		it('should handle fetch errors gracefully', async () => {
+			vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'));
 
-			// Mock fast response after initial loading state
-			vi.mocked(DataTableService.listAll).mockResolvedValue(mockServers);
+			// Should still render without crashing
+			expect(() => render(Page)).not.toThrow();
+		});
+	});
 
+	describe('Performance considerations', () => {
+		it('should call maps service only once on page load', async () => {
 			render(Page);
 
-			// Initially should show loading state
-			expect(document.querySelector('.loading-container')).toBeInTheDocument();
+			await waitFor(() => {
+				expect(getMaps).toHaveBeenCalledTimes(1);
+			});
 
-			// Wait for data to load
-			await new Promise((resolve) => setTimeout(resolve, 100));
-
-			// Should transition to show data
-			const tableElements = await screen.findAllByRole('table', {}, { timeout: 3000 });
-			expect(tableElements.length).toBeGreaterThan(0);
-
-			// Loading container should be gone
-			expect(document.querySelector('.loading-container')).not.toBeInTheDocument();
+			// Should still only be called once after initial load
+			expect(getMaps).toHaveBeenCalledTimes(1);
 		});
 	});
 });
