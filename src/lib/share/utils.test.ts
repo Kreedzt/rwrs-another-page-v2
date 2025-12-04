@@ -1,5 +1,6 @@
-import { describe, test, expect } from 'vitest';
-import { parseServerListFromString } from './utils';
+import { describe, test, expect, vi } from 'vitest';
+import { parseServerListFromString, getMapKey, getCurrentTimeStr, generateEmptyOnlineStatItem } from './utils';
+import type { IDisplayServerItem } from '$lib/models/data-table.model';
 
 describe('XML Player List Parsing', () => {
 	describe('fixPlayerList function (via parseServerListFromString)', () => {
@@ -182,6 +183,169 @@ describe('XML Player List Parsing', () => {
 			// Should preserve valid players with special characters
 			expect(result).toHaveLength(1);
 			expect(result[0].playerList).toEqual(['[Admin] PlayerName', 'Player with spaces', 'Player-Name_123']);
+		});
+	});
+});
+
+describe('Utility Functions', () => {
+	describe('getMapKey function', () => {
+		test('should generate correct map key from server item', () => {
+			const server: IDisplayServerItem = {
+				id: '1',
+				name: 'Test Server',
+				ipAddress: '192.168.1.1',
+				port: 27015,
+				mapId: 'test_map',
+				mapName: 'Test Map',
+				bots: 0,
+				country: 'US',
+				currentPlayers: 10,
+				timeStamp: 1234567890,
+				version: '1.0',
+				dedicated: true,
+				mod: false,
+				playerList: [],
+				comment: '',
+				url: '',
+				maxPlayers: 32,
+				mode: 'COOP',
+				realm: 'official_invasion'
+			};
+
+			const result = getMapKey(server);
+			expect(result).toBe('192.168.1.1:27015');
+		});
+
+		test('should handle different IP and port combinations', () => {
+			const server1: IDisplayServerItem = {
+				id: '1',
+				name: 'Server 1',
+				ipAddress: '127.0.0.1',
+				port: 8080,
+				mapId: '',
+				mapName: '',
+				bots: 0,
+				country: '',
+				currentPlayers: 0,
+				timeStamp: 0,
+				version: '',
+				dedicated: false,
+				mod: false,
+				playerList: [],
+				comment: '',
+				url: '',
+				maxPlayers: 0,
+				mode: '',
+				realm: null
+			};
+
+			const server2: IDisplayServerItem = {
+				...server1,
+				ipAddress: '10.0.0.1',
+				port: 7777
+			};
+
+			expect(getMapKey(server1)).toBe('127.0.0.1:8080');
+			expect(getMapKey(server2)).toBe('10.0.0.1:7777');
+		});
+
+		test('should handle edge cases like localhost and special ports', () => {
+			const localhostServer: IDisplayServerItem = {
+				id: '1',
+				name: 'Local Server',
+				ipAddress: 'localhost',
+				port: 27015,
+				mapId: '',
+				mapName: '',
+				bots: 0,
+				country: '',
+				currentPlayers: 0,
+				timeStamp: 0,
+				version: '',
+				dedicated: false,
+				mod: false,
+				playerList: [],
+				comment: '',
+				url: '',
+				maxPlayers: 0,
+				mode: '',
+				realm: null
+			};
+
+			const result = getMapKey(localhostServer);
+			expect(result).toBe('localhost:27015');
+		});
+	});
+
+	describe('getCurrentTimeStr function', () => {
+		test('should return current time in correct format', () => {
+			const result = getCurrentTimeStr();
+
+			// Should match format: YYYY-MM-DD HH:MM:SS
+			expect(result).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+		});
+
+		test('should pad single digits with zeros', () => {
+			// Mock Date to ensure consistent testing
+			const mockDate = new Date('2024-01-05T03:07:09');
+			vi.useFakeTimers();
+			vi.setSystemTime(mockDate);
+
+			const result = getCurrentTimeStr();
+			expect(result).toBe('2024-01-05 03:07:09');
+
+			vi.useRealTimers();
+		});
+
+		test('should handle leap year and end of month correctly', () => {
+			const mockDate = new Date('2024-02-29T23:59:59');
+			vi.useFakeTimers();
+			vi.setSystemTime(mockDate);
+
+			const result = getCurrentTimeStr();
+			expect(result).toBe('2024-02-29 23:59:59');
+
+			vi.useRealTimers();
+		});
+	});
+
+	describe('generateEmptyOnlineStatItem function', () => {
+		test('should return OnlineStats with all zeros', () => {
+			const result = generateEmptyOnlineStatItem();
+
+			expect(result).toEqual({
+				onlineServerCount: 0,
+				allServerCount: 0,
+				onlinePlayerCount: 0,
+				playerCapacityCount: 0
+			});
+		});
+
+		test('should return a new object each time', () => {
+			const result1 = generateEmptyOnlineStatItem();
+			const result2 = generateEmptyOnlineStatItem();
+
+			// Should not be the same reference
+			expect(result1).not.toBe(result2);
+
+			// But should have the same values
+			expect(result1).toEqual(result2);
+		});
+
+		test('should return object with correct structure', () => {
+			const result = generateEmptyOnlineStatItem();
+
+			// Check that all required properties exist
+			expect(result).toHaveProperty('onlineServerCount');
+			expect(result).toHaveProperty('allServerCount');
+			expect(result).toHaveProperty('onlinePlayerCount');
+			expect(result).toHaveProperty('playerCapacityCount');
+
+			// Check that all values are numbers
+			expect(typeof result.onlineServerCount).toBe('number');
+			expect(typeof result.allServerCount).toBe('number');
+			expect(typeof result.onlinePlayerCount).toBe('number');
+			expect(typeof result.playerCapacityCount).toBe('number');
 		});
 	});
 });
