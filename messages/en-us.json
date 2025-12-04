@@ -7,6 +7,16 @@
 			"description": "Fetching latest server data from the API...",
 			"progress": "Connecting to server..."
 		},
+		"map": {
+			"preview": "Preview Map",
+			"noPreview": "No Map Preview",
+			"viewFullSize": "View Full Size",
+			"close": "Close",
+			"buttonPreviewMap": "Preview Map",
+			"loading": "Loading map image...",
+			"loadError": "Failed to load map image",
+			"retry": "Retry"
+		},
 		"title": "RWRS Another Page(V2)",
 		"search": {
 			"placeholder": "Search servers, maps, players, mode, country, etc..."

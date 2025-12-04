@@ -2,12 +2,14 @@
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import type { IDisplayServerItem } from '$lib/models/data-table.model';
 	import type { IColumn } from '$lib/models/data-table.model';
+	import type { MapData } from '$lib/services/maps';
 
 	interface Props {
 		data: IDisplayServerItem[];
 		columns: IColumn[];
 		visibleColumns: Record<string, boolean>;
 		searchQuery: string;
+		maps?: MapData[];
 		onRowAction: (event: { item: IDisplayServerItem; action: string }) => void;
 		onSort?: (column: string) => void;
 		sortColumn?: string | null;
@@ -18,6 +20,7 @@
 		data = [],
 		columns = [],
 		searchQuery = '',
+		maps = [],
 		onRowAction = () => {},
 		visibleColumns = {},
 		onSort = () => {},
@@ -29,12 +32,12 @@
 	function getDisplayValue(item: IDisplayServerItem, column: IColumn): string {
 		// If there's a search query and the column supports highlighting, use that
 		if (searchQuery && column.getValueWithHighlight) {
-			return column.getValueWithHighlight(item, searchQuery);
+			return column.getValueWithHighlight(item, searchQuery, maps);
 		}
 
 		// Otherwise use the regular getValue or fallback to the raw value
 		if (column.getValue) {
-			return column.getValue(item);
+			return column.getValue(item, maps);
 		}
 
 		return (item as any)[column.key] ?? '-';

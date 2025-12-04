@@ -1,4 +1,5 @@
 import type { Nullable } from '$lib/share/types';
+import type { MapData } from '$lib/services/maps';
 
 export interface IGroupedServerItem {
 	groupName: string;
@@ -68,8 +69,8 @@ export interface IColumn {
 	key: string;
 	label: string;
 	i18n?: string;
-	getValue?: (server: IDisplayServerItem) => string;
-	getValueWithHighlight?: (server: IDisplayServerItem, query: string) => string;
+	getValue?: (server: IDisplayServerItem, maps?: MapData[]) => string;
+	getValueWithHighlight?: (server: IDisplayServerItem, query: string, maps?: MapData[]) => string;
 	headerClass?: string;
 	cellClass?: string;
 	alignment?: 'left' | 'center' | 'right' | 'top';

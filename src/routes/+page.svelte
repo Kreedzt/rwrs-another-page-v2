@@ -5,10 +5,13 @@
 	import { userSettingsService, type UserSettings } from '$lib/services/user-settings';
 	import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
 	import { columns } from '$lib/config/columns';
+	// Import services
+	import { getMaps, type MapData } from '$lib/services/maps';
 	// Import components
 	import SearchInput from '$lib/components/SearchInput.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import MobileDataTable from '$lib/components/MobileDataTable.svelte';
+	import MapPreview from '$lib/components/MapPreview.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
 	import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
@@ -25,10 +28,16 @@
 
 	// State variables
 	let servers = $state<IDisplayServerItem[]>([]);
+	let maps = $state<MapData[]>([]);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let searchQuery = $state('');
 	let searchInputRef = $state<HTMLInputElement | null>(null);
+
+	// Map preview state
+	let mapPreviewData = $state<MapData | undefined>(undefined);
+	let mapPreviewShow = $state(false);
+	let mapPreviewPosition = $state({ x: 0, y: 0 });
 
 	// User settings from localStorage
 	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
@@ -234,9 +243,6 @@
 
 	// Sort functions
 	function handleSort(column: string) {
-		// Define numeric columns
-		const numericColumns = ['bots', 'playerCount', 'port', 'currentPlayers', 'maxPlayers'];
-
 		if (sortColumn === column) {
 			// Same column - cycle through sort directions
 			if (sortDirection === 'desc') {
@@ -326,6 +332,22 @@
 		mobileExpandedCards[serverId] = !mobileExpandedCards[serverId];
 	}
 
+	function handleMapView(mapData: MapData) {
+		// For desktop, this opens a full-size view
+		// For mobile, this will be handled by the same MapPreview component
+		console.log('handleMapView called with:', mapData);
+		mapPreviewData = mapData;
+		mapPreviewShow = true;
+		mapPreviewPosition = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+	}
+
+	function handleMapPreviewClose() {
+		console.log('handleMapPreviewClose called');
+		mapPreviewShow = false;
+		// Don't immediately clear mapPreviewData to allow reopening
+		// mapPreviewData = undefined;
+	}
+
 	// Helper function to get the display value for a column
 	function getDisplayValue(
 		item: IDisplayServerItem,
@@ -364,6 +386,7 @@
 		try {
 			loading = true;
 			servers = await DataTableService.listAll();
+			console.log('servers', $state.snapshot(servers));
 			// Reset mobile infinite scroll when data refreshes
 			mobileCurrentPage = 1;
 		} catch (err) {
@@ -371,6 +394,15 @@
 			console.error('Error loading servers:', err);
 		} finally {
 			loading = false;
+		}
+	}
+
+	async function loadMaps() {
+		try {
+			maps = await getMaps();
+			console.log('maps', $state.snapshot(maps));
+		} catch (err) {
+			console.error('Error loading maps:', err);
 		}
 	}
 
@@ -403,7 +435,12 @@
 	onMount(async () => {
 		// Initialize state from URL before loading data
 		initializeFromUrl();
-		await refreshList();
+
+		// Load maps data first (fast API) and servers data (slow API) in parallel
+		await Promise.all([
+			loadMaps(),
+			refreshList()
+		]);
 
 		// Subscribe to URL changes
 		const unsubscribe = createUrlStateSubscriber((urlState: UrlState) => {
@@ -431,6 +468,42 @@
 		// Cleanup function
 		return () => {
 			unsubscribe?.();
+			// Remove map preview event listeners
+			document.removeEventListener('click', handleMapPreviewClick);
+		};
+	});
+
+	// Map preview event handlers for both desktop and mobile
+	function handleMapPreviewClick(event: MouseEvent) {
+		const target = event.target as HTMLElement;
+		const mapPreviewElement = target.closest('[data-map-action="preview"]');
+		if (mapPreviewElement) {
+			event.preventDefault();
+			event.stopPropagation();
+
+			const mapPath = mapPreviewElement.getAttribute('data-map-path');
+			const mapImage = mapPreviewElement.getAttribute('data-map-image');
+			const mapName = mapPreviewElement.getAttribute('data-map-name');
+
+			if (mapPath && mapImage && mapName) {
+				const mapData = maps.find(m => m.path === mapPath);
+				if (mapData) {
+					mapPreviewData = mapData;
+					mapPreviewShow = true;
+					mapPreviewPosition = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+				}
+			}
+		}
+	}
+
+	// Add event listeners for map preview
+	$effect(() => {
+		if (maps.length > 0) {
+			document.addEventListener('click', handleMapPreviewClick);
+		}
+
+		return () => {
+			document.removeEventListener('click', handleMapPreviewClick);
 		};
 	});
 </script>
@@ -523,13 +596,10 @@
 					<!-- Loading text -->
 					<div class="mb-4 text-center">
 						<h3 class="text-base-content mb-2 text-lg font-semibold">
-							<TranslatedText key="app.loading.title" fallback="Loading Servers" />
+							<TranslatedText key="app.loading.title" />
 						</h3>
 						<p class="text-base-content/70 max-w-md text-sm">
-							<TranslatedText
-								key="app.loading.description"
-								fallback="Fetching latest server data from the API..."
-							/>
+							<TranslatedText key="app.loading.description" />
 						</p>
 					</div>
 
@@ -539,7 +609,7 @@
 							<div class="progress-bar bg-primary h-2 w-[60%] animate-pulse"></div>
 						</div>
 						<p class="text-base-content/50 mt-2 text-center text-xs">
-							<TranslatedText key="app.loading.progress" fallback="Connecting to server..." />
+							<TranslatedText key="app.loading.progress" />
 						</p>
 					</div>
 				</div>
@@ -673,6 +743,39 @@
 												</div>
 											</div>
 										{/each}
+
+										<!-- Map preview section for mobile -->
+										{#if maps.find(m => m.path === item.mapId)}
+											{@const mapData = maps.find(m => m.path === item.mapId)}
+											<div class="border-base-200 mt-4 pt-3 border-t">
+												<div class="flex items-center justify-between">
+													<span class="text-base-content/60 min-w-20 flex-shrink-0 text-sm">
+														<TranslatedText key="app.map.preview" />:
+													</span>
+													<button
+														class="btn btn-outline btn-sm text-green-600 border-green-300 hover:bg-green-50"
+														onclick={() => {
+															console.log('Mobile map preview clicked for mapId:', item.mapId);
+															console.log('Available maps:', maps.length);
+															const previewData = maps.find(m => m.path === item.mapId);
+															if (previewData) {
+																console.log('Found map preview data:', previewData);
+																handleMapView(previewData);
+															} else {
+																console.log('No map preview data found for:', item.mapId);
+															}
+														}}
+														type="button"
+													>
+														<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+														</svg>
+														<TranslatedText key="app.map.buttonPreviewMap" />
+													</button>
+												</div>
+											</div>
+										{/if}
 									</div>
 								</div>
 							{/if}
@@ -705,6 +808,7 @@
 						data={derivedData().paginatedServers}
 						{columns}
 						{searchQuery}
+						{maps}
 						{onRowAction}
 						{visibleColumns}
 						onSort={handleSort}
@@ -735,6 +839,15 @@
 
 	<!-- Global keyboard search functionality -->
 	<GlobalKeyboardSearch searchInput={searchInputRef} onSearch={handleGlobalSearch} />
+
+	<!-- Map preview component -->
+	<MapPreview
+		mapData={mapPreviewData}
+		show={mapPreviewShow}
+		position={mapPreviewPosition}
+		key={mapPreviewData?.path}
+		onClose={handleMapPreviewClose}
+	/>
 </section>
 
 <style>

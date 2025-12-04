@@ -2,15 +2,18 @@ import type { IDisplayServerItem, OnlineStats, IRes } from '$lib/models/data-tab
 import { XMLParser } from 'fast-xml-parser';
 
 const fixPlayerList = (raw: string | undefined | string[]): string[] => {
+	const players: string[] = [];
+
 	if (Array.isArray(raw)) {
-		return raw.map((player) => player.toString());
+		players.push(...raw.map((player) => player.toString()));
+	} else if (typeof raw === 'string') {
+		players.push(raw);
 	}
 
-	if (typeof raw === 'string') {
-		return [raw];
-	}
-
-	return [];
+	// Filter out empty strings, null, undefined, and whitespace-only entries
+	return players.filter(
+		(player) => player && typeof player === 'string' && player.trim().length > 0
+	);
 };
 
 export const getMapKey = (s: IDisplayServerItem) => {
