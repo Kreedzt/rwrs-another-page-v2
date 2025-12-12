@@ -187,21 +187,21 @@
 	:global(.action-cell) {
 		position: sticky;
 		right: 0;
-		z-index: 999;
+		z-index: 10;
 		min-width: 8rem;
 		width: 8rem;
 		border-left: 2px solid hsl(var(--bc) / 0.15);
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25);
+		box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
 	}
 
 	:global(.action-header) {
 		position: sticky;
 		right: 0;
-		z-index: 1000;
+		z-index: 20;
 		min-width: 8rem;
 		width: 8rem;
 		border-left: 2px solid hsl(var(--bc) / 0.25);
-		box-shadow: -6px 0 16px rgba(0, 0, 0, 0.3);
+		box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
 	}
 
 	/* Mobile responsive styles */
