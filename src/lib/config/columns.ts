@@ -107,8 +107,9 @@ export const columns: IColumn[] = [
 		key: 'name',
 		label: 'Name',
 		i18n: 'app.column.name',
-		getValueWithHighlight: (server: IDisplayServerItem, query: string, maps?: MapData[]) =>
-			getMapPreviewHtml(server, query, maps)
+		getValue: (server: IDisplayServerItem) => server.name,
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+			highlightMatch(server.name, query)
 	},
 	{
 		key: 'ipAddress',
