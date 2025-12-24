@@ -3,16 +3,24 @@
 		placeholder?: string;
 		value?: string;
 		oninput?: (value: string) => void;
+		onEnter?: (value: string) => void;
 		onRef?: (input: HTMLInputElement) => void;
 	}
 
-	let { placeholder = 'Search...', value = $bindable(''), oninput, onRef }: Props = $props();
+	let { placeholder = 'Search...', value = $bindable(''), oninput, onEnter, onRef }: Props = $props();
 
 	let inputElement: HTMLInputElement;
 
 	function handleInput(e: Event) {
 		const target = e.target as HTMLInputElement;
 		oninput?.(target.value);
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			const target = e.target as HTMLInputElement;
+			onEnter?.(target.value);
+		}
 	}
 
 	// Expose the input element to parent
@@ -49,6 +57,7 @@
 			class="grow focus:outline-none"
 			bind:value
 			oninput={handleInput}
+			onkeydown={handleKeydown}
 		/>
 	</label>
 </div>

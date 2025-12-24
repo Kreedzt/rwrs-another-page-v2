@@ -104,7 +104,7 @@
 {:else}
 	<!-- Desktop table view (hidden on mobile) -->
 	<div class="w-full">
-		<table class="table-pin-rows mb-0 table border-0">
+		<table class="table-pin-rows mb-0 table table-zebra border-0">
 			<thead>
 				<tr>
 					{#each columns as column (column.key)}

@@ -1,13 +1,10 @@
 <script lang="ts">
-	import Header from './Header.svelte';
 	import '../app.css';
 
 	let { children } = $props();
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<Header />
-
 	<main class="flex w-full flex-1 flex-col">
 		{@render children()}
 	</main>

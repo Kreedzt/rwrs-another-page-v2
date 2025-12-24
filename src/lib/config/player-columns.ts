@@ -1,0 +1,162 @@
+import type { IPlayerColumn } from '$lib/models/player.model';
+import type { Nullable } from '$lib/share/types';
+import { highlightMatch } from '$lib/utils/highlight';
+
+function formatNumber(value: Nullable<number>): string {
+	if (value === null || value === undefined) return '-';
+	return value.toLocaleString();
+}
+
+function formatKd(kd: Nullable<number>): string {
+	if (kd === null || kd === undefined) return '-';
+	const formatted = kd.toFixed(2);
+
+	// Color coding based on KD ratio
+	if (kd >= 3.0) {
+		return `<span class="text-green-600 font-semibold">${formatted}</span>`;
+	} else if (kd >= 1.5) {
+		return `<span class="text-yellow-600">${formatted}</span>`;
+	} else if (kd >= 1.0) {
+		return `<span class="text-orange-600">${formatted}</span>`;
+	} else {
+		return `<span class="text-red-600">${formatted}</span>`;
+	}
+}
+
+export const playerColumns: IPlayerColumn[] = [
+	{
+		key: 'rowNumber',
+		label: '#',
+		i18n: 'app.player.column.rowNumber',
+		alignment: 'center',
+		getValue: (player) => player.rowNumber.toString(),
+		getValueWithHighlight: (player, _query) => player.rowNumber.toString()
+	},
+	{
+		key: 'username',
+		label: 'Username',
+		i18n: 'app.player.column.username',
+		getValue: (player) => player.username,
+		getValueWithHighlight: (player, query) => highlightMatch(player.username, query)
+	},
+	{
+		key: 'kills',
+		label: 'Kills',
+		i18n: 'app.player.column.kills',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.kills),
+		getValueWithHighlight: (player, _query) => formatNumber(player.kills)
+	},
+	{
+		key: 'deaths',
+		label: 'Deaths',
+		i18n: 'app.player.column.deaths',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.deaths),
+		getValueWithHighlight: (player, _query) => formatNumber(player.deaths)
+	},
+	{
+		key: 'kd',
+		label: 'K/D',
+		i18n: 'app.player.column.kd',
+		alignment: 'right',
+		getValue: (player) => formatKd(player.kd),
+		getValueWithHighlight: (player, _query) => formatKd(player.kd)
+	},
+	{
+		key: 'score',
+		label: 'K-D',
+		i18n: 'app.player.column.score',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.score),
+		getValueWithHighlight: (player, _query) => formatNumber(player.score)
+	},
+	{
+		key: 'timePlayed',
+		label: 'Time',
+		i18n: 'app.player.column.timePlayed',
+		alignment: 'right',
+		getValue: (player) => player.timePlayed || '-'
+	},
+	{
+		key: 'longestKillStreak',
+		label: 'Streak',
+		i18n: 'app.player.column.longestKillStreak',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.longestKillStreak),
+		getValueWithHighlight: (player, _query) => formatNumber(player.longestKillStreak)
+	},
+	{
+		key: 'targetsDestroyed',
+		label: 'Targets',
+		i18n: 'app.player.column.targetsDestroyed',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.targetsDestroyed),
+		getValueWithHighlight: (player, _query) => formatNumber(player.targetsDestroyed)
+	},
+	{
+		key: 'vehiclesDestroyed',
+		label: 'Vehicles',
+		i18n: 'app.player.column.vehiclesDestroyed',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.vehiclesDestroyed),
+		getValueWithHighlight: (player, _query) => formatNumber(player.vehiclesDestroyed)
+	},
+	{
+		key: 'soldiersHealed',
+		label: 'Heals',
+		i18n: 'app.player.column.soldiersHealed',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.soldiersHealed),
+		getValueWithHighlight: (player, _query) => formatNumber(player.soldiersHealed)
+	},
+	{
+		key: 'teamkills',
+		label: "TK's",
+		i18n: 'app.player.column.teamkills',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.teamkills),
+		getValueWithHighlight: (player, _query) => formatNumber(player.teamkills)
+	},
+	{
+		key: 'distanceMoved',
+		label: 'Distance',
+		i18n: 'app.player.column.distanceMoved',
+		alignment: 'right',
+		getValue: (player) => player.distanceMoved || '-'
+	},
+	{
+		key: 'shotsFired',
+		label: 'Shots',
+		i18n: 'app.player.column.shotsFired',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.shotsFired),
+		getValueWithHighlight: (player, _query) => formatNumber(player.shotsFired)
+	},
+	{
+		key: 'throwablesThrown',
+		label: 'Throws',
+		i18n: 'app.player.column.throwablesThrown',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.throwablesThrown),
+		getValueWithHighlight: (player, _query) => formatNumber(player.throwablesThrown)
+	},
+	{
+		key: 'rankProgression',
+		label: 'XP',
+		i18n: 'app.player.column.rankProgression',
+		alignment: 'right',
+		getValue: (player) => formatNumber(player.rankProgression),
+		getValueWithHighlight: (player, _query) => formatNumber(player.rankProgression)
+	},
+	{
+		key: 'rankName',
+		label: 'Rank',
+		i18n: 'app.player.column.rankName',
+		getValue: (player) => player.rankName || '-',
+		getValueWithHighlight: (player, query) => {
+			if (!player.rankName) return '-';
+			return query ? highlightMatch(player.rankName, query) : player.rankName;
+		}
+	}
+];

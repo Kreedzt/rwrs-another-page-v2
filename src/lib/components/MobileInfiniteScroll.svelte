@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 
 	interface Props {
@@ -21,44 +20,45 @@
 	let loadMoreTrigger = $state<HTMLElement | undefined>();
 
 	// Set up intersection observer for infinite scroll
-	onMount(() => {
-		if (!hasMore) return;
+	$effect(() => {
+		console.log('MobileInfiniteScroll $effect', { hasMore, isLoading, hasTrigger: !!loadMoreTrigger });
+		if (!loadMoreTrigger) return;
 
+		// Clean up previous observer
+		if (observer) {
+			console.log('MobileInfiniteScroll disconnecting previous observer');
+			observer.disconnect();
+		}
+
+		// Create new observer
 		observer = new IntersectionObserver(
 			(entries) => {
 				const entry = entries[0];
-				if (entry.isIntersecting && hasMore && !isLoading) {
+				console.log('IntersectionObserver callback', { isIntersecting: entry.isIntersecting, hasMore, isLoading });
+				if (entry.isIntersecting) {
 					onLoadMore();
 				}
 			},
 			{
-				root: null, // Use viewport as root
-				rootMargin: `${threshold}px`, // Start loading before reaching the element
-				threshold: 0.1 // Trigger when 10% of element is visible
+				root: null,
+				rootMargin: `${threshold}px`,
+				threshold: 0.1
 			}
 		);
 
-		if (loadMoreTrigger) {
+		if (hasMore && !isLoading) {
+			console.log('MobileInfiniteScroll observing element');
 			observer.observe(loadMoreTrigger);
+		} else {
+			console.log('MobileInfiniteScroll NOT observing element', { hasMore, isLoading });
 		}
-	});
 
-	// Clean up observer
-	onDestroy(() => {
-		if (observer) {
-			observer.disconnect();
-		}
-	});
-
-	// Re-observe when hasMore changes
-	$effect(() => {
-		if (observer && loadMoreTrigger) {
-			if (hasMore) {
-				observer.observe(loadMoreTrigger);
-			} else {
-				observer.unobserve(loadMoreTrigger);
+		return () => {
+			if (observer) {
+				console.log('MobileInfiniteScroll cleanup disconnecting observer');
+				observer.disconnect();
 			}
-		}
+		};
 	});
 </script>
 
