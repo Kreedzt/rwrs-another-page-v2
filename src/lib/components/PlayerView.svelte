@@ -164,16 +164,22 @@
 
 			{#each mobilePaginatedPlayers as item (item.id)}
 				<div class="collapse collapse-arrow bg-base-100 border-base-300 mb-3 border">
-					<input type="checkbox" checked={mobileExpandedCards[item.id]} onchange={() => onToggleMobileCard(item.id)} />
+					<input
+						type="checkbox"
+						checked={mobileExpandedCards[item.id]}
+						onchange={() => onToggleMobileCard(item.id)}
+						aria-label="Toggle player details"
+						aria-expanded={mobileExpandedCards[item.id] ? 'true' : 'false'}
+					/>
 					<div class="collapse-title font-semibold p-4">
 						<div class="flex items-center justify-between gap-2 mr-6">
-							<h3 class="text-base-content flex-1 truncate text-base">
+							<div class="text-base-content flex-1 truncate text-base font-medium">
 								{@html getDisplayValue(
 									item,
 									playerColumns.find((col) => col.key === 'username')!,
 									searchQuery
 								)}
-							</h3>
+							</div>
 							<span class="text-base-content/60 text-sm">
 							#{@html getDisplayValue(
 								item,

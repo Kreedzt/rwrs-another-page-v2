@@ -28,8 +28,8 @@
 					<TranslatedText key="app.footer.serverList" />
 				</a>
 			</p>
-			<p class="text-xs text-base-content/50">
-				<TranslatedText key="app.footer.copyright" params={{ year: new Date().getFullYear() }} />
+			<p class="text-xs text-base-content/70">
+				<TranslatedText key="app.footer.copyright" params={{ year: 2025 }} />
 			</p>
 		</aside>
 	</footer>

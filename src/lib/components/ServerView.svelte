@@ -192,16 +192,22 @@
 
 			{#each mobilePaginatedServers as item (item.id)}
 				<div class="collapse collapse-arrow bg-base-100 border-base-300 mb-3 border">
-					<input type="checkbox" checked={mobileExpandedCards[item.id]} onchange={() => onToggleMobileCard(item.id)} />
+					<input
+						type="checkbox"
+						checked={mobileExpandedCards[item.id]}
+						onchange={() => onToggleMobileCard(item.id)}
+						aria-label="Toggle server details"
+						aria-expanded={mobileExpandedCards[item.id] ? 'true' : 'false'}
+					/>
 					<div class="collapse-title font-semibold p-4">
 						<div class="flex items-center justify-between gap-2 mr-6">
-							<h3 class="text-base-content flex-1 truncate text-base">
+							<div class="text-base-content flex-1 truncate text-base font-medium">
 								{@html getDisplayValue(
 									item,
 									columns.find((col) => col.key === 'name')!,
 									searchQuery
 								)}
-							</h3>
+							</div>
 							<div class="min-w-0 flex-shrink-0">
 								<div class="flex max-w-24 flex-wrap justify-end gap-1 sm:max-w-32">
 									{@html getDisplayValue(
@@ -212,7 +218,7 @@
 								</div>
 							</div>
 							<div class="flex-shrink-0">
-								<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm">
+								<span class="badge badge-success text-white font-medium text-xs px-2 py-1">
 									{item.mapId.split('/').pop() || ''}
 								</span>
 							</div>
@@ -255,11 +261,11 @@
 									{@const mapData = maps.find(m => m.path === item.mapId)}
 									<div class="border-base-200 mt-4 pt-3 border-t">
 										<div class="flex items-center justify-between">
-											<span class="text-base-content/60 min-w-20 flex-shrink-0 text-sm">
+											<span class="text-base-content/70 min-w-20 flex-shrink-0 text-sm">
 												<TranslatedText key="app.map.preview" />:
 											</span>
 											<button
-												class="btn btn-outline btn-sm text-green-600 border-green-300 hover:bg-green-50"
+												class="btn btn-success btn-sm text-white"
 												onclick={() => onMapView(mapData)}
 												type="button"
 											>

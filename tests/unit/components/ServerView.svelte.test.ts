@@ -440,10 +440,10 @@ describe('ServerView Component', () => {
 			});
 
 			// Need to expand card first by setting mobileExpandedCards
-			const mapButtons = container.querySelectorAll('.md\\:hidden .btn-outline');
-			// Find map preview button (green button)
+			const mapButtons = container.querySelectorAll('.md\\:hidden .btn-success');
+			// Find map preview button (success button with white text)
 			const previewButton = Array.from(mapButtons).find(btn =>
-				btn.classList.contains('text-green-600')
+				btn.classList.contains('text-white')
 			);
 			expect(previewButton).toBeDefined();
 		});
