@@ -36,7 +36,7 @@
 				checked={isMultiSelect}
 				onchange={handleMultiSelectChange}
 				disabled={isLoading}
-				class="checkbox checkbox-md sm:checkbox-sm"
+				class="toggle toggle-md sm:toggle-sm"
 				aria-label="Toggle multiple selection"
 				name="multiple-select"
 			/>
