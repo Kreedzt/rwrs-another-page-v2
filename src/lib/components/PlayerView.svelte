@@ -111,10 +111,10 @@
 		</div>
 		<div class="mb-4 text-center">
 			<h3 class="text-base-content mb-2 text-lg font-semibold">
-				<TranslatedText key="app.loading.title" />
+				<TranslatedText key="app.player.loading.title" />
 			</h3>
 			<p class="text-base-content/70 max-w-md text-sm">
-				<TranslatedText key="app.loading.description" />
+				<TranslatedText key="app.player.loading.description" />
 			</p>
 		</div>
 		<div class="mb-6 w-full max-w-sm">
@@ -122,7 +122,7 @@
 				<div class="progress-bar bg-primary h-2 w-[60%] animate-pulse"></div>
 			</div>
 			<p class="text-base-content/50 mt-2 text-center text-xs">
-				<TranslatedText key="app.loading.progress" />
+				<TranslatedText key="app.player.loading.progress" />
 			</p>
 		</div>
 	</div>
@@ -311,6 +311,7 @@
 			hasMore={mobileHasMore}
 			isLoading={mobileLoadingMore}
 			onLoadMore={onLoadMore}
+			loadingTextKey="app.player.loading.text"
 		/>
 
 		<!-- Desktop pagination -->

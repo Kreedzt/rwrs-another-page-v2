@@ -170,7 +170,13 @@
 				"prereset_invasion": "入侵模式（重置前）"
 			},
 			"noPlayersFound": "未找到玩家",
-			"matchingSearch": "匹配您的搜索"
+			"matchingSearch": "匹配您的搜索",
+			"loading": {
+				"text": "加载玩家数据...",
+				"title": "加载玩家",
+				"description": "正在从API获取最新的玩家数据...",
+				"progress": "连接服务器中..."
+			}
 		},
 		"footer": {
 			"developedBy": "开发者",

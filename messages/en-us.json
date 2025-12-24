@@ -170,7 +170,13 @@
 				"prereset_invasion": "Invasion (before reset)"
 			},
 			"noPlayersFound": "No players found",
-			"matchingSearch": "matching your search"
+			"matchingSearch": "matching your search",
+			"loading": {
+				"text": "Loading player data...",
+				"title": "Loading Players",
+				"description": "Fetching latest player data from the API...",
+				"progress": "Connecting to server..."
+			}
 		},
 		"footer": {
 			"developedBy": "Developed by",

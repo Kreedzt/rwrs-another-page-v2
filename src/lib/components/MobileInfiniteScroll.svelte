@@ -6,13 +6,15 @@
 		isLoading: boolean;
 		onLoadMore: () => void;
 		threshold?: number; // Distance from bottom to trigger load (in pixels)
+		loadingTextKey?: string; // Custom i18n key for loading text
 	}
 
 	let {
 		hasMore = false,
 		isLoading = false,
 		onLoadMore = () => {},
-		threshold = 200
+		threshold = 200,
+		loadingTextKey = 'app.loading.text'
 	}: Props = $props();
 
 	let containerElement: HTMLElement;
@@ -77,7 +79,7 @@
 				<div class="flex items-center gap-3">
 					<div class="loading loading-spinner loading-sm"></div>
 					<span class="text-base-content/70 text-sm">
-						<TranslatedText key="app.loading.text" />
+						<TranslatedText key={loadingTextKey} />
 					</span>
 				</div>
 			{:else}
@@ -93,7 +95,7 @@
 			<div class="flex items-center gap-3">
 				<div class="loading loading-spinner loading-sm"></div>
 				<span class="text-base-content/70 text-sm">
-					<TranslatedText key="app.loading.text" />
+					<TranslatedText key={loadingTextKey} />
 				</span>
 			</div>
 		</div>
