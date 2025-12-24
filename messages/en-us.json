@@ -17,7 +17,7 @@
 			"loadError": "Failed to load map image",
 			"retry": "Retry"
 		},
-		"title": "RWRS Another Page(V2)",
+		"title": "Robin",
 		"search": {
 			"placeholder": "Search servers, maps, players, mode, country, etc..."
 		},
@@ -138,6 +138,7 @@
 		},
 		"pagination": {
 			"info": "Page {currentPage} of {totalPages} ({totalItems} items)"
-		}
+		},
+		"subtitle": "A Community RWR Data Query Site"
 	}
 }

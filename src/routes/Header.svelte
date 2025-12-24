@@ -8,11 +8,18 @@
 <header class="border-base-300 bg-base-100 flex w-full justify-center border-b">
 	<div class="container px-4 py-4">
 		<div class="flex w-full items-center justify-between">
-			<TranslatedText
-				tag="h1"
-				key="app.title"
-				className="text-base-content text-xl md:text-2xl font-bold"
-			></TranslatedText>
+			<div class="flex flex-col">
+				<TranslatedText
+					tag="h1"
+					key="app.title"
+					className="text-base-content text-xl md:text-2xl font-bold"
+				></TranslatedText>
+				<TranslatedText
+					tag="p"
+					key="app.subtitle"
+					className="text-base-content/60 text-xs md:text-sm"
+				></TranslatedText>
+			</div>
 
 			<div class="flex items-center gap-4">
 				<ThemeToggle />

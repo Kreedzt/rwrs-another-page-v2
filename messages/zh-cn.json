@@ -17,7 +17,7 @@
 			"loadError": "加载地图图片失败",
 			"retry": "重试"
 		},
-		"title": "RWRS Another Page(V2)",
+		"title": "Robin",
 		"search": {
 			"placeholder": "搜索服务器、地图、玩家、模式、国家等..."
 		},
@@ -138,6 +138,7 @@
 		},
 		"pagination": {
 			"info": "第 {currentPage} 页，共 {totalPages} 页（{totalItems} 项）"
-		}
+		},
+		"subtitle": "社区驱动的 RWR 数据查询平台"
 	}
 }
