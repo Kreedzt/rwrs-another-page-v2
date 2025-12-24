@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import GlobalKeyboardSearch from './GlobalKeyboardSearch.svelte';
+import GlobalKeyboardSearch from '$lib/components/GlobalKeyboardSearch.svelte';
 
 // Mock the browser environment
 Object.defineProperty(window, 'innerWidth', {

@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/svelte/svelte5';
+import { render, fireEvent } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import MobileDataTable from './MobileDataTable.svelte';
+import MobileDataTable from '$lib/components/MobileDataTable.svelte';
 import { columns } from '$lib/config/columns';
 import type { IDisplayServerItem } from '$lib/models/data-table.model';
-import { createMockDisplayServers } from '$lib/test-utils/mock-data-generator';
+import { createMockDisplayServers } from '../../fixtures/mock-data-generator';
 
 // Mock the TranslatedText component
 vi.mock('$lib/components/TranslatedText.svelte', () => ({

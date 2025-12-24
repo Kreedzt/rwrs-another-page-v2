@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { request, type RequestOptions } from './request';
+import { request, type RequestOptions } from '$lib/request';
 
 // Mock environment variables
 vi.stubEnv('VITE_API_URL', '');

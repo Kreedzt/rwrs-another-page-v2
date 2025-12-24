@@ -23,7 +23,7 @@ Object.defineProperty(globalThis, 'window', {
 });
 
 // Import after mocking window
-import { userSettingsService, type UserSettings } from './user-settings';
+import { userSettingsService, type UserSettings } from '$lib/services/user-settings';
 
 describe('UserSettingsService', () => {
 	beforeEach(() => {

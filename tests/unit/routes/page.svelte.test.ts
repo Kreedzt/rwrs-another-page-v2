@@ -1,8 +1,7 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/svelte/svelte5';
+import { render, waitFor } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { default as Page } from './+page.svelte';
+import { default as Page } from '../../../src/routes/+page.svelte';
 import { getMaps } from '$lib/services/maps';
-import type { MapData } from '$lib/services/maps';
 
 // Mock the maps service
 vi.mock('$lib/services/maps', () => ({

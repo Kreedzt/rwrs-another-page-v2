@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getMaps, type MapData } from './maps';
+import { getMaps, type MapData } from '$lib/services/maps';
 
 // Mock environment variables
 vi.stubEnv('VITE_API_URL', '');

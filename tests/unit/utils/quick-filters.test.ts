@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { filters } from './quick-filters';
+import { filters } from '$lib/utils/quick-filters';
 import type { IDisplayServerItem } from '$lib/models/data-table.model';
 
 // Helper function to create mock server data

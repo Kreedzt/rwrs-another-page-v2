@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import QuickFilterButtons from './QuickFilterButtons.svelte';
+import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
 
 // Mock the TranslatedText component
 vi.mock('$lib/components/TranslatedText.svelte', () => ({

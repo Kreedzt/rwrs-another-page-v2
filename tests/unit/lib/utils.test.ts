@@ -1,5 +1,5 @@
 import { describe, test, expect, vi } from 'vitest';
-import { parseServerListFromString, getMapKey, getCurrentTimeStr, generateEmptyOnlineStatItem } from './utils';
+import { parseServerListFromString, getMapKey, getCurrentTimeStr, generateEmptyOnlineStatItem } from '$lib/share/utils';
 import type { IDisplayServerItem } from '$lib/models/data-table.model';
 
 describe('XML Player List Parsing', () => {

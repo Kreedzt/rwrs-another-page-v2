@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { getUrlState, updateUrlState, URL_PARAMS } from './url-state';
+import { getUrlState, updateUrlState, URL_PARAMS } from '$lib/utils/url-state';
 
 // Mock browser environment
 const mockWindow = {

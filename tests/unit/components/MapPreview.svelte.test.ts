@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import MapPreview from './MapPreview.svelte';
+import MapPreview from '$lib/components/MapPreview.svelte';
 import type { MapData } from '$lib/services/maps';
 
 // Mock the TranslatedText component

@@ -1,11 +1,11 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { DataTableService } from './data-table';
+import { DataTableService } from '$lib/services/data-table';
 import {
 	createMockServers,
 	createMockDisplayServers,
 	createTestScenarios,
 	createMockXmlResponse
-} from '$lib/test-utils/mock-data-generator';
+} from '../../fixtures/mock-data-generator';
 
 // Mock fetch API
 global.fetch = vi.fn();
