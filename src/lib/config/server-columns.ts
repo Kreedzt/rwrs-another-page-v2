@@ -1,4 +1,4 @@
-import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
+import type { IColumn, IDisplayServerItem } from '$lib/models/server.model';
 import type { MapData } from '$lib/services/maps';
 import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highlight';
 

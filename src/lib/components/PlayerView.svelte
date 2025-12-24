@@ -1,6 +1,7 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import PaginationPrevNext from '$lib/components/PaginationPrevNext.svelte';
+	import PlayerTable from '$lib/components/PlayerTable.svelte';
 	import MobileInfiniteScroll from '$lib/components/MobileInfiniteScroll.svelte';
 	import PageSizeSelector from '$lib/components/PageSizeSelector.svelte';
 	import type { IPlayerItem, IPlayerColumn } from '$lib/models/player.model';
@@ -52,11 +53,6 @@
 		onLoadMore,
 		onToggleMobileCard
 	}: Props = $props();
-
-	// Filter columns based on visibility
-	const visiblePlayerColumns = $derived(
-		playerColumns.filter((col) => visibleColumns[col.key as string] !== false)
-	);
 
 	// Helper function to get the display value for a column
 	function getDisplayValue(
@@ -152,7 +148,7 @@
 		<div class="md:hidden">
 			<!-- Mobile sort controls -->
 			<div class="mb-4 flex flex-wrap gap-2">
-				{#each playerColumns.filter((col) => ['username', 'kills', 'deaths', 'kd', 'score', 'longestKillStreak', 'targetsDestroyed', 'vehiclesDestroyed', 'rankProgression'].includes(col.key as string)) as column (column.key)}
+				{#each playerColumns.filter((col) => col.key !== 'rowNumber') as column (column.key)}
 					<button
 						class="btn btn-sm btn-outline flex items-center gap-2"
 						onclick={() => onSort(column.key as string)}
@@ -238,83 +234,14 @@
 
 		<!-- Desktop table -->
 		<div class="hidden overflow-x-auto md:block">
-			{#if paginatedPlayers.length === 0}
-				<div class="alert alert-info">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						class="h-6 w-6 shrink-0 stroke-current"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						></path>
-					</svg>
-					<span>
-						<TranslatedText key="app.player.noPlayersFound" />
-						{#if searchQuery}
-							<TranslatedText key="app.player.matchingSearch" />
-						{/if}.
-					</span>
-				</div>
-			{:else}
-				<div class="w-full">
-					<table class="table-pin-rows mb-0 table table-zebra border-0">
-						<thead>
-							<tr>
-								{#each visiblePlayerColumns as column (column.key)}
-									<th
-										class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle"
-									>
-										{#if column.key === 'rowNumber'}
-											<!-- No sort button for rowNumber -->
-											<span class="px-2 py-1">
-												{#if column.i18n}<TranslatedText
-														key={column.i18n}
-													/>{:else}{column.label}{/if}
-											</span>
-										{:else}
-											<button
-												class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
-												onclick={() => onSort(column.key as string)}
-												type="button"
-												title="Click to sort"
-											>
-												<span class="flex-1">
-													{#if column.i18n}<TranslatedText
-															key={column.i18n}
-														/>{:else}{column.label}{/if}
-												</span>
-												{@html getSortIcon(column.key as string)}
-											</button>
-										{/if}
-									</th>
-								{/each}
-							</tr>
-						</thead>
-						<tbody>
-							{#each paginatedPlayers as item (item.id)}
-								<tr class="hover hover:bg-base-300 min-h-12">
-									{#each visiblePlayerColumns as column (column.key)}
-										<td
-											class="px-4 py-2 {column.alignment === 'center'
-												? 'align-middle text-center'
-												: column.alignment === 'right'
-													? 'align-middle text-right'
-													: 'align-middle'}"
-										>
-											{@html getDisplayValue(item, column, searchQuery)}
-										</td>
-									{/each}
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/if}
+			<PlayerTable
+				data={paginatedPlayers}
+				{playerColumns}
+				{visibleColumns}
+				{searchQuery}
+				{sortColumn}
+				onSort={onSort}
+			/>
 		</div>
 
 		<!-- Mobile infinite scroll -->

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { DataTableService } from '$lib/services/data-table';
+	import { ServerService } from '$lib/services/servers';
 	import { userSettingsService, type UserSettings } from '$lib/services/user-settings';
-	import type { IColumn, IDisplayServerItem } from '$lib/models/data-table.model';
-	import { columns } from '$lib/config/columns';
+	import type { IColumn, IDisplayServerItem } from '$lib/models/server.model';
+	import { columns } from '$lib/config/server-columns';
 	import { getMaps, type MapData } from '$lib/services/maps';
 	import { PlayerService } from '$lib/services/players';
-	import type { IPlayerItem, PlayerDatabase } from '$lib/models/player.model';
+	import type { IPlayerItem, IPlayerColumn, PlayerDatabase } from '$lib/models/player.model';
 	import { playerColumns } from '$lib/config/player-columns';
 	import { filters as quickFilters } from '$lib/utils/quick-filters';
 	import {
@@ -359,13 +359,17 @@
 		}
 	}
 
-	function onColumnToggle(column: IColumn, visible: boolean) {
-		visibleColumns[column.key] = visible;
-		userSettingsService.updateNested('visibleColumns', column.key, visible);
-	}
+	function onColumnToggle(column: IColumn | IPlayerColumn, visible: boolean) {
+		// Check if this is a player column by looking at common player column keys
+		const playerColumnKeys = new Set(playerColumns.map((col) => col.key as string));
+		const isPlayerColumn = playerColumnKeys.has(column.key as string);
 
-	function onPlayerColumnToggle(column: IColumn, visible: boolean) {
-		visiblePlayerColumns[column.key] = visible;
+		if (isPlayerColumn) {
+			visiblePlayerColumns[column.key as string] = visible;
+		} else {
+			visibleColumns[column.key] = visible;
+			userSettingsService.updateNested('visibleColumns', column.key, visible);
+		}
 	}
 
 	function handleAutoRefreshToggle(enabled: boolean) {
@@ -460,7 +464,7 @@
 	async function refreshList() {
 		try {
 			loading = true;
-			servers = await DataTableService.listAll();
+			servers = await ServerService.listAll();
 			mobileServerCurrentPage = 1;
 			mobileServerLoadingMore = false;
 		} catch (err) {
@@ -663,7 +667,7 @@
 <Header />
 
 <section aria-label="Server List" class="flex flex-col items-center justify-center">
-	<div class="container px-4 py-8">
+	<div class="container p-4">
 		<!-- View Tabs -->
 		<div role="tablist" class="tabs tabs-border mb-4">
 			<button
@@ -692,7 +696,9 @@
 			searchPlaceholder={m['app.search.placeholder']()}
 			{autoRefreshEnabled}
 			{columns}
+			{playerColumns}
 			{visibleColumns}
+			{visiblePlayerColumns}
 			onPlayerDbChange={handlePlayerDbChange}
 			onRefresh={currentView === 'servers' ? refreshList : loadPlayers}
 			onAutoRefreshToggle={handleAutoRefreshToggle}

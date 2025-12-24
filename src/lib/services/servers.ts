@@ -1,23 +1,23 @@
 import { request } from '$lib/request';
 import type { RequestOptions } from '$lib/request';
-import type { IDisplayServerItem } from '$lib/models/data-table.model';
+import type { IDisplayServerItem } from '$lib/models/server.model';
 import { parseServerListFromString } from '$lib/share/utils';
 
 const SERVER_API_URL = '/api';
 
-interface IDataTableListParams {
+interface IServerListParams {
 	start: number;
 	size: number;
 	names: 1 | 0;
 	timeout?: number;
 }
 
-interface IDataTableService {
-	list(params?: IDataTableListParams): Promise<IDisplayServerItem[]>;
+interface IServerService {
+	list(params?: IServerListParams): Promise<IDisplayServerItem[]>;
 	listAll(options?: { timeout?: number }): Promise<IDisplayServerItem[]>;
 }
 
-export const DataTableService: IDataTableService = {
+export const ServerService: IServerService = {
 	async list(params) {
 		const queryParams = {
 			start: params?.start ?? 0,
@@ -67,7 +67,7 @@ export const DataTableService: IDataTableService = {
 				try {
 					console.info(`Fetching batch ${batchCount}, starting at index ${start}`);
 					// Use Promise.race to implement a timeout for each batch
-					const newServerList = await DataTableService.list({
+					const newServerList = await ServerService.list({
 						start,
 						size,
 						names: 1,

@@ -1,4 +1,4 @@
-import type { IDisplayServerItem } from '$lib/models/data-table.model';
+import type { IDisplayServerItem } from '$lib/models/server.model';
 
 // Regex patterns for filtering
 const CASTLING_REGEX = /^\[Castling](\[Global])?\[[\w!\\?]+(-\d)?\s(LV\d|FOV)]/;

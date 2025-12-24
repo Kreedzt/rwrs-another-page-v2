@@ -1,4 +1,4 @@
-# RWRS Another Page(V2)
+# Robin Web(RWRS Another Page V2)
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Kreedzt_rwrs-another-page-v2&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Kreedzt_rwrs-another-page-v2)
 [![codecov](https://codecov.io/gh/Kreedzt/rwrs-another-page-v2/branch/master/graph/badge.svg?token=MWGXZH7GO9)](https://codecov.io/gh/Kreedzt/rwrs-another-page-v2)
@@ -8,7 +8,7 @@ A clean and modern server browser for Running with Rifles (RWR) game, inspired b
 
 ## Overview
 
-RWRS Another Page provides a pure and efficient way to browse Running with Rifles game servers and player statistics. Built with modern web technologies, it offers:
+Robin web provides a pure and efficient way to browse Running with Rifles game servers and player statistics. Built with modern web technologies, it offers:
 
 - Real-time server list with auto-refresh capability
 - Player leaderboard browsing with comprehensive statistics

@@ -94,7 +94,7 @@
 		</div>
 	{:else}
 		<!-- End of content indicator -->
-		<div class="w-full py-6 text-center" role="status">
+		<div class="w-full py-2 text-center" role="status">
 			<div class="text-base-content/50 text-sm">
 				<TranslatedText key="app.mobile.endOfContent" />
 			</div>

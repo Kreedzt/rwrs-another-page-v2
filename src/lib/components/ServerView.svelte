@@ -1,11 +1,11 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import MobileDataTable from '$lib/components/MobileDataTable.svelte';
+	import ServerTable from '$lib/components/ServerTable.svelte';
 	import MapPreview from '$lib/components/MapPreview.svelte';
 	import MobileInfiniteScroll from '$lib/components/MobileInfiniteScroll.svelte';
 	import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
-	import type { IDisplayServerItem, IColumn } from '$lib/models/data-table.model';
+	import type { IDisplayServerItem, IColumn } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
 
 	interface Props {
@@ -309,7 +309,7 @@
 
 		<!-- Desktop table -->
 		<div class="hidden overflow-x-auto md:block">
-			<MobileDataTable
+			<ServerTable
 				data={paginatedServers}
 				{columns}
 				{searchQuery}

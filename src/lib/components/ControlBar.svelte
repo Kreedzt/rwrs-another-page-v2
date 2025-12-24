@@ -5,8 +5,8 @@
 	import PlayerDatabaseSelector from '$lib/components/PlayerDatabaseSelector.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
-	import type { PlayerDatabase } from '$lib/models/player.model';
-	import type { IColumn } from '$lib/models/data-table.model';
+	import type { PlayerDatabase, IPlayerColumn } from '$lib/models/player.model';
+	import type { IColumn } from '$lib/models/server.model';
 
 	interface Props {
 		currentView: 'servers' | 'players';
@@ -15,7 +15,9 @@
 		searchPlaceholder: string;
 		autoRefreshEnabled: boolean;
 		columns: IColumn[];
+		playerColumns: IPlayerColumn[];
 		visibleColumns: Record<string, boolean>;
+		visiblePlayerColumns: Record<string, boolean>;
 		onPlayerDbChange: (db: PlayerDatabase) => void;
 		onRefresh: () => Promise<void>;
 		onAutoRefreshToggle: (enabled: boolean) => void;
@@ -32,7 +34,9 @@
 		searchPlaceholder,
 		autoRefreshEnabled,
 		columns,
+		playerColumns,
 		visibleColumns,
+		visiblePlayerColumns,
 		onPlayerDbChange,
 		onRefresh,
 		onAutoRefreshToggle,
@@ -44,6 +48,10 @@
 
 	// Auto refresh is only available for servers view
 	const showAutoRefresh = $derived(currentView === 'servers');
+
+	// Use appropriate columns based on current view
+	const currentColumns = $derived(currentView === 'players' ? playerColumns : columns);
+	const currentVisibleColumns = $derived(currentView === 'players' ? visiblePlayerColumns : visibleColumns);
 
 	// Dynamic search placeholder based on view
 	const dynamicPlaceholder = $derived(
@@ -76,7 +84,7 @@
 		</button>
 
 		<div class="hidden md:block">
-			<ColumnsToggle {columns} {visibleColumns} onColumnToggle={onColumnToggle} />
+			<ColumnsToggle columns={currentColumns} visibleColumns={currentVisibleColumns} onColumnToggle={onColumnToggle} />
 		</div>
 
 		{#if showAutoRefresh}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import { Check } from '@lucide/svelte';
-	import type { IColumn } from '$lib/models/data-table.model';
+	import type { IColumn } from '$lib/models/server.model';
 
 	let {
 		columns = [],

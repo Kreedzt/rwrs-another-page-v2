@@ -1,8 +1,8 @@
 import { render, fireEvent } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import MobileDataTable from '$lib/components/MobileDataTable.svelte';
-import { columns } from '$lib/config/columns';
-import type { IDisplayServerItem } from '$lib/models/data-table.model';
+import ServerTable from '$lib/components/ServerTable.svelte';
+import { columns } from '$lib/config/server-columns';
+import type { IDisplayServerItem } from '$lib/models/server.model';
 import { createMockDisplayServers } from '../../fixtures/mock-data-generator';
 
 // Mock the TranslatedText component
@@ -10,7 +10,7 @@ vi.mock('$lib/components/TranslatedText.svelte', () => ({
 	default: (props: { key: string }) => props.key
 }));
 
-describe('MobileDataTable', () => {
+describe('ServerTable', () => {
 	let mockData: IDisplayServerItem[];
 	let mockOnRowAction: ReturnType<typeof vi.fn>;
 	let mockOnSort: ReturnType<typeof vi.fn>;
@@ -41,7 +41,7 @@ describe('MobileDataTable', () => {
 
 	describe('Rendering', () => {
 		it('should render desktop table correctly', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -70,7 +70,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should render server names correctly', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -91,7 +91,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should render action column with Join buttons', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -112,7 +112,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should not render anything when data is empty', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: [],
 					columns,
@@ -153,7 +153,7 @@ describe('MobileDataTable', () => {
 				action: true
 			};
 
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -179,7 +179,7 @@ describe('MobileDataTable', () => {
 				action: true
 			};
 
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -208,7 +208,7 @@ describe('MobileDataTable', () => {
 		it('should pass searchQuery to getDisplayValue function', () => {
 			const searchQuery = 'TestServer';
 
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -227,7 +227,7 @@ describe('MobileDataTable', () => {
 
 	describe('Sorting functionality', () => {
 		it('should render sort buttons in column headers', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -245,7 +245,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should call onSort when sort button is clicked', async () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -266,7 +266,7 @@ describe('MobileDataTable', () => {
 
 	describe('Action functionality', () => {
 		it('should call onRowAction when Join button is clicked', async () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -295,7 +295,7 @@ describe('MobileDataTable', () => {
 				url: 'https://example.com'
 			});
 
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: dataWithUrl,
 					columns,
@@ -313,7 +313,7 @@ describe('MobileDataTable', () => {
 		it('should handle missing URL gracefully', () => {
 			const dataWithoutUrl = createMockDisplayServers(3, { url: null });
 
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: dataWithoutUrl,
 					columns,
@@ -336,7 +336,7 @@ describe('MobileDataTable', () => {
 
 	describe('Styling and classes', () => {
 		it('should apply sticky positioning to action column', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -357,7 +357,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should apply hover effects to table rows', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -377,7 +377,7 @@ describe('MobileDataTable', () => {
 
 	describe('Empty state', () => {
 		it('should show appropriate empty state message', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: [],
 					columns,
@@ -394,7 +394,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should show search-related empty message when searching', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: [],
 					columns,
@@ -413,7 +413,7 @@ describe('MobileDataTable', () => {
 
 	describe('Accessibility', () => {
 		it('should have proper table structure', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -435,7 +435,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should have proper ARIA attributes for action buttons', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -455,7 +455,7 @@ describe('MobileDataTable', () => {
 
 	describe('getAlignmentClass function', () => {
 		it('should return correct CSS classes for different alignment configurations', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -512,7 +512,7 @@ describe('MobileDataTable', () => {
 
 	describe('Responsive behavior', () => {
 		it('should hide action column on mobile screens', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,
@@ -533,7 +533,7 @@ describe('MobileDataTable', () => {
 		});
 
 		it('should still render Join buttons in desktop action column', () => {
-			render(MobileDataTable, {
+			render(ServerTable, {
 				props: {
 					data: mockData,
 					columns,

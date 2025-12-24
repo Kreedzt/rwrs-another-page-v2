@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { DataTableService } from '$lib/services/data-table';
+import { ServerService } from '$lib/services/servers';
 import {
 	createMockServers,
 	createMockDisplayServers,
@@ -10,7 +10,7 @@ import {
 // Mock fetch API
 global.fetch = vi.fn();
 
-describe('DataTableService', () => {
+describe('ServerService', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		// Mock console.error to suppress expected error messages
@@ -33,9 +33,9 @@ describe('DataTableService', () => {
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
-			// Verify fetch was called correctly (note: DataTableService adds timestamp, start, size, and names parameters)
+			// Verify fetch was called correctly (note: ServerService adds timestamp, start, size, and names parameters)
 			expect(fetch).toHaveBeenCalledWith(
 				expect.stringContaining('/api/server_list?start=0&size=100&names=1&_t='),
 				expect.any(Object)
@@ -63,7 +63,7 @@ describe('DataTableService', () => {
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(0);
 		});
@@ -94,7 +94,7 @@ ${mockServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(2);
 			expect(result[0].currentPlayers).toBe(0);
@@ -129,7 +129,7 @@ ${mockServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(2);
 
@@ -159,7 +159,7 @@ ${mockServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(1);
 			expect(result[0].currentPlayers).toBe(1);
@@ -193,7 +193,7 @@ ${mockServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(1);
 			const server = result[0];
@@ -205,7 +205,7 @@ ${mockServers
 		test('should handle network errors gracefully', async () => {
 			vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'));
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 			expect(result).toEqual([]); // Should return empty array on error
 		});
 
@@ -218,7 +218,7 @@ ${mockServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 			expect(result).toEqual([]); // Should return empty array on error
 		});
 
@@ -229,7 +229,7 @@ ${mockServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 			expect(result).toEqual([]); // Should return empty array on error
 		});
 
@@ -243,7 +243,7 @@ ${mockServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll({ timeout: 1000 });
+			const result = await ServerService.listAll({ timeout: 1000 });
 			expect(result).toHaveLength(1); // Should work normally with valid timeout
 		});
 	});
@@ -279,7 +279,7 @@ ${fullServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(3);
 			result.forEach((server) => {
@@ -320,7 +320,7 @@ ${fullServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(2);
 			expect(result[0].bots).toBe(0);
@@ -363,7 +363,7 @@ ${fullServers
 				headers: new Headers()
 			});
 
-			const result = await DataTableService.listAll();
+			const result = await ServerService.listAll();
 
 			expect(result).toHaveLength(4);
 			const modes = result.map((s) => s.mode);

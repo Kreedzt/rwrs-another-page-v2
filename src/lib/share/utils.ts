@@ -1,4 +1,4 @@
-import type { IDisplayServerItem, OnlineStats, IRes } from '$lib/models/data-table.model';
+import type { IDisplayServerItem, OnlineStats, IRes } from '$lib/models/server.model';
 import { XMLParser } from 'fast-xml-parser';
 
 const fixPlayerList = (raw: string | undefined | string[]): string[] => {
