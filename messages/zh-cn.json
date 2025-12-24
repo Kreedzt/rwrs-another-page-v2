@@ -38,11 +38,11 @@
 			"filteredBy": "筛选条件: \"{query}\""
 		},
 		"filter": {
-			"officialInvasion": "官方入侵",
-			"officialWW2Invasion": "官方二战入侵",
-			"officialDominance": "官方 PVP",
-			"officialModCastling": "官方模组: Castling",
-			"officialModHellDivers": "官方模组: HellDivers"
+			"officialInvasion": "入侵",
+			"officialWW2Invasion": "二战入侵",
+			"officialDominance": "PVP",
+			"officialModCastling": "Castling",
+			"officialModHellDivers": "HellDivers"
 		},
 		"viewMode": {
 			"table": "切换到地图视图",

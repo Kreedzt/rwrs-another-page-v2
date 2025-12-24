@@ -38,11 +38,11 @@
 			"filteredBy": "Filtered by: \"{query}\""
 		},
 		"filter": {
-			"officialInvasion": "Official Invasion",
-			"officialWW2Invasion": "Official WW2 Invasion",
-			"officialDominance": "Official Dominance",
-			"officialModCastling": "Official Mod Castling",
-			"officialModHellDivers": "Official Mod HellDivers"
+			"officialInvasion": "Invasion",
+			"officialWW2Invasion": "WW2 Invasion",
+			"officialDominance": "Dominance",
+			"officialModCastling": "Castling",
+			"officialModHellDivers": "HellDivers"
 		},
 		"viewMode": {
 			"table": "Switch to Map Order View",
