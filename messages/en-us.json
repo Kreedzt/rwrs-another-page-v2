@@ -168,7 +168,21 @@
 				"invasion": "Invasion",
 				"pacific": "Pacific",
 				"prereset_invasion": "Invasion (before reset)"
-			}
+			},
+			"noPlayersFound": "No players found",
+			"matchingSearch": "matching your search"
+		},
+		"footer": {
+			"developedBy": "Developed by",
+			"dataSourced": "Data sourced from official",
+			"rwrStatsApi": "RWR Stats API",
+			"serverList": "Server List",
+			"copyright": "Copyright © {year} - All data provided by Running with Rifles official servers"
+		},
+		"paginationControl": {
+			"page": "Page",
+			"previousPage": "Previous page",
+			"nextPage": "Next page"
 		}
 	}
 }

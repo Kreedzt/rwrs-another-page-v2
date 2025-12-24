@@ -168,7 +168,21 @@
 				"invasion": "入侵模式",
 				"pacific": "太平洋模式",
 				"prereset_invasion": "入侵模式（重置前）"
-			}
+			},
+			"noPlayersFound": "未找到玩家",
+			"matchingSearch": "匹配您的搜索"
+		},
+		"footer": {
+			"developedBy": "开发者",
+			"dataSourced": "数据来源",
+			"rwrStatsApi": "RWR 统计 API",
+			"serverList": "服务器列表",
+			"copyright": "版权所有 © {year} - 所有数据由 Running with Rifles 官方服务器提供"
+		},
+		"paginationControl": {
+			"page": "第",
+			"previousPage": "上一页",
+			"nextPage": "下一页"
 		}
 	}
 }

@@ -218,7 +218,12 @@
 							d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 						></path>
 					</svg>
-					<span>No players found{searchQuery ? ' matching your search' : ''}.</span>
+					<span>
+						<TranslatedText key="app.player.noPlayersFound" />
+						{#if searchQuery}
+							<TranslatedText key="app.player.matchingSearch" />
+						{/if}.
+					</span>
 				</div>
 			{/if}
 		</div>
@@ -240,7 +245,12 @@
 							d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 						></path>
 					</svg>
-					<span>No players found{searchQuery ? ' matching your search' : ''}.</span>
+					<span>
+						<TranslatedText key="app.player.noPlayersFound" />
+						{#if searchQuery}
+							<TranslatedText key="app.player.matchingSearch" />
+						{/if}.
+					</span>
 				</div>
 			{:else}
 				<div class="w-full">

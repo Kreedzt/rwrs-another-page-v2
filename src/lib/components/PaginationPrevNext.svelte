@@ -1,4 +1,6 @@
 <script lang="ts">
+	import TranslatedText from '$lib/components/TranslatedText.svelte';
+
 	interface Props {
 		currentPage: number;
 		hasNext: boolean;
@@ -26,7 +28,7 @@
 
 	<!-- Current page indicator -->
 	<button class="join-item btn btn-active">
-		Page {currentPage}
+		<TranslatedText key="app.paginationControl.page" /> {currentPage}
 	</button>
 
 	<!-- Next page button -->

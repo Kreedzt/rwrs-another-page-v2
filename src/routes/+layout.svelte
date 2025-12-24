@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import TranslatedText from '$lib/components/TranslatedText.svelte';
 
 	let { children } = $props();
 </script>
@@ -12,23 +13,23 @@
 	<footer class="footer sm:footer-horizontal footer-center bg-base-200 text-base-content p-6">
 		<aside class="flex flex-col items-center gap-2">
 			<p class="text-sm">
-				Developed by
+				<TranslatedText key="app.footer.developedBy" />
 				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-primary font-semibold">
 					Kreedzt
 				</a>
 			</p>
 			<p class="text-xs text-base-content/70">
-				Data sourced from official
+				<TranslatedText key="app.footer.dataSourced" />
 				<a href="http://rwr.runningwithrifles.com/rwr_stats/view_players.php" target="_blank" rel="noopener noreferrer" class="link link-primary">
-					RWR Stats API
+					<TranslatedText key="app.footer.rwrStatsApi" />
 				</a>
 				&bull;
 				<a href="http://rwr.runningwithrifles.com/rwr_server_list/view_servers.php" target="_blank" rel="noopener noreferrer" class="link link-primary">
-					Server List
+					<TranslatedText key="app.footer.serverList" />
 				</a>
 			</p>
 			<p class="text-xs text-base-content/50">
-				Copyright © {new Date().getFullYear()} - All data provided by Running with Rifles official servers
+				<TranslatedText key="app.footer.copyright" params={{ year: new Date().getFullYear() }} />
 			</p>
 		</aside>
 	</footer>
