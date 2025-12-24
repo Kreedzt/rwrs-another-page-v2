@@ -9,18 +9,7 @@ function formatNumber(value: Nullable<number>): string {
 
 function formatKd(kd: Nullable<number>): string {
 	if (kd === null || kd === undefined) return '-';
-	const formatted = kd.toFixed(2);
-
-	// Color coding based on KD ratio
-	if (kd >= 3.0) {
-		return `<span class="text-green-600 font-semibold">${formatted}</span>`;
-	} else if (kd >= 1.5) {
-		return `<span class="text-yellow-600">${formatted}</span>`;
-	} else if (kd >= 1.0) {
-		return `<span class="text-orange-600">${formatted}</span>`;
-	} else {
-		return `<span class="text-red-600">${formatted}</span>`;
-	}
+	return kd.toFixed(2);
 }
 
 export const playerColumns: IPlayerColumn[] = [

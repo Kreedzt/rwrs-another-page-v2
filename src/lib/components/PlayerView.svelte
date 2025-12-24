@@ -7,6 +7,7 @@
 
 	interface Props {
 		loading: boolean;
+		refreshing: boolean;
 		error: string | null;
 		searchQuery: string;
 		paginatedPlayers: IPlayerItem[];
@@ -30,6 +31,7 @@
 
 	let {
 		loading,
+		refreshing,
 		error,
 		searchQuery,
 		paginatedPlayers,
@@ -86,8 +88,8 @@
 	}
 </script>
 
-{#if loading}
-	<!-- Loading state -->
+{#if loading || refreshing}
+	<!-- Loading/Refreshing state -->
 	<div
 		class="loading-container flex min-h-[400px] w-full flex-col items-center justify-center rounded-lg p-6"
 		role="status"
@@ -267,19 +269,28 @@
 									<th
 										class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle"
 									>
-										<button
-											class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
-											onclick={() => onSort(column.key as string)}
-											type="button"
-											title="Click to sort"
-										>
-											<span class="flex-1">
+										{#if column.key === 'rowNumber'}
+											<!-- No sort button for rowNumber -->
+											<span class="px-2 py-1">
 												{#if column.i18n}<TranslatedText
 														key={column.i18n}
 													/>{:else}{column.label}{/if}
 											</span>
-											{@html getSortIcon(column.key as string)}
-										</button>
+										{:else}
+											<button
+												class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
+												onclick={() => onSort(column.key as string)}
+												type="button"
+												title="Click to sort"
+											>
+												<span class="flex-1">
+													{#if column.i18n}<TranslatedText
+															key={column.i18n}
+														/>{:else}{column.label}{/if}
+												</span>
+												{@html getSortIcon(column.key as string)}
+											</button>
+										{/if}
 									</th>
 								{/each}
 							</tr>

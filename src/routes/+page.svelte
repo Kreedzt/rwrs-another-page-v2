@@ -74,6 +74,9 @@
 	let mobilePlayerCurrentPage = $state(1);
 	let mobilePlayerLoadingMore = $state(false);
 
+	// Player refreshing state (for sort/db changes when data already exists)
+	let playerRefreshing = $state(false);
+
 	// Visible columns (from user settings)
 	let visibleColumns = $state<Record<string, boolean>>({ ...userSettings.visibleColumns });
 
@@ -470,7 +473,14 @@
 
 	async function loadPlayers() {
 		try {
-			loading = true;
+			// Use refreshing state if we already have data (sort/db change)
+			const isRefreshing = players.length > 0;
+			if (isRefreshing) {
+				playerRefreshing = true;
+			} else {
+				loading = true;
+			}
+
 			const start = (currentPage - 1) * playerPageSize;
 
 			// Convert camelCase to snake_case for API
@@ -494,6 +504,7 @@
 			console.error('Error loading players:', err);
 		} finally {
 			loading = false;
+			playerRefreshing = false;
 		}
 	}
 
@@ -574,9 +585,13 @@
 			activeQuickFilters = validFilters;
 		}
 
+		// Set sort state based on current view
 		if (urlState.sortColumn && urlState.sortDirection) {
+			// Always set both states so switching views preserves sort
 			sortColumn = urlState.sortColumn;
 			sortDirection = urlState.sortDirection;
+			playerSortColumn = urlState.sortColumn;
+			playerSortDirection = urlState.sortDirection;
 		}
 
 		if (urlState.view) {
@@ -618,6 +633,8 @@
 			if (urlState.sortColumn !== undefined && sortColumn !== (urlState.sortColumn || '')) {
 				sortColumn = urlState.sortColumn;
 				sortDirection = urlState.sortDirection || null;
+				playerSortColumn = urlState.sortColumn;
+				playerSortDirection = urlState.sortDirection || null;
 			}
 
 			if (urlState.view !== undefined && currentView !== urlState.view) {
@@ -730,6 +747,7 @@
 		{:else}
 			<PlayerView
 				loading={loading && players.length === 0}
+				refreshing={playerRefreshing}
 				{error}
 				{searchQuery}
 				paginatedPlayers={derivedPlayerData().paginatedPlayers}

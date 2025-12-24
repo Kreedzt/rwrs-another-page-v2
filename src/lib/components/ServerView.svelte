@@ -218,7 +218,7 @@
 								</div>
 							</div>
 							<div class="flex-shrink-0">
-								<span class="badge badge-success text-white font-medium text-xs px-2 py-1">
+								<span class="badge bg-success/70 text-white font-medium text-xs px-2 py-1">
 									{item.mapId.split('/').pop() || ''}
 								</span>
 							</div>
