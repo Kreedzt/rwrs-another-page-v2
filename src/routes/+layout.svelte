@@ -9,26 +9,28 @@
 		{@render children()}
 	</main>
 
-	<footer class="flex flex-col items-center justify-center py-4 border-t border-base-200/50">
-		<div class="text-center space-y-1">
-			<p class="m-0 text-sm text-base-content/70">
+	<footer class="footer sm:footer-horizontal footer-center bg-base-200 text-base-content p-6">
+		<aside class="flex flex-col items-center gap-2">
+			<p class="text-sm">
 				Developed by
-				<a class="font-medium hover:text-primary transition-colors" href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer">
+				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-primary font-semibold">
 					Kreedzt
 				</a>
 			</p>
-			<p class="m-0 text-xs text-base-content/50">
-				Data source from official
-				<a class="font-medium hover:text-primary transition-colors" href="http://rwr.runningwithrifles.com/rwr_server_list/get_server_list.php" target="_blank" rel="noopener noreferrer">
-					RWR API
+			<p class="text-xs text-base-content/70">
+				Data sourced from official
+				<a href="http://rwr.runningwithrifles.com/rwr_stats/view_players.php" target="_blank" rel="noopener noreferrer" class="link link-primary">
+					RWR Stats API
+				</a>
+				&bull;
+				<a href="http://rwr.runningwithrifles.com/rwr_server_list/view_servers.php" target="_blank" rel="noopener noreferrer" class="link link-primary">
+					Server List
 				</a>
 			</p>
-			<p class="m-0 text-xs text-base-content/40">
-				<a class="font-medium hover:text-primary transition-colors" href="http://rwr.runningwithrifles.com/rwr_server_list/view_servers.php" target="_blank" rel="noopener noreferrer">
-					Official Server List
-				</a>
+			<p class="text-xs text-base-content/50">
+				Copyright © {new Date().getFullYear()} - All data provided by Running with Rifles official servers
 			</p>
-		</div>
+		</aside>
 	</footer>
 </div>
 
