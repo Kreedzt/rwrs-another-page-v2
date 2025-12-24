@@ -23,12 +23,10 @@
 
 	// Set up intersection observer for infinite scroll
 	$effect(() => {
-		console.log('MobileInfiniteScroll $effect', { hasMore, isLoading, hasTrigger: !!loadMoreTrigger });
 		if (!loadMoreTrigger) return;
 
 		// Clean up previous observer
 		if (observer) {
-			console.log('MobileInfiniteScroll disconnecting previous observer');
 			observer.disconnect();
 		}
 
@@ -36,7 +34,6 @@
 		observer = new IntersectionObserver(
 			(entries) => {
 				const entry = entries[0];
-				console.log('IntersectionObserver callback', { isIntersecting: entry.isIntersecting, hasMore, isLoading });
 				if (entry.isIntersecting) {
 					onLoadMore();
 				}
@@ -49,15 +46,11 @@
 		);
 
 		if (hasMore && !isLoading) {
-			console.log('MobileInfiniteScroll observing element');
 			observer.observe(loadMoreTrigger);
-		} else {
-			console.log('MobileInfiniteScroll NOT observing element', { hasMore, isLoading });
 		}
 
 		return () => {
 			if (observer) {
-				console.log('MobileInfiniteScroll cleanup disconnecting observer');
 				observer.disconnect();
 			}
 		};

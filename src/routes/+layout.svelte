@@ -14,17 +14,17 @@
 		<aside class="flex flex-col items-center gap-2">
 			<p class="text-sm">
 				<TranslatedText key="app.footer.developedBy" />
-				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-primary font-semibold">
+				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-hover font-semibold text-primary">
 					Kreedzt
 				</a>
 			</p>
 			<p class="text-xs text-base-content/70">
 				<TranslatedText key="app.footer.dataSourced" />
-				<a href="http://rwr.runningwithrifles.com/rwr_stats/view_players.php" target="_blank" rel="noopener noreferrer" class="link link-primary">
+				<a href="http://rwr.runningwithrifles.com/rwr_stats/view_players.php" target="_blank" rel="noopener noreferrer" class="link link-hover underline-offset-4">
 					<TranslatedText key="app.footer.rwrStatsApi" />
 				</a>
 				&bull;
-				<a href="http://rwr.runningwithrifles.com/rwr_server_list/view_servers.php" target="_blank" rel="noopener noreferrer" class="link link-primary">
+				<a href="http://rwr.runningwithrifles.com/rwr_server_list/view_servers.php" target="_blank" rel="noopener noreferrer" class="link link-hover underline-offset-4">
 					<TranslatedText key="app.footer.serverList" />
 				</a>
 			</p>

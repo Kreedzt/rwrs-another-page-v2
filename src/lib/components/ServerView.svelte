@@ -266,7 +266,10 @@
 											</span>
 											<button
 												class="btn btn-success btn-sm text-white"
-												onclick={() => onMapView(mapData)}
+												onclick={(e) => {
+													e.stopPropagation();
+													onMapView(mapData);
+												}}
 												type="button"
 											>
 												<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,6 +319,7 @@
 				onSort={onSort}
 				{sortColumn}
 				{sortDirection}
+				{onMapView}
 			/>
 		</div>
 

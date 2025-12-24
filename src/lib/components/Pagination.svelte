@@ -44,7 +44,6 @@
 	// Navigate to a specific page
 	function goToPage(page: number) {
 		if (page >= 1 && page <= totalPages) {
-			console.log('Dispatching pagechange event with page:', page);
 			pageChange(page);
 		}
 	}
