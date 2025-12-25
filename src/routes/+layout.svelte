@@ -29,6 +29,8 @@
 				</a>
 			</p>
 			<p class="text-xs text-base-content/70">
+				<TranslatedText key="app.footer.robinWeb" />
+				&bull;
 				<TranslatedText key="app.footer.copyright" params={{ year: 2025 }} />
 			</p>
 		</aside>

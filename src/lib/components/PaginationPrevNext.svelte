@@ -28,7 +28,7 @@
 
 	<!-- Current page indicator -->
 	<button class="join-item btn btn-active">
-		<TranslatedText key="app.paginationControl.page" /> {currentPage}
+		{currentPage}
 	</button>
 
 	<!-- Next page button -->

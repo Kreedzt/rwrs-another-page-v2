@@ -144,7 +144,7 @@
 			"page": "页",
 			"itemsPerPage": "每页显示数量"
 		},
-		"subtitle": "社区驱动的 RWR 数据查询平台",
+		"subtitle": "另一个社区驱动的 RWR 数据查询平台",
 		"player": {
 			"column": {
 				"rowNumber": "#",
@@ -184,7 +184,8 @@
 			"dataSourced": "数据来源",
 			"rwrStatsApi": "RWR 统计 API",
 			"serverList": "服务器列表",
-			"copyright": "版权所有 © {year} - 所有数据由 Running with Rifles 官方服务器提供"
+			"copyright": "版权所有 © {year} - 所有数据由 Running with Rifles 官方服务器提供",
+			"robinWeb": "Robin Web"
 		},
 		"paginationControl": {
 			"page": "第",

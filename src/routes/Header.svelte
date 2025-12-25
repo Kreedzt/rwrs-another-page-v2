@@ -1,5 +1,5 @@
 <script lang="ts">
-	import github from '$lib/images/github.svg';
+	import { Github } from '@lucide/svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
@@ -32,7 +32,7 @@
 					rel="noopener noreferrer"
 					title="View on GitHub"
 				>
-					<img src={github} width="24" height="24" alt="GitHub" />
+					<Github />
 				</a>
 			</div>
 		</div>

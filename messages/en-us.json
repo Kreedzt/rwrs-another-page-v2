@@ -144,7 +144,7 @@
 			"page": "page",
 			"itemsPerPage": "Items per page"
 		},
-		"subtitle": "A Community RWR Data Query Site",
+		"subtitle": "Another Community RWR Data Query Site",
 		"player": {
 			"column": {
 				"rowNumber": "#",
@@ -184,7 +184,8 @@
 			"dataSourced": "Data sourced from official",
 			"rwrStatsApi": "RWR Stats API",
 			"serverList": "Server List",
-			"copyright": "Copyright © {year} - All data provided by Running with Rifles official servers"
+			"copyright": "Copyright © {year} - All data provided by Running with Rifles official servers",
+			"robinWeb": "Robin Web"
 		},
 		"paginationControl": {
 			"page": "Page",
