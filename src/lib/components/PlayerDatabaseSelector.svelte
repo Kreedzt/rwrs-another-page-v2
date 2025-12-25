@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PlayerDatabase } from '$lib/models/player.model';
+	import { PlayerDatabase } from '$lib/models/player.model';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 
 	interface Props {
@@ -10,10 +10,10 @@
 	let { currentDb, onDbChange }: Props = $props();
 
 	const databases: { value: PlayerDatabase; label: string; i18n: string }[] = [
-		{ value: 'invasion', label: 'Invasion', i18n: 'app.player.database.invasion' },
-		{ value: 'pacific', label: 'Pacific', i18n: 'app.player.database.pacific' },
+		{ value: PlayerDatabase.INVASION, label: 'Invasion', i18n: 'app.player.database.invasion' },
+		{ value: PlayerDatabase.PACIFIC, label: 'Pacific', i18n: 'app.player.database.pacific' },
 		{
-			value: 'prereset_invasion',
+			value: PlayerDatabase.PRERESET_INVASION,
 			label: 'Invasion (before reset)',
 			i18n: 'app.player.database.prereset_invasion'
 		}

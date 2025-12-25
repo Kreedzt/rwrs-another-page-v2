@@ -141,7 +141,8 @@
 		},
 		"pagination": {
 			"info": "Page {currentPage} of {totalPages} ({totalItems} items)",
-			"page": "page"
+			"page": "page",
+			"itemsPerPage": "Items per page"
 		},
 		"subtitle": "A Community RWR Data Query Site",
 		"player": {

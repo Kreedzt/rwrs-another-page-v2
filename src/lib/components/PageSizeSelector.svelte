@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages.js';
-	import TranslatedText from '$lib/components/TranslatedText.svelte';
 
 	interface Props {
 		currentSize: number;
@@ -24,14 +23,20 @@
 		const select = event.target as HTMLSelectElement;
 		onSizeChange(Number(select.value));
 	}
+
+	// Pre-compute translation labels to avoid Svelte compilation issues with bracket notation in attributes
+	const selectAriaLabel = 'Items per page';
+	const pageText = m['app.pagination.page'];
 </script>
 
 <select
 	class="select select-bordered w-full min-w-32 sm:w-auto"
 	value={currentSize}
 	onchange={handleChange}
+	aria-label={selectAriaLabel}
+	title={selectAriaLabel}
 >
 	{#each filteredOptions as size (size)}
-		<option value={size}>{size} / {m['app.pagination.page']()}</option>
+		<option value={size}>{size} / {pageText()}</option>
 	{/each}
 </select>

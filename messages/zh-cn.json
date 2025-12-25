@@ -141,7 +141,8 @@
 		},
 		"pagination": {
 			"info": "第 {currentPage} 页，共 {totalPages} 页（{totalItems} 项）",
-			"page": "页"
+			"page": "页",
+			"itemsPerPage": "每页显示数量"
 		},
 		"subtitle": "社区驱动的 RWR 数据查询平台",
 		"player": {
