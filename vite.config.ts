@@ -91,7 +91,7 @@ export default defineConfig({
 					environment: 'jsdom',
 					clearMocks: true,
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}', 'tests/unit/**/*.svelte.{test,spec}.{js,ts}'],
-					exclude: ['src/lib/server/**'],
+					exclude: ['src/lib/server/**', 'src/lib/paraglide/**'],
 					setupFiles: ['./vitest-setup-client.ts']
 				}
 			},
@@ -107,6 +107,7 @@ export default defineConfig({
 		],
 		coverage: {
 			include: ['src/'],
+			exclude: ['src/lib/paraglide/**'],
 			provider: 'v8',
 			reporter: ['text', 'json', 'cobertura', 'html', 'lcov']
 		},
