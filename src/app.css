@@ -229,6 +229,7 @@ button:focus:not(:focus-visible) {
 
 /* Tactical button styling */
 .btn-tactical {
+	cursor: pointer;
 	position: relative;
 	background: var(--color-bg-tertiary);
 	border: 1px solid var(--color-border);
