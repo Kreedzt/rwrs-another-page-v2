@@ -14,7 +14,7 @@
 		<aside class="flex flex-col items-center gap-2">
 			<p class="text-sm">
 				<TranslatedText key="app.footer.developedBy" />
-				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-hover font-bold hover:underline link-accent">
+				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-hover font-bold hover:underline text-primary">
 					Kreedzt
 				</a>
 			</p>
