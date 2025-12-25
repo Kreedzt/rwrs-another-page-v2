@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import LoadingState from '$lib/components/LoadingState.svelte';
 	import PaginationPrevNext from '$lib/components/PaginationPrevNext.svelte';
 	import PlayerTable from '$lib/components/PlayerTable.svelte';
 	import MobileInfiniteScroll from '$lib/components/MobileInfiniteScroll.svelte';
@@ -8,7 +9,6 @@
 
 	interface Props {
 		loading: boolean;
-		refreshing: boolean;
 		error: string | null;
 		searchQuery: string;
 		paginatedPlayers: IPlayerItem[];
@@ -32,7 +32,6 @@
 
 	let {
 		loading,
-		refreshing,
 		error,
 		searchQuery,
 		paginatedPlayers,
@@ -84,46 +83,8 @@
 	}
 </script>
 
-{#if loading || refreshing}
-	<!-- Loading/Refreshing state -->
-	<div
-		class="loading-container flex min-h-[400px] w-full flex-col items-center justify-center rounded-lg p-6"
-		role="status"
-		aria-label="Loading player data"
-	>
-		<div class="loading-animation mb-6">
-			<div class="flex space-x-2">
-				<div
-					class="loading-dot bg-primary h-3 w-3 animate-bounce rounded-full"
-					style="animation-delay: 0ms"
-				></div>
-				<div
-					class="loading-dot bg-primary h-3 w-3 animate-bounce rounded-full"
-					style="animation-delay: 150ms"
-				></div>
-				<div
-					class="loading-dot bg-primary h-3 w-3 animate-bounce rounded-full"
-					style="animation-delay: 300ms"
-				></div>
-			</div>
-		</div>
-		<div class="mb-4 text-center">
-			<h3 class="text-base-content mb-2 text-lg font-semibold">
-				<TranslatedText key="app.player.loading.title" />
-			</h3>
-			<p class="text-base-content/70 max-w-md text-sm">
-				<TranslatedText key="app.player.loading.description" />
-			</p>
-		</div>
-		<div class="mb-6 w-full max-w-sm">
-			<div class="progress progress-primary h-2 w-full">
-				<div class="progress-bar bg-primary h-2 w-[60%] animate-pulse"></div>
-			</div>
-			<p class="text-base-content/50 mt-2 text-center text-xs">
-				<TranslatedText key="app.player.loading.progress" />
-			</p>
-		</div>
-	</div>
+{#if loading}
+	<LoadingState type="players" />
 {:else if error}
 	<div class="alert alert-error">
 		<svg

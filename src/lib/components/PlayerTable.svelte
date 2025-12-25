@@ -20,11 +20,6 @@
 		onSort = () => {}
 	}: Props = $props();
 
-	// Filter columns based on visibility
-	const visiblePlayerColumns = $derived(
-		playerColumns.filter((col) => visibleColumns[col.key as string] !== false)
-	);
-
 	// Helper function to get the display value for a column
 	function getDisplayValue(
 		item: IPlayerItem,
@@ -52,6 +47,18 @@
 
 		// Always show descending icon for sorted column
 		return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+	}
+
+	// Handle column sort
+	function handleColumnSort(column: string) {
+		onSort?.(column);
+	}
+
+	// Get sticky class for column
+	function getStickyClass(key: string): string {
+		if (key === 'rowNumber') return 'sticky-row-number';
+		if (key === 'username') return 'sticky-username';
+		return '';
 	}
 </script>
 
@@ -82,49 +89,55 @@
 		<table class="table-pin-rows mb-0 table table-zebra border-0">
 			<thead>
 				<tr>
-					{#each visiblePlayerColumns as column (column.key)}
-						<th
-							class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle"
-						>
-							{#if column.key === 'rowNumber'}
-								<!-- No sort button for rowNumber -->
-								<span class="px-2 py-1">
-									{#if column.i18n}<TranslatedText
-											key={column.i18n}
-										/>{:else}{column.label}{/if}
-								</span>
-							{:else}
-								<button
-									class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
-									onclick={() => onSort(column.key as string)}
-									type="button"
-									title="Click to sort"
-								>
-									<span class="flex-1">
+					{#each playerColumns as column (column.key)}
+						{#if visibleColumns[column.key]}
+							<th
+								class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle {getStickyClass(column.key)}"
+								class:bg-base-100={column.key === 'rowNumber' || column.key === 'username'}
+							>
+								{#if column.key === 'rowNumber'}
+									<!-- No sort button for rowNumber -->
+									<span class="px-2 py-1">
 										{#if column.i18n}<TranslatedText
 												key={column.i18n}
 											/>{:else}{column.label}{/if}
 									</span>
-									{@html getSortIcon(column.key as string)}
-								</button>
-							{/if}
-						</th>
+								{:else}
+									<button
+										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
+										onclick={() => handleColumnSort(column.key as string)}
+										type="button"
+										title="Click to sort"
+									>
+										<span class="flex-1">
+											{#if column.i18n}<TranslatedText
+													key={column.i18n}
+												/>{:else}{column.label}{/if}
+										</span>
+										{@html getSortIcon(column.key as string)}
+									</button>
+								{/if}
+							</th>
+						{/if}
 					{/each}
 				</tr>
 			</thead>
 			<tbody>
 				{#each data as item (item.id)}
 					<tr class="hover hover:bg-base-300 min-h-12">
-						{#each visiblePlayerColumns as column (column.key)}
-							<td
-								class="px-4 py-2 {column.alignment === 'center'
-									? 'align-middle text-center'
-									: column.alignment === 'right'
-										? 'align-middle text-right'
-										: 'align-middle'}"
-							>
-								{@html getDisplayValue(item, column, searchQuery)}
-							</td>
+						{#each playerColumns as column (column.key)}
+							{#if visibleColumns[column.key]}
+								<td
+									class="px-4 py-2 {getStickyClass(column.key)} {column.alignment === 'center'
+										? 'align-middle text-center'
+										: column.alignment === 'right'
+											? 'align-middle text-right'
+											: 'align-middle'}"
+									class:bg-base-100={column.key === 'rowNumber' || column.key === 'username'}
+								>
+									{@html getDisplayValue(item, column, searchQuery)}
+								</td>
+							{/if}
 						{/each}
 					</tr>
 				{/each}
@@ -132,3 +145,38 @@
 		</table>
 	</div>
 {/if}
+
+<style>
+	/* Row number - sticky first column on left */
+	:global(.sticky-row-number) {
+		position: sticky;
+		left: 0;
+		z-index: 15;
+		min-width: 4rem;
+		width: 4rem;
+		border-right: 2px solid hsl(var(--bc) / 0.15);
+		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Username - sticky second column on left */
+	:global(.sticky-username) {
+		position: sticky;
+		left: 4rem;
+		z-index: 15;
+		min-width: 10rem;
+		border-right: 2px solid hsl(var(--bc) / 0.15);
+		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Mobile responsive styles */
+	@media (max-width: 768px) {
+		:global(.sticky-row-number),
+		:global(.sticky-username) {
+			min-width: 3rem;
+		}
+
+		:global(.sticky-username) {
+			left: 3rem;
+		}
+	}
+</style>

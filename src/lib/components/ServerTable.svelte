@@ -84,6 +84,12 @@
 	function handleColumnSort(column: string) {
 		onSort(column);
 	}
+
+	// Get sticky class for column
+	function getStickyClass(key: string): string {
+		if (key === 'name') return 'sticky-name';
+		return '';
+	}
 </script>
 
 {#if data.length === 0}
@@ -112,10 +118,11 @@
 					{#each columns as column (column.key)}
 						{#if visibleColumns[column.key]}
 							<th
-								class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle {column.headerClass ||
+								class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle {getStickyClass(column.key)} {column.headerClass ||
 									''}"
 								class:action-header={column.key === 'action'}
-								class:bg-base-100={column.key === 'action'}
+								class:sticky-name-header={column.key === 'name'}
+								class:bg-base-100={column.key === 'action' || column.key === 'name'}
 							>
 								{#if column.key === 'action'}
 									<div class="text-center">
@@ -147,10 +154,10 @@
 						{#each columns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td
-									class="px-4 py-2 {getAlignmentClass(column)} {column.cellClass ||
+									class="px-4 py-2 {getStickyClass(column.key)} {getAlignmentClass(column)} {column.cellClass ||
 										''} {column.key === 'playerList' ? 'align-top' : ''}"
 									class:action-cell={column.key === 'action'}
-									class:bg-base-100={column.key === 'action'}
+									class:bg-base-100={column.key === 'action' || column.key === 'name'}
 								>
 									{#if column.key === 'action'}
 										<div class="flex min-h-[3rem] items-center justify-center text-center">
@@ -206,6 +213,25 @@
 {/if}
 
 <style>
+	/* Name column - sticky first column on left */
+	:global(.sticky-name) {
+		position: sticky;
+		left: 0;
+		z-index: 15;
+		min-width: 12rem;
+		border-right: 2px solid hsl(var(--bc) / 0.15);
+		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+	}
+
+	:global(.sticky-name-header) {
+		position: sticky;
+		left: 0;
+		z-index: 20;
+		min-width: 12rem;
+		border-right: 2px solid hsl(var(--bc) / 0.25);
+		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+	}
+
 	/* Action column styling */
 	:global(.action-cell) {
 		position: sticky;

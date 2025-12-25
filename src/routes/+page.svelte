@@ -1,21 +1,23 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { ServerService } from '$lib/services/servers';
 	import { userSettingsService, type UserSettings } from '$lib/services/user-settings';
 	import type { IColumn, IDisplayServerItem } from '$lib/models/server.model';
 	import { columns } from '$lib/config/server-columns';
 	import { getMaps, type MapData } from '$lib/services/maps';
-	import { PlayerService } from '$lib/services/players';
-	import type { IPlayerItem, IPlayerColumn, PlayerDatabase } from '$lib/models/player.model';
+	import type { IPlayerColumn, PlayerDatabase } from '$lib/models/player.model';
 	import { playerColumns } from '$lib/config/player-columns';
-	import { filters as quickFilters } from '$lib/utils/quick-filters';
 	import {
 		getUrlState,
 		updateUrlState,
 		createUrlStateSubscriber,
 		type UrlState
 	} from '$lib/utils/url-state';
+
+	// State stores
+	import { createServerState } from '$lib/stores/use-server-state.svelte';
+	import { createPlayerState } from '$lib/stores/use-player-state.svelte';
+	import { createUrlSync } from '$lib/stores/use-url-sync.svelte';
 
 	// Components
 	import Header from './Header.svelte';
@@ -26,68 +28,20 @@
 	import MapPreview from '$lib/components/MapPreview.svelte';
 	import GlobalKeyboardSearch from '$lib/components/GlobalKeyboardSearch.svelte';
 
+	// Create state stores
+	const serverState = createServerState();
+	const playerState = createPlayerState('invasion' as PlayerDatabase);
+
 	// View mode state
 	let currentView = $state<'servers' | 'players'>('servers');
-	let playerDb = $state<PlayerDatabase>('invasion' as PlayerDatabase);
-	let players = $state<IPlayerItem[]>([]);
-	// Player pagination state from API (Next/Previous links)
-	let playerHasNext = $state(false);
-	let playerHasPrevious = $state(false);
 
-	// State variables
-	let servers = $state<IDisplayServerItem[]>([]);
+	// Local state (not in stores)
 	let maps = $state<MapData[]>([]);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
 	let searchQuery = $state('');
 	let searchInputRef = $state<HTMLInputElement | null>(null);
-
-	// Map preview state
 	let mapPreviewData = $state<MapData | undefined>(undefined);
 	let mapPreviewShow = $state(false);
 	let mapPreviewPosition = $state({ x: 0, y: 0 });
-
-	// User settings from localStorage
-	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
-
-	// Auto refresh state (from user settings)
-	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
-
-	// Sort state
-	let sortColumn = $state<string | null>(null);
-	let sortDirection = $state<'asc' | 'desc' | null>(null);
-
-	// Player sort state
-	let playerSortColumn = $state<string | null>(null);
-	let playerSortDirection = $state<'asc' | 'desc' | null>(null);
-
-	// Pagination state
-	const itemsPerPage = 20; // For servers
-	let playerPageSize = $state(20); // For players (variable)
-	let currentPage = $state(1);
-
-	// Mobile infinite scroll state - servers
-	let mobileServerCurrentPage = $state(1);
-	let mobileServerLoadingMore = $state(false);
-
-	// Mobile infinite scroll state - players
-	let mobilePlayerCurrentPage = $state(1);
-	let mobilePlayerLoadingMore = $state(false);
-
-	// Player refreshing state (for sort/db changes when data already exists)
-	let playerRefreshing = $state(false);
-
-	// Visible columns (from user settings)
-	let visibleColumns = $state<Record<string, boolean>>({ ...userSettings.visibleColumns });
-
-	// Visible player columns - default to specified columns
-	const defaultPlayerVisibleColumns = ['rowNumber', 'username', 'kills', 'deaths', 'kd', 'timePlayed', 'rankProgression', 'rankName'];
-	let visiblePlayerColumns = $state<Record<string, boolean>>(
-		playerColumns.reduce((acc, col) => {
-			acc[col.key as string] = defaultPlayerVisibleColumns.includes(col.key as string);
-			return acc;
-		}, {} as Record<string, boolean>)
-	);
 
 	// Quick filter state
 	let activeQuickFilters = $state<string[]>([]);
@@ -96,255 +50,101 @@
 	// Mobile expanded cards state
 	let mobileExpandedCards = $state<Record<string, boolean>>({});
 
-	// Calculate statistics
-	const calculateStats = (serverList: IDisplayServerItem[]) => {
-		const totalServers = serverList.length;
-		const totalPlayers = serverList.reduce((sum, server) => sum + server.currentPlayers, 0);
-		return { totalServers, totalPlayers };
-	};
+	// User settings from localStorage
+	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
+	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
 
-	const calculatePlayerStats = (playerList: IPlayerItem[], paginatedList?: IPlayerItem[]) => {
-		return {
-			totalPlayers: playerList.length,
-			paginatedCount: paginatedList?.length ?? playerList.length
-		};
-	};
+	// Visible columns (from user settings)
+	let visibleColumns = $state<Record<string, boolean>>({ ...userSettings.visibleColumns });
 
-	// Sort servers
-	function sortServers(serverList: IDisplayServerItem[]): IDisplayServerItem[] {
-		if (!sortColumn || !sortDirection) {
-			return serverList;
-		}
+	// Visible player columns - default to specified columns
+	const defaultPlayerVisibleColumns = [
+		'rowNumber',
+		'username',
+		'kills',
+		'deaths',
+		'score',
+		'kd',
+		'timePlayed',
+		'rankProgression',
+		'rankName'
+	];
+	let visiblePlayerColumns = $state<Record<string, boolean>>(
+		playerColumns.reduce((acc, col) => {
+			acc[col.key as string] = defaultPlayerVisibleColumns.includes(col.key as string);
+			return acc;
+		}, {} as Record<string, boolean>)
+	);
 
-		const numericColumns = ['bots', 'playerCount', 'port', 'currentPlayers', 'maxPlayers'];
-		const isNumeric = numericColumns.includes(sortColumn);
-
-		return [...serverList].sort((a, b) => {
-			let aValue: any;
-			let bValue: any;
-
-			switch (sortColumn) {
-				case 'bots':
-					aValue = a.bots;
-					bValue = b.bots;
-					break;
-				case 'playerCount':
-				case 'currentPlayers':
-					aValue = a.currentPlayers;
-					bValue = b.currentPlayers;
-					break;
-				case 'maxPlayers':
-					aValue = a.maxPlayers;
-					bValue = b.maxPlayers;
-					break;
-				case 'port':
-					aValue = a.port;
-					bValue = b.port;
-					break;
-				default:
-					aValue = (a as any)[sortColumn!] || '';
-					bValue = (b as any)[sortColumn!] || '';
-					break;
-			}
-
-			if (!isNumeric) {
-				aValue = String(aValue).toLowerCase();
-				bValue = String(bValue).toLowerCase();
-			}
-
-			if (sortDirection === 'desc') {
-				return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+	// URL sync setup
+	const urlSync = createUrlSync({
+		serverState,
+		playerState,
+		onViewChange: (view) => {
+			currentView = view;
+			if (view === 'players') {
+				playerState.loadPlayers({ searchQuery });
 			} else {
-				return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+				serverState.refreshList();
 			}
-		});
-	}
-
-	// Sort players
-	function sortPlayers(playerList: IPlayerItem[]): IPlayerItem[] {
-		if (!playerSortColumn || !playerSortDirection) {
-			return playerList;
+		},
+		onSearchChange: (search) => {
+			searchQuery = search;
 		}
-
-		return [...playerList].sort((a, b) => {
-			const column = playerColumns.find((col) => col.key === playerSortColumn);
-			let aValue: any;
-			let bValue: any;
-
-			if (column) {
-				const key = column.key as keyof IPlayerItem;
-				aValue = (a as any)[key];
-				bValue = (b as any)[key];
-			} else {
-				aValue = '';
-				bValue = '';
-			}
-
-			if (aValue == null) aValue = 0;
-			if (bValue == null) bValue = 0;
-
-			const isNumeric = typeof aValue === 'number' || typeof bValue === 'number';
-
-			if (!isNumeric) {
-				aValue = String(aValue).toLowerCase();
-				bValue = String(bValue).toLowerCase();
-			}
-
-			if (playerSortDirection === 'desc') {
-				return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-			} else {
-				return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-			}
-		});
-	}
-
-	// Derived values for servers
-	const derivedServerData = $derived(() => {
-		let filtered = searchQuery
-			? servers.filter((server) => {
-					const query = searchQuery.toLowerCase();
-					return (
-						server.name.toLowerCase().includes(query) ||
-						server.ipAddress.toLowerCase().includes(query) ||
-						server.port.toString().includes(query) ||
-						server.country.toLowerCase().includes(query) ||
-						server.mode.toLowerCase().includes(query) ||
-						server.mapId.toLowerCase().includes(query) ||
-						(server.comment && server.comment.toLowerCase().includes(query)) ||
-						server.playerList.some((player: string) => player.toLowerCase().includes(query))
-					);
-				})
-			: servers;
-
-		if (activeQuickFilters.length > 0) {
-			filtered = filtered.filter((server) => {
-				return activeQuickFilters.some((filterId) => {
-					const filter = quickFilters.find((f) => f.id === filterId);
-					return filter ? filter.filter(server) : false;
-				});
-			});
-		}
-
-		const sortedFiltered = sortServers(filtered);
-
-		const totalStats = calculateStats(servers);
-		const filteredStats = calculateStats(sortedFiltered);
-
-		const totalPages = Math.ceil(sortedFiltered.length / itemsPerPage);
-		const paginatedServers = sortedFiltered.slice(
-			(currentPage - 1) * itemsPerPage,
-			currentPage * itemsPerPage
-		);
-
-		const mobilePaginatedServers = sortedFiltered.slice(0, mobileServerCurrentPage * itemsPerPage);
-		const mobileHasMore = mobilePaginatedServers.length < sortedFiltered.length;
-
-		return {
-			filteredServers: sortedFiltered,
-			totalPages,
-			paginatedServers,
-			totalStats,
-			filteredStats,
-			mobilePaginatedServers,
-			mobileHasMore
-		};
 	});
 
-	// Derived values for players
-	const derivedPlayerData = $derived(() => {
-		// Players are already filtered, sorted, and paginated by API
-		const paginatedPlayers = players;
+	// Derived server data - uses store's getDerivedData method
+	const derivedServerData = $derived(
+		serverState.getDerivedData(searchQuery, activeQuickFilters)
+	);
 
-		const totalStats = calculatePlayerStats(players);
-		const filteredStats = calculatePlayerStats(players, paginatedPlayers);
+	// Derived player data - uses store's getDerivedData method
+	const derivedPlayerData = $derived(playerState.getDerivedData());
 
-		// Use hasNext/hasPrevious from API response to determine total pages
-		const totalPages = playerHasNext ? currentPage + 1 : currentPage;
-
-		// For mobile, use current page data
-		const mobilePaginatedPlayers = players;
-		const mobileHasMore = playerHasNext;
-
-		return {
-			filteredPlayers: players,
-			totalPages,
-			paginatedPlayers,
-			totalStats,
-			filteredStats,
-			mobilePaginatedPlayers,
-			mobileHasMore
-		};
-	});
-
-	// Handle search query changes
+	// Handle search query changes - reset pagination in stores
 	$effect(() => {
-		currentPage = 1;
-		mobileServerCurrentPage = 1;
-		mobilePlayerCurrentPage = 1;
-		mobileServerLoadingMore = false;
-		mobilePlayerLoadingMore = false;
+		serverState.resetPagination();
+		playerState.resetPagination();
 	});
 
 	function handleSearchInput(value: string) {
 		searchQuery = value;
-		currentPage = 1;
-		mobileServerCurrentPage = 1;
-		mobilePlayerCurrentPage = 1;
-		mobileServerLoadingMore = false;
-		mobilePlayerLoadingMore = false;
+		serverState.resetPagination();
+		playerState.resetPagination();
 		updateUrlState({ search: value.trim() || undefined }, true);
-		// Don't trigger loadPlayers() here for players view - only on Enter or Refresh
-		if (currentView === 'servers') {
-			// Servers view can still search in real-time
-		}
 	}
 
 	function handleSearchEnter(value: string) {
 		if (currentView === 'players') {
 			searchQuery = value;
-			currentPage = 1;
-			mobilePlayerCurrentPage = 1;
-			mobilePlayerLoadingMore = false;
+			serverState.resetPagination();
+			playerState.resetPagination();
 			updateUrlState({ search: value.trim() || undefined }, true);
-			loadPlayers();
+			playerState.loadPlayers({ searchQuery: value });
 		}
 	}
 
 	function handleGlobalSearch(query: string) {
 		searchQuery = query;
-		currentPage = 1;
-		mobileServerCurrentPage = 1;
-		mobilePlayerCurrentPage = 1;
-		mobileServerLoadingMore = false;
-		mobilePlayerLoadingMore = false;
+		serverState.resetPagination();
+		playerState.resetPagination();
 		handleSearchInput(query);
 	}
 
 	function handlePageChange(page: number) {
-		currentPage = page;
-		// For players view, reload data from API with new page
-		if (currentView === 'players') {
-			loadPlayers();
+		if (currentView === 'servers') {
+			serverState.handlePageChange(page);
+		} else {
+			playerState.handlePageChange(page);
+			playerState.loadPlayers({ searchQuery });
 		}
 	}
 
-	function handleLoadMore() {
+	async function handleLoadMore() {
 		if (currentView === 'players') {
-			if (!mobilePlayerLoadingMore && playerHasNext) {
-				mobilePlayerLoadingMore = true;
-				mobilePlayerCurrentPage++;
-				loadPlayersMore().finally(() => {
-					mobilePlayerLoadingMore = false;
-				});
-			}
+			await playerState.handleLoadMore(searchQuery);
 		} else {
-			if (!mobileServerLoadingMore && derivedServerData().mobileHasMore) {
-				mobileServerLoadingMore = true;
-				mobileServerCurrentPage++;
-				setTimeout(() => {
-					mobileServerLoadingMore = false;
-				}, 500);
-			}
+			serverState.handleLoadMore();
 		}
 	}
 
@@ -360,7 +160,6 @@
 	}
 
 	function onColumnToggle(column: IColumn | IPlayerColumn, visible: boolean) {
-		// Check if this is a player column by looking at common player column keys
 		const playerColumnKeys = new Set(playerColumns.map((col) => col.key as string));
 		const isPlayerColumn = playerColumnKeys.has(column.key as string);
 
@@ -387,9 +186,7 @@
 		} else {
 			activeQuickFilters = activeQuickFilters.includes(filterId) ? [] : [filterId];
 		}
-		currentPage = 1;
-		mobileServerCurrentPage = 1;
-		mobileServerLoadingMore = false;
+		serverState.resetPagination();
 		updateUrlState({ quickFilters: activeQuickFilters.length > 0 ? activeQuickFilters : [] }, true);
 	}
 
@@ -401,50 +198,26 @@
 	}
 
 	function handleSort(column: string) {
-		if (sortColumn === column) {
-			if (sortDirection === 'desc') {
-				sortDirection = 'asc';
-			} else if (sortDirection === 'asc') {
-				sortColumn = null;
-				sortDirection = null;
-			} else {
-				sortDirection = 'desc';
-			}
-		} else {
-			sortColumn = column;
-			sortDirection = 'desc';
-		}
-
-		currentPage = 1;
-		mobileServerCurrentPage = 1;
-		mobileServerLoadingMore = false;
-
+		serverState.handleSort(column);
 		updateUrlState(
-			{ sortColumn: sortColumn || undefined, sortDirection: sortDirection || undefined },
+			{
+				sortColumn: serverState.sortColumn || undefined,
+				sortDirection: serverState.sortDirection || undefined
+			},
 			true
 		);
 	}
 
 	function handlePlayerSort(column: string) {
-		// Toggle sort: if clicking same column, clear it; otherwise set to desc
-		if (playerSortColumn === column) {
-			playerSortColumn = null;
-			playerSortDirection = null;
-		} else {
-			playerSortColumn = column;
-			playerSortDirection = 'desc';
-		}
-
-		currentPage = 1;
-		mobilePlayerCurrentPage = 1;
-		mobilePlayerLoadingMore = false;
-
+		playerState.handleSort(column);
 		updateUrlState(
-			{ sortColumn: playerSortColumn ?? null, sortDirection: playerSortDirection ?? null },
+			{
+				sortColumn: playerState.playerSortColumn ?? null,
+				sortDirection: playerState.playerSortDirection ?? null
+			},
 			true
 		);
-
-		loadPlayers();
+		playerState.loadPlayers({ searchQuery });
 	}
 
 	function toggleMobileCard(id: string) {
@@ -461,82 +234,6 @@
 		mapPreviewShow = false;
 	}
 
-	async function refreshList() {
-		try {
-			loading = true;
-			servers = await ServerService.listAll();
-			mobileServerCurrentPage = 1;
-			mobileServerLoadingMore = false;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load data';
-			console.error('Error loading servers:', err);
-		} finally {
-			loading = false;
-		}
-	}
-
-	async function loadPlayers() {
-		try {
-			// Use refreshing state if we already have data (sort/db change)
-			const isRefreshing = players.length > 0;
-			if (isRefreshing) {
-				playerRefreshing = true;
-			} else {
-				loading = true;
-			}
-
-			const start = (currentPage - 1) * playerPageSize;
-
-			// Convert camelCase to snake_case for API
-			const sortParam = playerSortColumn
-				? playerSortColumn.replace(/([A-Z])/g, '_$1').toLowerCase()
-				: undefined;
-
-			const result = await PlayerService.listWithPagination({
-				db: playerDb,
-				search: searchQuery.trim() || undefined,
-				sort: sortParam,
-				size: playerPageSize,
-				start
-			});
-			players = result.players;
-			playerHasNext = result.hasNext;
-			playerHasPrevious = result.hasPrevious;
-			mobilePlayerCurrentPage = 1;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load player data';
-			console.error('Error loading players:', err);
-		} finally {
-			loading = false;
-			playerRefreshing = false;
-		}
-	}
-
-	async function loadPlayersMore() {
-		try {
-			const start = (mobilePlayerCurrentPage - 1) * playerPageSize;
-
-			// Convert camelCase to snake_case for API
-			const sortParam = playerSortColumn
-				? playerSortColumn.replace(/([A-Z])/g, '_$1').toLowerCase()
-				: undefined;
-
-			const result = await PlayerService.listWithPagination({
-				db: playerDb,
-				search: searchQuery.trim() || undefined,
-				sort: sortParam,
-				size: playerPageSize,
-				start
-			});
-			players = [...players, ...result.players];
-			playerHasNext = result.hasNext;
-			playerHasPrevious = result.hasPrevious;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load player data';
-			console.error('Error loading players:', err);
-		}
-	}
-
 	async function loadMaps() {
 		try {
 			maps = await getMaps();
@@ -549,61 +246,41 @@
 		currentView = view;
 		searchQuery = '';
 		updateUrlState({ view, search: undefined }, true);
-		currentPage = 1;
-		mobileServerCurrentPage = 1;
-		mobilePlayerCurrentPage = 1;
-		mobileServerLoadingMore = false;
-		mobilePlayerLoadingMore = false;
+		serverState.resetPagination();
+		playerState.resetPagination();
 		if (view === 'players') {
-			loadPlayers();
+			playerState.loadPlayers();
 		} else {
-			refreshList();
+			serverState.refreshList();
 		}
 	}
 
 	function handlePlayerDbChange(db: PlayerDatabase) {
-		playerDb = db;
+		playerState.handlePlayerDbChange(db);
 		updateUrlState({ playerDb: db }, true);
-		loadPlayers();
+		playerState.loadPlayers({ searchQuery });
 	}
 
 	function handlePlayerPageSizeChange(size: number) {
-		playerPageSize = size;
-		currentPage = 1;
-		mobilePlayerCurrentPage = 1;
-		mobilePlayerLoadingMore = false;
-		loadPlayers();
+		playerState.handlePlayerPageSizeChange(size);
+		playerState.loadPlayers({ searchQuery });
 	}
 
 	function initializeFromUrl() {
 		const urlState = getUrlState();
 
-		if (urlState.search !== undefined) {
-			searchQuery = urlState.search;
-		}
+		// Use URL sync to initialize state
+		const urlInit = urlSync.initializeFromUrl(urlState);
 
-		if (urlState.quickFilters && urlState.quickFilters.length > 0) {
-			const validFilters = urlState.quickFilters.filter((filterId) =>
-				quickFilters.some((filter) => filter.id === filterId)
-			);
-			activeQuickFilters = validFilters;
+		// Set local state from URL init results
+		if (urlInit.activeQuickFilters) {
+			activeQuickFilters = urlInit.activeQuickFilters;
 		}
-
-		// Set sort state based on current view
-		if (urlState.sortColumn && urlState.sortDirection) {
-			// Always set both states so switching views preserves sort
-			sortColumn = urlState.sortColumn;
-			sortDirection = urlState.sortDirection;
-			playerSortColumn = urlState.sortColumn;
-			playerSortDirection = urlState.sortDirection;
+		if (urlInit.initialView) {
+			currentView = urlInit.initialView;
 		}
-
-		if (urlState.view) {
-			currentView = urlState.view;
-		}
-
-		if (urlState.playerDb) {
-			playerDb = urlState.playerDb;
+		if (urlInit.initialPlayerDb) {
+			playerState.handlePlayerDbChange(urlInit.initialPlayerDb);
 		}
 	}
 
@@ -613,49 +290,29 @@
 		const loadData = async () => {
 			await loadMaps();
 			if (currentView === 'players') {
-				await loadPlayers();
+				await playerState.loadPlayers();
 			} else {
-				await refreshList();
+				await serverState.refreshList();
 			}
 		};
 		loadData();
 
 		const unsubscribe = createUrlStateSubscriber((urlState: UrlState) => {
+			// Handle search changes
 			if (urlState.search !== undefined && searchQuery !== (urlState.search || '')) {
 				searchQuery = urlState.search || '';
 			}
 
+			// Handle quick filter changes
 			if (urlState.quickFilters !== undefined) {
-				const validFilters = urlState.quickFilters.filter((filterId) =>
-					quickFilters.some((filter) => filter.id === filterId)
-				);
-				if (JSON.stringify(activeQuickFilters) !== JSON.stringify(validFilters)) {
-					activeQuickFilters = validFilters;
+				const result = urlSync.handleUrlStateChange(urlState);
+				if (result.quickFilters) {
+					activeQuickFilters = result.quickFilters;
 				}
 			}
 
-			if (urlState.sortColumn !== undefined && sortColumn !== (urlState.sortColumn || '')) {
-				sortColumn = urlState.sortColumn;
-				sortDirection = urlState.sortDirection || null;
-				playerSortColumn = urlState.sortColumn;
-				playerSortDirection = urlState.sortDirection || null;
-			}
-
-			if (urlState.view !== undefined && currentView !== urlState.view) {
-				currentView = urlState.view;
-				if (urlState.view === 'players') {
-					loadPlayers();
-				} else {
-					refreshList();
-				}
-			}
-
-			if (urlState.playerDb !== undefined && playerDb !== urlState.playerDb) {
-				playerDb = urlState.playerDb;
-				if (currentView === 'players') {
-					loadPlayers();
-				}
-			}
+			// Handle other URL state changes through urlSync
+			urlSync.handleUrlStateChange(urlState);
 		});
 
 		return () => {
@@ -691,7 +348,7 @@
 		<!-- Control Bar -->
 		<ControlBar
 			{currentView}
-			{playerDb}
+			playerDb={playerState.playerDb}
 			{searchQuery}
 			searchPlaceholder={m['app.search.placeholder']()}
 			{autoRefreshEnabled}
@@ -700,7 +357,7 @@
 			{visibleColumns}
 			{visiblePlayerColumns}
 			onPlayerDbChange={handlePlayerDbChange}
-			onRefresh={currentView === 'servers' ? refreshList : loadPlayers}
+			onRefresh={currentView === 'servers' ? serverState.refreshList : () => playerState.loadPlayers({ searchQuery })}
 			onAutoRefreshToggle={handleAutoRefreshToggle}
 			onSearchInput={handleSearchInput}
 			onSearchEnter={handleSearchEnter}
@@ -711,33 +368,33 @@
 		<!-- Statistics Bar -->
 		<StatsBar
 			{currentView}
-			serverTotalStats={derivedServerData().totalStats}
-			serverFilteredStats={derivedServerData().filteredStats}
-			playerTotalStats={derivedPlayerData().totalStats}
-			playerFilteredStats={derivedPlayerData().filteredStats}
+			serverTotalStats={derivedServerData.totalStats}
+			serverFilteredStats={derivedServerData.filteredStats}
+			playerTotalStats={derivedPlayerData.totalStats}
+			playerFilteredStats={derivedPlayerData.filteredStats}
 			{searchQuery}
 		/>
 
 		<!-- Content Area -->
 		{#if currentView === 'servers'}
 			<ServerView
-				loading={loading && servers.length === 0}
-				{error}
+				loading={serverState.loading && serverState.servers.length === 0}
+				error={serverState.error}
 				{searchQuery}
-				paginatedServers={derivedServerData().paginatedServers}
-				mobilePaginatedServers={derivedServerData().mobilePaginatedServers}
-				mobileHasMore={derivedServerData().mobileHasMore}
-				mobileLoadingMore={mobileServerLoadingMore}
-				totalPages={derivedServerData().totalPages}
-				filteredServersCount={derivedServerData().filteredServers.length}
+				paginatedServers={derivedServerData.paginatedServers}
+				mobilePaginatedServers={derivedServerData.mobilePaginatedServers}
+				mobileHasMore={derivedServerData.mobileHasMore}
+				mobileLoadingMore={serverState.mobileServerLoadingMore}
+				totalPages={derivedServerData.totalPages}
+				filteredServersCount={derivedServerData.filteredServers.length}
 				{columns}
 				{maps}
 				{visibleColumns}
 				activeFilters={activeQuickFilters}
 				isMultiSelect={isMultiSelectFilter}
-				{currentPage}
-				sortColumn={sortColumn}
-				sortDirection={sortDirection}
+				currentPage={serverState.currentPage}
+				sortColumn={serverState.sortColumn}
+				sortDirection={serverState.sortDirection}
 				{mobileExpandedCards}
 				onQuickFilter={handleQuickFilter}
 				onMultiSelectChange={handleMultiSelectChange}
@@ -752,22 +409,21 @@
 			/>
 		{:else}
 			<PlayerView
-				loading={loading && players.length === 0}
-				refreshing={playerRefreshing}
-				{error}
+				loading={playerState.loading}
+				error={playerState.error}
 				{searchQuery}
-				paginatedPlayers={derivedPlayerData().paginatedPlayers}
-				mobilePaginatedPlayers={derivedPlayerData().mobilePaginatedPlayers}
-				mobileHasMore={derivedPlayerData().mobileHasMore}
-				mobileLoadingMore={mobilePlayerLoadingMore}
+				paginatedPlayers={derivedPlayerData.paginatedPlayers}
+				mobilePaginatedPlayers={derivedPlayerData.mobilePaginatedPlayers}
+				mobileHasMore={derivedPlayerData.mobileHasMore}
+				mobileLoadingMore={playerState.mobilePlayerLoadingMore}
 				{playerColumns}
 				visibleColumns={visiblePlayerColumns}
-				{currentPage}
-				pageSize={playerPageSize}
-				sortColumn={playerSortColumn}
+				currentPage={playerState.currentPage}
+				pageSize={playerState.playerPageSize}
+				sortColumn={playerState.playerSortColumn}
 				{mobileExpandedCards}
-				hasNext={playerHasNext}
-				hasPrevious={playerHasPrevious}
+				hasNext={playerState.playerHasNext}
+				hasPrevious={playerState.playerHasPrevious}
 				onSort={handlePlayerSort}
 				onPageChange={handlePageChange}
 				onPageSizeChange={handlePlayerPageSizeChange}

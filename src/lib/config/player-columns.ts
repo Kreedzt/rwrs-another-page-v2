@@ -45,20 +45,20 @@ export const playerColumns: IPlayerColumn[] = [
 		getValueWithHighlight: (player, _query) => formatNumber(player.deaths)
 	},
 	{
-		key: 'kd',
-		label: 'K/D',
-		i18n: 'app.player.column.kd',
-		alignment: 'right',
-		getValue: (player) => formatKd(player.kd),
-		getValueWithHighlight: (player, _query) => formatKd(player.kd)
-	},
-	{
 		key: 'score',
 		label: 'K-D',
 		i18n: 'app.player.column.score',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.score),
 		getValueWithHighlight: (player, _query) => formatNumber(player.score)
+	},
+	{
+		key: 'kd',
+		label: 'K/D',
+		i18n: 'app.player.column.kd',
+		alignment: 'right',
+		getValue: (player) => formatKd(player.kd),
+		getValueWithHighlight: (player, _query) => formatKd(player.kd)
 	},
 	{
 		key: 'timePlayed',
