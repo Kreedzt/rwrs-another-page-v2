@@ -192,7 +192,8 @@
 										<a
 											href={item.url}
 											target="_blank"
-											class="link link-primary inline-flex min-h-6 items-center"
+											class="link inline-flex min-h-6 items-center underline-offset-4 hover:underline"
+											style="color: var(--color-accent);"
 											title={item.url}
 										>
 											{item.url.length > 50 ? item.url.substring(0, 47) + '...' : item.url}
@@ -218,8 +219,7 @@
 		z-index: 15;
 		min-width: 14rem;
 		background: var(--color-bg-secondary);
-		border-right: 2px solid var(--color-accent);
-		box-shadow: 3px 0 12px rgba(0, 0, 0, 0.3);
+		border-right: 1px solid var(--color-border);
 	}
 
 	:global(.sticky-name-header) {
@@ -228,8 +228,7 @@
 		z-index: 20;
 		min-width: 14rem;
 		background: var(--color-bg-secondary);
-		border-right: 2px solid var(--color-accent);
-		box-shadow: 3px 0 12px rgba(0, 0, 0, 0.3);
+		border-right: 1px solid var(--color-border);
 	}
 
 	/* Action column styling - sticky right with military theme */
@@ -240,8 +239,7 @@
 		min-width: 9rem;
 		width: 9rem;
 		background: var(--color-bg-secondary);
-		border-left: 2px solid var(--color-accent);
-		box-shadow: -3px 0 12px rgba(0, 0, 0, 0.3);
+		border-left: 1px solid var(--color-border);
 	}
 
 	:global(.action-header) {
@@ -251,8 +249,7 @@
 		min-width: 9rem;
 		width: 9rem;
 		background: var(--color-bg-secondary);
-		border-left: 2px solid var(--color-accent);
-		box-shadow: -3px 0 12px rgba(0, 0, 0, 0.3);
+		border-left: 1px solid var(--color-border);
 	}
 
 	/* Mobile responsive styles */

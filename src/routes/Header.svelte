@@ -9,13 +9,11 @@
 	<div class="container px-4 py-4">
 		<div class="flex w-full items-center justify-between">
 			<div class="flex flex-col gap-1">
-				<div class="corner-accent inline-block">
-					<TranslatedText
-						tag="h1"
-						key="app.title"
-						className="text-xl md:text-2xl font-bold uppercase tracking-wider font-display text-mil-primary"
-					></TranslatedText>
-				</div>
+				<TranslatedText
+					tag="h1"
+					key="app.title"
+					className="text-xl md:text-2xl font-bold uppercase tracking-wider font-display text-mil-primary"
+				></TranslatedText>
 				<TranslatedText
 					tag="p"
 					key="app.subtitle"

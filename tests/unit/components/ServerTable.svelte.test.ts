@@ -352,7 +352,10 @@ describe('ServerTable', () => {
 			expect(actionCells.length).toBe(mockData.length);
 
 			actionCells.forEach((cell) => {
-				expect(cell).toHaveClass('bg-base-100');
+				expect(cell).toHaveClass('border-mil');
+				expect(cell).toHaveClass('px-4');
+				expect(cell).toHaveClass('py-2');
+				expect(cell).toHaveClass('text-mil-primary');
 			});
 		});
 

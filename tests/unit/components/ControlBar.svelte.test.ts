@@ -142,7 +142,7 @@ describe('ControlBar Component', () => {
 				}
 			});
 
-			const button = container.querySelector('.btn-neutral');
+			const button = container.querySelector('.btn-tactical');
 			expect(button).toBeInTheDocument();
 		});
 
@@ -188,7 +188,7 @@ describe('ControlBar Component', () => {
 				}
 			});
 
-			const refreshButton = container.querySelector('.btn-neutral');
+			const refreshButton = container.querySelector('.btn-tactical');
 			if (refreshButton) {
 				await fireEvent.click(refreshButton);
 			}
