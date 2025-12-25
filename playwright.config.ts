@@ -3,7 +3,7 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
 	webServer: [
 		{
-			command: 'node e2e/mock-server.cjs',
+			command: 'node tests/e2e/mock-server.cjs',
 			port: 5800,
 			reuseExistingServer: false
 		},
@@ -13,7 +13,7 @@ export default defineConfig({
 			reuseExistingServer: false
 		}
 	],
-	testDir: 'e2e',
+	testDir: 'tests/e2e',
 	use: {
 		// Retry tests on failure
 		retry: 1,

@@ -17,9 +17,10 @@
 			"loadError": "Failed to load map image",
 			"retry": "Retry"
 		},
-		"title": "RWRS Another Page(V2)",
+		"title": "Robin",
 		"search": {
-			"placeholder": "Search servers, maps, players, mode, country, etc..."
+			"placeholder": "Search servers, maps, players, mode, country, etc...",
+			"placeholderPlayers": "Search players by username..."
 		},
 		"button": {
 			"reset": "Reset",
@@ -37,15 +38,17 @@
 			"filteredBy": "Filtered by: \"{query}\""
 		},
 		"filter": {
-			"officialInvasion": "Official Invasion",
-			"officialWW2Invasion": "Official WW2 Invasion",
-			"officialDominance": "Official Dominance",
-			"officialModCastling": "Official Mod Castling",
-			"officialModHellDivers": "Official Mod HellDivers"
+			"officialInvasion": "Invasion",
+			"officialWW2Invasion": "WW2 Invasion",
+			"officialDominance": "Dominance",
+			"officialModCastling": "Castling",
+			"officialModHellDivers": "HellDivers"
 		},
 		"viewMode": {
 			"table": "Switch to Map Order View",
-			"map": "Switch to Table View"
+			"map": "Switch to Table View",
+			"servers": "Servers",
+			"players": "Players"
 		},
 		"help": {
 			"title": "Show Help Guide"
@@ -137,7 +140,57 @@
 			"interval": "Interval"
 		},
 		"pagination": {
-			"info": "Page {currentPage} of {totalPages} ({totalItems} items)"
+			"info": "Page {currentPage} of {totalPages} ({totalItems} items)",
+			"page": "page",
+			"itemsPerPage": "Items per page"
+		},
+		"subtitle": "Another Community RWR Data Query Site",
+		"player": {
+			"column": {
+				"rowNumber": "#",
+				"username": "Username",
+				"kills": "Kills",
+				"deaths": "Deaths",
+				"kd": "K/D",
+				"score": "K-D",
+				"timePlayed": "Time",
+				"longestKillStreak": "Streak",
+				"targetsDestroyed": "Targets",
+				"vehiclesDestroyed": "Vehicles",
+				"soldiersHealed": "Heals",
+				"teamkills": "TK's",
+				"distanceMoved": "Distance",
+				"shotsFired": "Shots",
+				"throwablesThrown": "Throws",
+				"rankProgression": "XP",
+				"rankName": "Rank"
+			},
+			"database": {
+				"invasion": "Invasion",
+				"pacific": "Pacific",
+				"prereset_invasion": "Invasion (before reset)"
+			},
+			"noPlayersFound": "No players found",
+			"matchingSearch": "matching your search",
+			"loading": {
+				"text": "Loading player data...",
+				"title": "Loading Players",
+				"description": "Fetching latest player data from the API...",
+				"progress": "Connecting to server..."
+			}
+		},
+		"footer": {
+			"developedBy": "Developed by",
+			"dataSourced": "Data sourced from official",
+			"rwrStatsApi": "RWR Stats API",
+			"serverList": "Server List",
+			"copyright": "Copyright © {year} - All data provided by Running with Rifles official servers",
+			"robinWeb": "Robin Web"
+		},
+		"paginationControl": {
+			"page": "Page",
+			"previousPage": "Previous page",
+			"nextPage": "Next page"
 		}
 	}
 }

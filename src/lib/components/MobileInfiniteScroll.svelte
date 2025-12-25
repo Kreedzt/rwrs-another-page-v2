@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 
 	interface Props {
@@ -7,13 +6,15 @@
 		isLoading: boolean;
 		onLoadMore: () => void;
 		threshold?: number; // Distance from bottom to trigger load (in pixels)
+		loadingTextKey?: string; // Custom i18n key for loading text
 	}
 
 	let {
 		hasMore = false,
 		isLoading = false,
 		onLoadMore = () => {},
-		threshold = 200
+		threshold = 200,
+		loadingTextKey = 'app.loading.text'
 	}: Props = $props();
 
 	let containerElement: HTMLElement;
@@ -21,44 +22,38 @@
 	let loadMoreTrigger = $state<HTMLElement | undefined>();
 
 	// Set up intersection observer for infinite scroll
-	onMount(() => {
-		if (!hasMore) return;
+	$effect(() => {
+		if (!loadMoreTrigger) return;
 
+		// Clean up previous observer
+		if (observer) {
+			observer.disconnect();
+		}
+
+		// Create new observer
 		observer = new IntersectionObserver(
 			(entries) => {
 				const entry = entries[0];
-				if (entry.isIntersecting && hasMore && !isLoading) {
+				if (entry.isIntersecting) {
 					onLoadMore();
 				}
 			},
 			{
-				root: null, // Use viewport as root
-				rootMargin: `${threshold}px`, // Start loading before reaching the element
-				threshold: 0.1 // Trigger when 10% of element is visible
+				root: null,
+				rootMargin: `${threshold}px`,
+				threshold: 0.1
 			}
 		);
 
-		if (loadMoreTrigger) {
+		if (hasMore && !isLoading) {
 			observer.observe(loadMoreTrigger);
 		}
-	});
 
-	// Clean up observer
-	onDestroy(() => {
-		if (observer) {
-			observer.disconnect();
-		}
-	});
-
-	// Re-observe when hasMore changes
-	$effect(() => {
-		if (observer && loadMoreTrigger) {
-			if (hasMore) {
-				observer.observe(loadMoreTrigger);
-			} else {
-				observer.unobserve(loadMoreTrigger);
+		return () => {
+			if (observer) {
+				observer.disconnect();
 			}
-		}
+		};
 	});
 </script>
 
@@ -77,7 +72,7 @@
 				<div class="flex items-center gap-3">
 					<div class="loading loading-spinner loading-sm"></div>
 					<span class="text-base-content/70 text-sm">
-						<TranslatedText key="app.loading.text" />
+						<TranslatedText key={loadingTextKey} />
 					</span>
 				</div>
 			{:else}
@@ -93,13 +88,13 @@
 			<div class="flex items-center gap-3">
 				<div class="loading loading-spinner loading-sm"></div>
 				<span class="text-base-content/70 text-sm">
-					<TranslatedText key="app.loading.text" />
+					<TranslatedText key={loadingTextKey} />
 				</span>
 			</div>
 		</div>
 	{:else}
 		<!-- End of content indicator -->
-		<div class="w-full py-6 text-center" role="status">
+		<div class="w-full py-2 text-center" role="status">
 			<div class="text-base-content/50 text-sm">
 				<TranslatedText key="app.mobile.endOfContent" />
 			</div>

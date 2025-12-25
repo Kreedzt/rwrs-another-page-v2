@@ -1,6 +1,7 @@
 import { page } from '$app/stores';
 import { goto } from '$app/navigation';
 import { browser } from '$app/environment';
+import type { PlayerDatabase } from '$lib/models/player.model';
 
 // URL查询参数键名
 export const URL_PARAMS = {
@@ -8,7 +9,9 @@ export const URL_PARAMS = {
 	QUICK_FILTERS: 'quickFilters',
 	PAGE: 'page',
 	SORT_COLUMN: 'sort',
-	SORT_DIRECTION: 'dir'
+	SORT_DIRECTION: 'dir',
+	VIEW: 'view',
+	PLAYER_DB: 'db'
 } as const;
 
 // URL状态管理接口
@@ -18,6 +21,8 @@ export interface UrlState {
 	page?: number;
 	sortColumn?: string;
 	sortDirection?: 'asc' | 'desc';
+	view?: 'servers' | 'players';
+	playerDb?: PlayerDatabase;
 }
 
 // 从URL获取查询参数
@@ -55,6 +60,18 @@ export function getUrlState(): UrlState {
 	const sortDirection = urlParams.get(URL_PARAMS.SORT_DIRECTION);
 	if (sortDirection && (sortDirection === 'asc' || sortDirection === 'desc')) {
 		state.sortDirection = sortDirection;
+	}
+
+	// 视图模式
+	const view = urlParams.get(URL_PARAMS.VIEW);
+	if (view === 'servers' || view === 'players') {
+		state.view = view;
+	}
+
+	// 玩家数据库
+	const playerDb = urlParams.get(URL_PARAMS.PLAYER_DB);
+	if (playerDb === 'invasion' || playerDb === 'pacific' || playerDb === 'prereset_invasion') {
+		state.playerDb = playerDb as PlayerDatabase;
 	}
 
 	return state;
@@ -110,6 +127,24 @@ export function updateUrlState(state: Partial<UrlState>, replace: boolean = fals
 		}
 	}
 
+	// 更新视图模式
+	if (state.view !== undefined) {
+		if (state.view && state.view !== 'servers') {
+			urlParams.set(URL_PARAMS.VIEW, state.view);
+		} else {
+			urlParams.delete(URL_PARAMS.VIEW);
+		}
+	}
+
+	// 更新玩家数据库
+	if (state.playerDb !== undefined) {
+		if (state.playerDb && state.playerDb !== 'invasion') {
+			urlParams.set(URL_PARAMS.PLAYER_DB, state.playerDb);
+		} else {
+			urlParams.delete(URL_PARAMS.PLAYER_DB);
+		}
+	}
+
 	// 构建新的URL
 	const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
 
@@ -157,7 +192,9 @@ export function createUrlStateSubscriber(callback: (state: UrlState) => void) {
 			sortDirection: $page.url.searchParams.get(URL_PARAMS.SORT_DIRECTION) as
 				| 'asc'
 				| 'desc'
-				| undefined
+				| undefined,
+			view: ($page.url.searchParams.get(URL_PARAMS.VIEW) as 'servers' | 'players' | null) || undefined,
+			playerDb: $page.url.searchParams.get(URL_PARAMS.PLAYER_DB) as PlayerDatabase | null || undefined
 		};
 		callback(state);
 	});

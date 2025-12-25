@@ -17,9 +17,10 @@
 			"loadError": "加载地图图片失败",
 			"retry": "重试"
 		},
-		"title": "RWRS Another Page(V2)",
+		"title": "Robin",
 		"search": {
-			"placeholder": "搜索服务器、地图、玩家、模式、国家等..."
+			"placeholder": "搜索服务器、地图、玩家、模式、国家等...",
+			"placeholderPlayers": "搜索玩家用户名..."
 		},
 		"button": {
 			"reset": "重置",
@@ -37,15 +38,17 @@
 			"filteredBy": "筛选条件: \"{query}\""
 		},
 		"filter": {
-			"officialInvasion": "官方入侵",
-			"officialWW2Invasion": "官方二战入侵",
-			"officialDominance": "官方 PVP",
-			"officialModCastling": "官方模组: Castling",
-			"officialModHellDivers": "官方模组: HellDivers"
+			"officialInvasion": "入侵",
+			"officialWW2Invasion": "二战入侵",
+			"officialDominance": "PVP",
+			"officialModCastling": "Castling",
+			"officialModHellDivers": "HellDivers"
 		},
 		"viewMode": {
 			"table": "切换到地图视图",
-			"map": "切换到表格视图"
+			"map": "切换到表格视图",
+			"servers": "服务器",
+			"players": "玩家"
 		},
 		"help": {
 			"title": "显示帮助指南"
@@ -137,7 +140,57 @@
 			"interval": "间隔"
 		},
 		"pagination": {
-			"info": "第 {currentPage} 页，共 {totalPages} 页（{totalItems} 项）"
+			"info": "第 {currentPage} 页，共 {totalPages} 页（{totalItems} 项）",
+			"page": "页",
+			"itemsPerPage": "每页显示数量"
+		},
+		"subtitle": "另一个社区驱动的 RWR 数据查询平台",
+		"player": {
+			"column": {
+				"rowNumber": "#",
+				"username": "用户名",
+				"kills": "击杀",
+				"deaths": "死亡",
+				"kd": "K/D",
+				"score": "分数",
+				"timePlayed": "游戏时间",
+				"longestKillStreak": "最长连杀",
+				"targetsDestroyed": "目标摧毁",
+				"vehiclesDestroyed": "载具摧毁",
+				"soldiersHealed": "医疗数",
+				"teamkills": "友军击杀",
+				"distanceMoved": "移动距离",
+				"shotsFired": "射击次数",
+				"throwablesThrown": "投掷物使用",
+				"rankProgression": "经验值",
+				"rankName": "军衔"
+			},
+			"database": {
+				"invasion": "入侵模式",
+				"pacific": "太平洋模式",
+				"prereset_invasion": "入侵模式（重置前）"
+			},
+			"noPlayersFound": "未找到玩家",
+			"matchingSearch": "匹配您的搜索",
+			"loading": {
+				"text": "加载玩家数据...",
+				"title": "加载玩家",
+				"description": "正在从API获取最新的玩家数据...",
+				"progress": "连接服务器中..."
+			}
+		},
+		"footer": {
+			"developedBy": "开发者",
+			"dataSourced": "数据来源",
+			"rwrStatsApi": "RWR 统计 API",
+			"serverList": "服务器列表",
+			"copyright": "版权所有 © {year} - 所有数据由 Running with Rifles 官方服务器提供",
+			"robinWeb": "Robin Web"
+		},
+		"paginationControl": {
+			"page": "第",
+			"previousPage": "上一页",
+			"nextPage": "下一页"
 		}
 	}
 }

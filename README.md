@@ -1,4 +1,4 @@
-# RWRS Another Page(V2)
+# Robin Web(RWRS Another Page V2)
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Kreedzt_rwrs-another-page-v2&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Kreedzt_rwrs-another-page-v2)
 [![codecov](https://codecov.io/gh/Kreedzt/rwrs-another-page-v2/branch/master/graph/badge.svg?token=MWGXZH7GO9)](https://codecov.io/gh/Kreedzt/rwrs-another-page-v2)
@@ -8,13 +8,41 @@ A clean and modern server browser for Running with Rifles (RWR) game, inspired b
 
 ## Overview
 
-RWRS Another Page provides a pure and efficient way to browse Running with Rifles game servers. Built with modern web technologies, it offers:
+Robin web provides a pure and efficient way to browse Running with Rifles game servers and player statistics. Built with modern web technologies, it offers:
 
 - Real-time server list with auto-refresh capability
+- Player leaderboard browsing with comprehensive statistics
+- Multi-database player statistics (Invasion, Pacific, Prereset Invasion)
 - Advanced filtering and search functionality
 - Multiple view modes (table and map-based)
 - Multilingual support (English and Chinese)
 - Mobile-friendly responsive design
+
+## Technical Stack
+
+- **Framework**: SvelteKit 2.16.0 with Svelte 5
+- **Styling**: Tailwind CSS 4.0 with DaisyUI components
+- **Language**: TypeScript 5.0
+- **Testing**: Vitest (unit) + Playwright (E2E)
+- **i18n**: @inlang/paraglide-js
+- **Package Manager**: pnpm
+
+## Features
+
+- Real-time server list with auto-refresh capability
+- Player leaderboard browser with 15+ statistics (kills, deaths, K/D, score, time played, rank progression, etc.)
+- Multi-database player statistics (Invasion, Pacific, Prereset Invasion)
+- Advanced filtering with preset quick filters (Official, WW2, Dominance, Castling, HellDivers mods)
+- Full-text search across servers and players with keyboard shortcut (/) support
+- Multi-level column sorting (ascending/descending/clear)
+- Configurable pagination with adjustable page size (10/20/50/100)
+- Dual view modes: data table (desktop) and responsive cards (mobile)
+- Column visibility toggles with persistent localStorage settings
+- Map preview images with modal display
+- Multilingual support (English and Chinese) with dynamic switching
+- Mobile-friendly responsive design with infinite scroll
+- Accessible keyboard navigation and ARIA-compliant markup
+- URL state management for bookmarkable views
 
 ## Dependencies
 

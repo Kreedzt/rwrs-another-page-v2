@@ -1,37 +1,39 @@
 <script lang="ts">
-	import Header from './Header.svelte';
 	import '../app.css';
+	import TranslatedText from '$lib/components/TranslatedText.svelte';
 
 	let { children } = $props();
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<Header />
-
 	<main class="flex w-full flex-1 flex-col">
 		{@render children()}
 	</main>
 
-	<footer class="flex flex-col items-center justify-center py-4 border-t border-base-200/50">
-		<div class="text-center space-y-1">
-			<p class="m-0 text-sm text-base-content/70">
-				Developed by
-				<a class="font-medium hover:text-primary transition-colors" href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer">
+	<footer class="footer sm:footer-horizontal footer-center bg-base-200 text-base-content p-6">
+		<aside class="flex flex-col items-center gap-2">
+			<p class="text-sm">
+				<TranslatedText key="app.footer.developedBy" />
+				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-hover font-bold hover:underline text-primary">
 					Kreedzt
 				</a>
 			</p>
-			<p class="m-0 text-xs text-base-content/50">
-				Data source from official
-				<a class="font-medium hover:text-primary transition-colors" href="http://rwr.runningwithrifles.com/rwr_server_list/get_server_list.php" target="_blank" rel="noopener noreferrer">
-					RWR API
+			<p class="text-xs text-base-content/70">
+				<TranslatedText key="app.footer.dataSourced" />
+				<a href="http://rwr.runningwithrifles.com/rwr_stats/view_players.php" target="_blank" rel="noopener noreferrer" class="link link-hover underline-offset-4">
+					<TranslatedText key="app.footer.rwrStatsApi" />
+				</a>
+				&bull;
+				<a href="http://rwr.runningwithrifles.com/rwr_server_list/view_servers.php" target="_blank" rel="noopener noreferrer" class="link link-hover underline-offset-4">
+					<TranslatedText key="app.footer.serverList" />
 				</a>
 			</p>
-			<p class="m-0 text-xs text-base-content/40">
-				<a class="font-medium hover:text-primary transition-colors" href="http://rwr.runningwithrifles.com/rwr_server_list/view_servers.php" target="_blank" rel="noopener noreferrer">
-					Official Server List
-				</a>
+			<p class="text-xs text-base-content/70">
+				<TranslatedText key="app.footer.robinWeb" />
+				&bull;
+				<TranslatedText key="app.footer.copyright" params={{ year: 2025 }} />
 			</p>
-		</div>
+		</aside>
 	</footer>
 </div>
 

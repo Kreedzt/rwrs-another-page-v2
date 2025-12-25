@@ -1,4 +1,4 @@
-import type { IDisplayServerItem } from '$lib/models/data-table.model';
+import type { IDisplayServerItem } from '$lib/models/server.model';
 
 // Regex patterns for filtering
 const CASTLING_REGEX = /^\[Castling](\[Global])?\[[\w!\\?]+(-\d)?\s(LV\d|FOV)]/;
@@ -8,7 +8,7 @@ export const filters = [
 	{
 		id: 'invasion',
 		labelKey: 'app.filter.officialInvasion',
-		defaultLabel: 'Official Invasion',
+		defaultLabel: 'Invasion',
 		filter: (data: IDisplayServerItem) => {
 			return data.realm === 'official_invasion';
 		}
@@ -16,7 +16,7 @@ export const filters = [
 	{
 		id: 'ww2_invasion',
 		labelKey: 'app.filter.officialWW2Invasion',
-		defaultLabel: 'Official WW2 Invasion',
+		defaultLabel: 'WW2 Invasion',
 		filter: (data: IDisplayServerItem) => {
 			return data.realm === 'official_pacific';
 		}
@@ -24,7 +24,7 @@ export const filters = [
 	{
 		id: 'dominance',
 		labelKey: 'app.filter.officialDominance',
-		defaultLabel: 'Official Dominance',
+		defaultLabel: 'Dominance',
 		filter: (data: IDisplayServerItem) => {
 			return data.realm === 'official_dominance';
 		}
@@ -32,7 +32,7 @@ export const filters = [
 	{
 		id: 'castling',
 		labelKey: 'app.filter.officialModCastling',
-		defaultLabel: 'Official Mod Castling',
+		defaultLabel: 'Castling',
 		filter: (data: IDisplayServerItem) => {
 			return data.mode.toLowerCase().includes('castling') && CASTLING_REGEX.test(data.name);
 		}
@@ -40,7 +40,7 @@ export const filters = [
 	{
 		id: 'helldivers',
 		labelKey: 'app.filter.officialModHellDivers',
-		defaultLabel: 'Official Mod HellDivers',
+		defaultLabel: 'HellDivers',
 		filter: (data: IDisplayServerItem) => {
 			return data.mode.toLowerCase().includes('hd') && HELDDIVERS_REGEX.test(data.name);
 		}
