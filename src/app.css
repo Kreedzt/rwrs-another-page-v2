@@ -1,31 +1,99 @@
 @import 'tailwindcss';
-/* @import '@fontsource/fira-mono'; */
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @plugin 'daisyui';
 
+@theme {
+	/* Custom military theme colors */
+	--color-mil-bg-primary: #1a1d1f;
+	--color-mil-bg-secondary: #24282b;
+	--color-mil-bg-tertiary: #2e3336;
+	--color-mil-accent: #ff6b35;
+	--color-mil-accent-dim: #cc5629;
+	--color-mil-green: #4a5d4e;
+	--color-mil-tan: #c4a77d;
+	--color-mil-text-primary: #e8e8e8;
+	--color-mil-text-secondary: #a0a0a0;
+	--color-mil-border: #3a3f44;
+}
+
 :root {
-	--font-body:
-		Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-		'Open Sans', 'Helvetica Neue', sans-serif;
-	/* --font-mono: 'Fira Mono', monospace; */
-	--color-bg-0: rgb(202, 216, 228);
-	--color-bg-1: hsl(209, 36%, 86%);
-	--color-bg-2: hsl(224, 44%, 95%);
-	--color-theme-1: #ff3e00;
-	--color-theme-2: #4075a6;
-	--color-text: rgba(0, 0, 0, 0.7);
+	/* Light Theme (Default) */
+	--color-bg-primary: #f0f2f5;
+	--color-bg-secondary: #ffffff;
+	--color-bg-tertiary: #e8ebef;
+	--color-accent: #e65520;
+	--color-accent-dim: #b84319;
+	--color-accent-glow: rgba(230, 85, 32, 0.1);
+	--color-military-green: #3d4f40;
+	--color-military-tan: #a89068;
+	--color-text-primary: #1a1d1f;
+	--color-text-secondary: #4a4f54;
+	--color-text-muted: #7a7f84;
+	--color-border: #d0d5da;
+	--color-grid: rgba(0, 0, 0, 0.04);
+
+	/* Typography - System fonts for performance */
+	--font-display: 'Impact', 'Arial Black', -apple-system, sans-serif;
+	--font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+	--font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+	/* Layout */
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
+
 	font-family: var(--font-body);
-	color: var(--color-text);
+	color: var(--color-text-primary);
 }
 
 [data-custom-theme='dark'] {
-	--color-bg-0: rgb(15, 23, 42);
-	--color-bg-1: hsl(215, 25%, 10%);
-	--color-bg-2: hsl(215, 25%, 8%);
-	--color-text: rgba(255, 255, 255, 0.9);
+	/* Dark Theme */
+	--color-bg-primary: #1a1d1f;
+	--color-bg-secondary: #24282b;
+	--color-bg-tertiary: #2e3336;
+	--color-accent: #ff6b35;
+	--color-accent-dim: #cc5629;
+	--color-accent-glow: rgba(255, 107, 53, 0.15);
+	--color-military-green: #4a5d4e;
+	--color-military-tan: #c4a77d;
+	--color-text-primary: #e8e8e8;
+	--color-text-secondary: #a0a0a0;
+	--color-text-muted: #6a6a6a;
+	--color-border: #3a3f44;
+	--color-grid: rgba(255, 255, 255, 0.03);
+}
+
+/* Tailwind custom utilities using CSS variables */
+@utility bg-mil-primary {
+	background-color: var(--color-bg-primary);
+}
+
+@utility bg-mil-secondary {
+	background-color: var(--color-bg-secondary);
+}
+
+@utility bg-mil-tertiary {
+	background-color: var(--color-bg-tertiary);
+}
+
+@utility text-mil-primary {
+	color: var(--color-text-primary);
+}
+
+@utility text-mil-secondary {
+	color: var(--color-text-secondary);
+}
+
+@utility border-mil {
+	border-color: var(--color-border);
+}
+
+@utility font-display {
+	font-family: var(--font-display);
+}
+
+@utility font-mono {
+	font-family: var(--font-mono);
 }
 
 html,
@@ -33,7 +101,7 @@ body {
 	height: 100%;
 	width: 100%;
 	overflow-x: hidden;
-	background: hsl(var(--b2));
+	background: var(--color-bg-primary);
 }
 
 body {
@@ -42,15 +110,39 @@ body {
 	background-attachment: fixed;
 	background-size: 100vw 100vh;
 	background-image:
-		radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%),
-		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
-	transition: background-image 0.3s ease;
+		/* Scanline effect */
+		repeating-linear-gradient(
+			0deg,
+			transparent,
+			transparent 2px,
+			rgba(0, 0, 0, 0.01) 2px,
+			rgba(0, 0, 0, 0.01) 4px
+		),
+		/* Grid overlay */
+		linear-gradient(var(--color-grid) 1px, transparent 1px),
+		linear-gradient(90deg, var(--color-grid) 1px, transparent 1px),
+		/* Main gradient background */
+		linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
+	background-position: 0 0, 0 0, 0 0, 0 0;
+	background-size: 100% 100%, 40px 40px, 40px 40px, 100% 100%;
+	transition: background 0.3s ease;
 }
 
 [data-custom-theme='dark'] body {
 	background-image:
-		radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 100%),
-		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
+		/* Scanline effect */
+		repeating-linear-gradient(
+			0deg,
+			transparent,
+			transparent 2px,
+			rgba(0, 0, 0, 0.02) 2px,
+			rgba(0, 0, 0, 0.02) 4px
+		),
+		/* Grid overlay */
+		linear-gradient(var(--color-grid) 1px, transparent 1px),
+		linear-gradient(90deg, var(--color-grid) 1px, transparent 1px),
+		/* Main gradient background */
+		linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
 }
 
 a {
@@ -70,4 +162,229 @@ button {
 
 button:focus:not(:focus-visible) {
 	outline: none;
+}
+
+/* ========== Military Terminal Base Styles ========== */
+
+/* Custom selection styling */
+::selection {
+	background: var(--color-accent);
+	color: #fff;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--color-bg-secondary);
+	border-left: 1px solid var(--color-border);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-bg-tertiary);
+	border: 2px solid var(--color-bg-secondary);
+	border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-text-muted);
+}
+
+/* Typography utilities */
+.font-mono {
+	font-family: var(--font-mono);
+}
+
+.font-display {
+	font-family: var(--font-display);
+}
+
+/* Military terminal container */
+.military-terminal {
+	position: relative;
+	background: var(--color-bg-secondary);
+	border: 1px solid var(--color-border);
+	box-shadow:
+		0 0 0 1px rgba(0, 0, 0, 0.1),
+		0 4px 12px rgba(0, 0, 0, 0.2),
+		inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.military-terminal::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: linear-gradient(90deg,
+		transparent 0%,
+		var(--color-accent) 50%,
+		transparent 100%);
+	opacity: 0.5;
+}
+
+/* Tactical button styling */
+.btn-tactical {
+	position: relative;
+	background: var(--color-bg-tertiary);
+	border: 1px solid var(--color-border);
+	color: var(--color-text-primary);
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	transition: all 0.15s ease;
+	clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
+.btn-tactical:hover {
+	background: var(--color-accent);
+	border-color: var(--color-accent);
+	box-shadow: 0 0 12px var(--color-accent-glow);
+}
+
+.btn-tactical:active {
+	transform: translateY(1px);
+}
+
+/* Status indicator pulse */
+@keyframes status-pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
+}
+
+.status-online {
+	color: #4ade80;
+	animation: status-pulse 2s ease-in-out infinite;
+}
+
+.status-offline {
+	color: #ef4444;
+}
+
+/* Data display styling */
+.data-value {
+	font-family: var(--font-mono);
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.02em;
+}
+
+/* Card panel styling */
+.panel-military {
+	background: var(--color-bg-secondary);
+	border: 1px solid var(--color-border);
+	position: relative;
+}
+
+.panel-military::after {
+	content: '';
+	position: absolute;
+	top: 4px;
+	left: 4px;
+	right: 4px;
+	bottom: 4px;
+	border: 1px solid var(--color-border);
+	pointer-events: none;
+}
+
+/* Corner accent decorations */
+.corner-accent {
+	position: relative;
+}
+
+.corner-accent::before,
+.corner-accent::after {
+	content: '';
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	border-color: var(--color-accent);
+	border-style: solid;
+	pointer-events: none;
+}
+
+.corner-accent::before {
+	top: -1px;
+	left: -1px;
+	border-width: 2px 0 0 2px;
+}
+
+.corner-accent::after {
+	bottom: -1px;
+	right: -1px;
+	border-width: 0 2px 2px 0;
+}
+
+/* Header stripe effect */
+.header-stripe {
+	position: relative;
+	border-bottom: 2px solid var(--color-accent);
+}
+
+.header-stripe::after {
+	content: '';
+	position: absolute;
+	bottom: -2px;
+	left: 0;
+	width: 60px;
+	height: 2px;
+	background: var(--color-accent);
+	box-shadow: 0 0 8px var(--color-accent);
+}
+
+/* Table row hover effect with military theme */
+.table-military tbody tr {
+	transition: all 0.15s ease;
+	border-left: 2px solid transparent;
+}
+
+.table-military tbody tr:hover {
+	background: rgba(255, 107, 53, 0.05);
+	border-left-color: var(--color-accent);
+}
+
+/* Badge/tag styling */
+.tag-military {
+	display: inline-flex;
+	align-items: center;
+	padding: 2px 8px;
+	font-family: var(--font-mono);
+	font-size: 0.65rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	background: var(--color-bg-tertiary);
+	border: 1px solid var(--color-border);
+	color: var(--color-text-secondary);
+}
+
+/* Input field with military styling */
+.input-tactical {
+	background: var(--color-bg-primary);
+	border: 1px solid var(--color-border);
+	color: var(--color-text-primary);
+	font-family: var(--font-mono);
+	transition: all 0.15s ease;
+}
+
+.input-tactical:focus {
+	border-color: var(--color-accent);
+	box-shadow: 0 0 0 2px var(--color-accent-glow);
+	outline: none;
+}
+
+/* Glitch text effect (subtle) */
+@keyframes glitch {
+	0%, 100% { transform: translate(0); }
+	20% { transform: translate(-1px, 1px); }
+	40% { transform: translate(-1px, -1px); }
+	60% { transform: translate(1px, 1px); }
+	80% { transform: translate(1px, -1px); }
+}
+
+.glitch-hover:hover {
+	animation: glitch 0.3s ease;
 }
