@@ -440,7 +440,7 @@
 		mobilePlayerLoadingMore = false;
 
 		updateUrlState(
-			{ sortColumn: playerSortColumn || undefined, sortDirection: playerSortDirection || undefined },
+			{ sortColumn: playerSortColumn ?? null, sortDirection: playerSortDirection ?? null },
 			true
 		);
 
