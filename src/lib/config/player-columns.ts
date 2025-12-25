@@ -19,7 +19,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.rowNumber',
 		alignment: 'center',
 		getValue: (player) => player.rowNumber.toString(),
-		getValueWithHighlight: (player, _query) => player.rowNumber.toString()
+		getValueWithHighlight: (player) => player.rowNumber.toString()
 	},
 	{
 		key: 'username',
@@ -34,7 +34,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.kills',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.kills),
-		getValueWithHighlight: (player, _query) => formatNumber(player.kills)
+		getValueWithHighlight: (player) => formatNumber(player.kills)
 	},
 	{
 		key: 'deaths',
@@ -42,7 +42,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.deaths',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.deaths),
-		getValueWithHighlight: (player, _query) => formatNumber(player.deaths)
+		getValueWithHighlight: (player) => formatNumber(player.deaths)
 	},
 	{
 		key: 'score',
@@ -50,7 +50,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.score',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.score),
-		getValueWithHighlight: (player, _query) => formatNumber(player.score)
+		getValueWithHighlight: (player) => formatNumber(player.score)
 	},
 	{
 		key: 'kd',
@@ -58,7 +58,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.kd',
 		alignment: 'right',
 		getValue: (player) => formatKd(player.kd),
-		getValueWithHighlight: (player, _query) => formatKd(player.kd)
+		getValueWithHighlight: (player) => formatKd(player.kd)
 	},
 	{
 		key: 'timePlayed',
@@ -73,7 +73,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.longestKillStreak',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.longestKillStreak),
-		getValueWithHighlight: (player, _query) => formatNumber(player.longestKillStreak)
+		getValueWithHighlight: (player) => formatNumber(player.longestKillStreak)
 	},
 	{
 		key: 'targetsDestroyed',
@@ -81,7 +81,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.targetsDestroyed',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.targetsDestroyed),
-		getValueWithHighlight: (player, _query) => formatNumber(player.targetsDestroyed)
+		getValueWithHighlight: (player) => formatNumber(player.targetsDestroyed)
 	},
 	{
 		key: 'vehiclesDestroyed',
@@ -89,7 +89,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.vehiclesDestroyed',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.vehiclesDestroyed),
-		getValueWithHighlight: (player, _query) => formatNumber(player.vehiclesDestroyed)
+		getValueWithHighlight: (player) => formatNumber(player.vehiclesDestroyed)
 	},
 	{
 		key: 'soldiersHealed',
@@ -97,7 +97,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.soldiersHealed',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.soldiersHealed),
-		getValueWithHighlight: (player, _query) => formatNumber(player.soldiersHealed)
+		getValueWithHighlight: (player) => formatNumber(player.soldiersHealed)
 	},
 	{
 		key: 'teamkills',
@@ -105,7 +105,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.teamkills',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.teamkills),
-		getValueWithHighlight: (player, _query) => formatNumber(player.teamkills)
+		getValueWithHighlight: (player) => formatNumber(player.teamkills)
 	},
 	{
 		key: 'distanceMoved',
@@ -120,7 +120,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.shotsFired',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.shotsFired),
-		getValueWithHighlight: (player, _query) => formatNumber(player.shotsFired)
+		getValueWithHighlight: (player) => formatNumber(player.shotsFired)
 	},
 	{
 		key: 'throwablesThrown',
@@ -128,7 +128,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.throwablesThrown',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.throwablesThrown),
-		getValueWithHighlight: (player, _query) => formatNumber(player.throwablesThrown)
+		getValueWithHighlight: (player) => formatNumber(player.throwablesThrown)
 	},
 	{
 		key: 'rankProgression',
@@ -136,7 +136,7 @@ export const playerColumns: IPlayerColumn[] = [
 		i18n: 'app.player.column.rankProgression',
 		alignment: 'right',
 		getValue: (player) => formatNumber(player.rankProgression),
-		getValueWithHighlight: (player, _query) => formatNumber(player.rankProgression)
+		getValueWithHighlight: (player) => formatNumber(player.rankProgression)
 	},
 	{
 		key: 'rankName',

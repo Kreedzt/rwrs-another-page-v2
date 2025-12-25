@@ -19,8 +19,6 @@
 
 	let imageLoading = $state(true);
 	let imageError = $state(false);
-	let imageWidth = $state(0);
-	let imageHeight = $state(0);
 
 	function closeModal() {
 		if (onClose) {
@@ -55,11 +53,6 @@
 			imageError = false;
 		}
 	}
-
-	$effect(() => {
-		imageWidth = Math.min(window.innerWidth * 0.8, 800);
-		imageHeight = Math.min(window.innerHeight * 0.7, 600);
-	});
 
 	// Image cache system
 	const imageCache = $state(new Map<string, boolean>());
@@ -99,15 +92,15 @@
 			class="modal modal-open"
 			onclose={closeModal}
 		>
-			<div class="modal-box max-w-4xl p-0" onclick={(e) => e.stopPropagation()}>
-				<!-- Header -->
-				<div class="p-4 border-b border-base-300">
+			<div class="modal-box p-0 max-w-6xl flex flex-col" onclick={(e) => e.stopPropagation()}>
+				<!-- Header - always visible, fixed height -->
+				<div class="flex-shrink-0 p-4 border-b border-base-300">
 					<h3 class="font-semibold text-lg truncate">{mapData.name}</h3>
 					<p class="text-sm text-base-content/60 truncate">{mapData.path}</p>
 				</div>
 
-				<!-- Content -->
-				<div class="relative bg-base-200/30 flex items-center justify-center p-4" style="min-height: 300px; max-height: 60vh;">
+				<!-- Content - flexible, takes available space with max height -->
+				<div class="flex items-center justify-center p-4 bg-base-200/30" style="max-height: 70vh; width: 100%;">
 					{#if imageLoading}
 						<!-- Loading state using DaisyUI loading-dots -->
 						<div class="flex flex-col items-center justify-center p-8">
@@ -144,7 +137,7 @@
 								src={mapData.image}
 								alt="Map: {mapData.name}"
 								class="max-w-full max-h-full object-contain rounded-lg"
-								style="width: {imageWidth}px; height: {imageHeight}px;"
+								style="max-height: 66vh;"
 								onload={handleImageLoad}
 								onerror={handleImageError}
 							/>
@@ -152,8 +145,8 @@
 					{/if}
 				</div>
 
-				<!-- Footer with close button -->
-				<div class="p-4 border-t border-base-300">
+				<!-- Footer - always visible, fixed height -->
+				<div class="flex-shrink-0 p-4 border-t border-base-300">
 					<button
 						class="btn btn-secondary w-full"
 						onclick={closeModal}

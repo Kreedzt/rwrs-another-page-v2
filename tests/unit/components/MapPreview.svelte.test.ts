@@ -150,7 +150,7 @@ describe('MapPreview Component', () => {
 			expect(loadingDots).toBeTruthy();
 
 			// Should have image container
-			const imageContainer = document.querySelector('.relative.bg-base-200\\/30');
+			const imageContainer = document.querySelector('.bg-base-200\\/30');
 			expect(imageContainer).toBeTruthy();
 		});
 
