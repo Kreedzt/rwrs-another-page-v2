@@ -61,7 +61,7 @@
 	);
 </script>
 
-<div class="mb-4 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center">
+<div class="mb-4 flex flex-col items-stretch gap-4 rounded-lg border border-mil bg-mil-secondary p-4 sm:flex-row sm:items-center">
 	<!-- Left side: Player DB selector (only in players view) + Search input -->
 	<div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
 		{#if currentView === 'players'}
@@ -79,7 +79,7 @@
 	</div>
 
 	<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
-		<button class="btn btn-neutral w-full min-w-20 sm:w-auto" onclick={onRefresh}>
+		<button class="btn-tactical w-full min-w-24 px-4 py-2 sm:w-auto" onclick={onRefresh}>
 			<TranslatedText key="app.button.refresh" />
 		</button>
 

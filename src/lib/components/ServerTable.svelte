@@ -112,17 +112,16 @@
 {:else}
 	<!-- Desktop table view (hidden on mobile) -->
 	<div class="w-full">
-		<table class="table-pin-rows mb-0 table table-zebra border-0">
+		<table class="table-pin-rows mb-0 table table-zebra border-0 bg-mil-primary">
 			<thead>
-				<tr>
+				<tr class="bg-mil-secondary">
 					{#each columns as column (column.key)}
 						{#if visibleColumns[column.key]}
 							<th
-								class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle {getStickyClass(column.key)} {column.headerClass ||
+								class="sticky top-0 z-10 h-12 border-mil px-4 py-2 align-middle text-mil-primary {getStickyClass(column.key)} {column.headerClass ||
 									''}"
 								class:action-header={column.key === 'action'}
 								class:sticky-name-header={column.key === 'name'}
-								class:bg-base-100={column.key === 'action' || column.key === 'name'}
 							>
 								{#if column.key === 'action'}
 									<div class="text-center">
@@ -130,7 +129,7 @@
 									</div>
 								{:else}
 									<button
-										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
+										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-2 text-left transition-colors duration-200"
 										onclick={() => handleColumnSort(column.key)}
 										type="button"
 										title="Click to sort"
@@ -150,14 +149,13 @@
 			</thead>
 			<tbody>
 				{#each data as item (item.id)}
-					<tr class="hover hover:bg-base-300 min-h-12">
+					<tr class="hover hover:bg-base-300 min-h-12 border-b border-mil">
 						{#each columns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td
-									class="px-4 py-2 {getStickyClass(column.key)} {getAlignmentClass(column)} {column.cellClass ||
+									class="border-mil px-4 py-2 text-mil-primary {getStickyClass(column.key)} {getAlignmentClass(column)} {column.cellClass ||
 										''} {column.key === 'playerList' ? 'align-top' : ''}"
 									class:action-cell={column.key === 'action'}
-									class:bg-base-100={column.key === 'action' || column.key === 'name'}
 								>
 									{#if column.key === 'action'}
 										<div class="flex min-h-[3rem] items-center justify-center text-center">
@@ -194,7 +192,8 @@
 										<a
 											href={item.url}
 											target="_blank"
-											class="link link-primary inline-flex min-h-6 items-center"
+											class="link inline-flex min-h-6 items-center underline-offset-4 hover:underline"
+											style="color: var(--color-accent);"
 											title={item.url}
 										>
 											{item.url.length > 50 ? item.url.substring(0, 47) + '...' : item.url}
@@ -213,44 +212,44 @@
 {/if}
 
 <style>
-	/* Name column - sticky first column on left */
+	/* Name column - sticky first column on left with military styling */
 	:global(.sticky-name) {
 		position: sticky;
 		left: 0;
 		z-index: 15;
-		min-width: 12rem;
-		border-right: 2px solid hsl(var(--bc) / 0.15);
-		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+		min-width: 14rem;
+		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
 	}
 
 	:global(.sticky-name-header) {
 		position: sticky;
 		left: 0;
 		z-index: 20;
-		min-width: 12rem;
-		border-right: 2px solid hsl(var(--bc) / 0.25);
-		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+		min-width: 14rem;
+		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
 	}
 
-	/* Action column styling */
+	/* Action column styling - sticky right with military theme */
 	:global(.action-cell) {
 		position: sticky;
 		right: 0;
-		z-index: 10;
-		min-width: 8rem;
-		width: 8rem;
-		border-left: 2px solid hsl(var(--bc) / 0.15);
-		box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+		z-index: 15;
+		min-width: 9rem;
+		width: 9rem;
+		background: var(--color-bg-secondary);
+		border-left: 1px solid var(--color-border);
 	}
 
 	:global(.action-header) {
 		position: sticky;
 		right: 0;
 		z-index: 20;
-		min-width: 8rem;
-		width: 8rem;
-		border-left: 2px solid hsl(var(--bc) / 0.25);
-		box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+		min-width: 9rem;
+		width: 9rem;
+		background: var(--color-bg-secondary);
+		border-left: 1px solid var(--color-border);
 	}
 
 	/* Mobile responsive styles */

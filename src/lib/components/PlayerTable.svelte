@@ -86,14 +86,13 @@
 	</div>
 {:else}
 	<div class="w-full">
-		<table class="table-pin-rows mb-0 table table-zebra border-0">
+		<table class="table-pin-rows mb-0 table table-zebra border-0 bg-mil-primary">
 			<thead>
-				<tr>
+				<tr class="bg-mil-secondary">
 					{#each playerColumns as column (column.key)}
 						{#if visibleColumns[column.key]}
 							<th
-								class="bg-base-200 sticky top-0 z-10 h-12 px-4 py-2 align-middle {getStickyClass(column.key)}"
-								class:bg-base-100={column.key === 'rowNumber' || column.key === 'username'}
+								class="sticky top-0 z-10 h-12 border-mil px-4 py-2 align-middle text-mil-primary {getStickyClass(column.key)}"
 							>
 								{#if column.key === 'rowNumber'}
 									<!-- No sort button for rowNumber -->
@@ -124,16 +123,15 @@
 			</thead>
 			<tbody>
 				{#each data as item (item.id)}
-					<tr class="hover hover:bg-base-300 min-h-12">
+					<tr class="hover hover:bg-base-300 min-h-12 border-b border-mil">
 						{#each playerColumns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td
-									class="px-4 py-2 {getStickyClass(column.key)} {column.alignment === 'center'
+									class="border-mil px-4 py-2 text-mil-primary {getStickyClass(column.key)} {column.alignment === 'center'
 										? 'align-middle text-center'
 										: column.alignment === 'right'
 											? 'align-middle text-right'
 											: 'align-middle'}"
-									class:bg-base-100={column.key === 'rowNumber' || column.key === 'username'}
 								>
 									{@html getDisplayValue(item, column, searchQuery)}
 								</td>
@@ -154,8 +152,8 @@
 		z-index: 15;
 		min-width: 4rem;
 		width: 4rem;
-		border-right: 2px solid hsl(var(--bc) / 0.15);
-		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
 	}
 
 	/* Username - sticky second column on left */
@@ -164,8 +162,8 @@
 		left: 4rem;
 		z-index: 15;
 		min-width: 10rem;
-		border-right: 2px solid hsl(var(--bc) / 0.15);
-		box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
 	}
 
 	/* Mobile responsive styles */

@@ -326,10 +326,10 @@
 <section aria-label="Server List" class="flex flex-col items-center justify-center">
 	<div class="container p-4">
 		<!-- View Tabs -->
-		<div role="tablist" class="tabs tabs-border mb-4">
+		<div role="tablist" class="tabs tabs-border mb-4 border-mil">
 			<button
 				role="tab"
-				class="tab"
+				class="tab text-mil-secondary"
 				class:tab-active={currentView === 'servers'}
 				onclick={() => handleViewChange('servers')}
 			>
@@ -337,7 +337,7 @@
 			</button>
 			<button
 				role="tab"
-				class="tab"
+				class="tab text-mil-secondary"
 				class:tab-active={currentView === 'players'}
 				onclick={() => handleViewChange('players')}
 			>
