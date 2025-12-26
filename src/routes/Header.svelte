@@ -5,11 +5,16 @@
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import ChristmasDecoration from '$lib/components/ChristmasDecoration.svelte';
 	import ChristmasConfetti from '$lib/components/ChristmasConfetti.svelte';
-	
+	import analytics from '$lib/utils/analytics';
+
 	let confettiComponent: ChristmasConfetti;
-	
+
 	function handleTitleClick() {
 		confettiComponent?.trigger();
+	}
+
+	function handleGitHubClick() {
+		analytics.trackGitHubClick();
 	}
 </script>
 
@@ -50,6 +55,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					title="View on GitHub"
+					onclick={handleGitHubClick}
 				>
 					<Github class="w-4 h-4" />
 					<span class="hidden sm:inline ml-2">GITHUB</span>

@@ -83,7 +83,7 @@ export default defineConfig({
 	},
 	test: {
 		watch: false,
-		workspace: [
+		projects: [
 			{
 				extends: './vite.config.ts',
 				plugins: [svelteTesting()],

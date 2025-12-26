@@ -13,6 +13,7 @@
 		createUrlStateSubscriber,
 		type UrlState
 	} from '$lib/utils/url-state';
+	import analytics from '$lib/utils/analytics';
 
 	// State stores
 	import { createServerState } from '$lib/stores/use-server-state.svelte';
@@ -112,6 +113,7 @@
 		serverState.resetPagination();
 		playerState.resetPagination();
 		updateUrlState({ search: value.trim() || undefined }, true);
+		analytics.trackSearch('keyboard');
 	}
 
 	function handleSearchEnter(value: string) {
@@ -122,6 +124,7 @@
 			updateUrlState({ search: value.trim() || undefined }, true);
 			playerState.loadPlayers({ searchQuery: value });
 		}
+		analytics.trackSearch('click');
 	}
 
 	function handleGlobalSearch(query: string) {
@@ -138,6 +141,8 @@
 			playerState.handlePageChange(page);
 			playerState.loadPlayers({ searchQuery });
 		}
+		const totalPages = currentView === 'servers' ? derivedServerData.totalPages : derivedPlayerData.totalPages;
+		analytics.trackPagination(page, totalPages);
 	}
 
 	async function handleLoadMore() {
@@ -146,6 +151,7 @@
 		} else {
 			serverState.handleLoadMore();
 		}
+		analytics.trackLoadMore();
 	}
 
 	function handleJoin(server: IDisplayServerItem) {
@@ -156,6 +162,7 @@
 	function onRowAction(event: { item: IDisplayServerItem; action: string }) {
 		if (event.action === 'join') {
 			handleJoin(event.item);
+			analytics.trackServerJoin();
 		}
 	}
 
@@ -169,11 +176,13 @@
 			visibleColumns[column.key] = visible;
 			userSettingsService.updateNested('visibleColumns', column.key, visible);
 		}
+		analytics.trackColumnVisibility(column.key as string, visible);
 	}
 
 	function handleAutoRefreshToggle(enabled: boolean) {
 		autoRefreshEnabled = enabled;
 		userSettingsService.updateNested('autoRefresh', 'enabled', enabled);
+		analytics.trackAutoRefreshToggle(enabled);
 	}
 
 	function handleQuickFilter(filterId: string) {
@@ -188,6 +197,7 @@
 		}
 		serverState.resetPagination();
 		updateUrlState({ quickFilters: activeQuickFilters.length > 0 ? activeQuickFilters : [] }, true);
+		analytics.trackQuickFilter(filterId, activeQuickFilters.length);
 	}
 
 	function handleMultiSelectChange(checked: boolean) {
@@ -195,29 +205,44 @@
 		if (!checked && activeQuickFilters.length > 1) {
 			activeQuickFilters = activeQuickFilters.slice(0, 1);
 		}
+		analytics.trackMultiSelectToggle(checked);
 	}
 
 	function handleSort(column: string) {
 		serverState.handleSort(column);
+		const direction = serverState.sortDirection || 'asc';
 		updateUrlState(
 			{
 				sortColumn: serverState.sortColumn || undefined,
-				sortDirection: serverState.sortDirection || undefined
+				sortDirection: direction
 			},
 			true
 		);
+		analytics.trackColumnSort(column, direction);
 	}
 
 	function handlePlayerSort(column: string) {
 		playerState.handleSort(column);
-		updateUrlState(
-			{
-				sortColumn: playerState.playerSortColumn ?? null,
-				sortDirection: playerState.playerSortDirection ?? null
-			},
-			true
-		);
+		// Clear both sort column and direction from URL when sorting is cleared
+		if (playerState.playerSortColumn === null) {
+			updateUrlState(
+				{
+					sortColumn: undefined,
+					sortDirection: undefined
+				},
+				true
+			);
+		} else {
+			updateUrlState(
+				{
+					sortColumn: playerState.playerSortColumn,
+					sortDirection: playerState.playerSortDirection!
+				},
+				true
+			);
+		}
 		playerState.loadPlayers({ searchQuery });
+		analytics.trackColumnSort(column, playerState.playerSortDirection || 'asc');
 	}
 
 	function toggleMobileCard(id: string) {
@@ -228,6 +253,7 @@
 		mapPreviewData = mapData;
 		mapPreviewShow = true;
 		mapPreviewPosition = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+		analytics.trackMapPreview();
 	}
 
 	function handleMapPreviewClose() {
@@ -253,12 +279,14 @@
 		} else {
 			serverState.refreshList();
 		}
+		analytics.trackViewSwitch(view);
 	}
 
 	function handlePlayerDbChange(db: PlayerDatabase) {
 		playerState.handlePlayerDbChange(db);
 		updateUrlState({ playerDb: db }, true);
 		playerState.loadPlayers({ searchQuery });
+		analytics.trackPlayerDatabaseChange(db);
 	}
 
 	function handlePlayerPageSizeChange(size: number) {
@@ -296,6 +324,9 @@
 			}
 		};
 		loadData();
+
+		// Track session start with the actual view from URL
+		analytics.trackEvent('session_start', { view: currentView });
 
 		const unsubscribe = createUrlStateSubscriber((urlState: UrlState) => {
 			// Handle search changes

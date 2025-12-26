@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { setLocale, getLocale, locales } from '$lib/paraglide/runtime';
+	import analytics from '$lib/utils/analytics';
 
 	const languageNames: Record<string, { name: string; shortName: string }> = {
 		'en-us': { name: 'English', shortName: 'EN' },
@@ -7,6 +8,11 @@
 	};
 
 	const currentLocale = $derived(getLocale());
+
+	function handleLanguageChange(locale: string) {
+		setLocale(locale);
+		analytics.trackLanguageChange(locale);
+	}
 </script>
 
 <div class="dropdown dropdown-bottom dropdown-end">
@@ -25,8 +31,8 @@
 					class="flex items-center justify-between {currentLocale === locale
 						? 'active bg-primary text-primary-content'
 						: ''}"
-					onclick={() => setLocale(locale)}
-					onkeydown={(e) => e.key === 'Enter' && setLocale(locale)}
+					onclick={() => handleLanguageChange(locale)}
+					onkeydown={(e) => e.key === 'Enter' && handleLanguageChange(locale)}
 					aria-label={`Switch to ${languageNames[locale]?.name || locale}`}
 					title={`Switch to ${languageNames[locale]?.name || locale}`}
 				>
