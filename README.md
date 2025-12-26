@@ -43,6 +43,55 @@ Robin web provides a pure and efficient way to browse Running with Rifles game s
 - Mobile-friendly responsive design with infinite scroll
 - Accessible keyboard navigation and ARIA-compliant markup
 - URL state management for bookmarkable views
+- Multi-platform analytics tracking (Google Analytics, Baidu Analytics, Umami)
+
+## Analytics
+
+The application includes a comprehensive analytics system that tracks user interactions while respecting privacy:
+
+### Supported Platforms
+
+- **Google Analytics (gtag)** - Track events via externally injected gtag script
+- **Baidu Analytics (_hmt)** - Track events via Baidu's analytics platform
+- **Umami Analytics** - Track events via Umami's privacy-focused analytics
+
+### Privacy-First Design
+
+- **No sensitive data tracking**: Search queries are never sent (only search trigger events)
+- **No consent required**: Analytics is auto-enabled when scripts are detected
+- **Safe integration**: Gracefully handles missing analytics platforms without errors
+
+### Tracked Events
+
+| Event | Description |
+|-------|-------------|
+| `view_switch` | Switching between server/player views |
+| `theme_change` | Changing UI theme |
+| `language_change` | Changing interface language |
+| `search_triggered` | Search interactions (without query content) |
+| `quick_filter_applied` | Applying preset filters |
+| `column_sort` | Sorting data columns |
+| `pagination_change` | Page navigation |
+| `load_more_click` | Loading more data (mobile) |
+| `auto_refresh_toggle` | Toggling auto-refresh |
+| `player_database_change` | Switching player databases |
+| `column_visibility_toggle` | Showing/hiding columns |
+| `server_join_click` | Clicking server join button |
+| `map_preview_open` | Opening map preview |
+
+### Debug Mode
+
+Enable debug logging for analytics:
+
+```bash
+# Build with debug enabled
+VITE_ANALYTICS_DEBUG=true pnpm build
+
+# Or set environment variable
+VITE_ANALYTICS_DEBUG=true pnpm dev
+```
+
+Debug mode logs all analytics events to the console for development and testing.
 
 ## Dependencies
 

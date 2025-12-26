@@ -337,7 +337,7 @@
 			// Handle quick filter changes
 			if (urlState.quickFilters !== undefined) {
 				const result = urlSync.handleUrlStateChange(urlState);
-				if (result.quickFilters) {
+				if (result && 'quickFilters' in result && result.quickFilters) {
 					activeQuickFilters = result.quickFilters;
 				}
 			}
