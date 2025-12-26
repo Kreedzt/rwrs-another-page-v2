@@ -5,6 +5,7 @@ interface UserSettings {
 		interval: number;
 	};
 	visibleColumns: Record<string, boolean>;
+	visiblePlayerColumns: Record<string, boolean>;
 	// Future settings can be added here
 	theme?: 'light' | 'dark' | 'auto';
 	language?: string;
@@ -33,6 +34,17 @@ const DEFAULT_SETTINGS: UserSettings = {
 		url: false,
 		version: false,
 		action: true
+	},
+	visiblePlayerColumns: {
+		rowNumber: true,
+		username: true,
+		kills: true,
+		deaths: true,
+		score: true,
+		kd: true,
+		timePlayed: true,
+		rankProgression: true,
+		rankName: true
 	}
 };
 
@@ -102,9 +114,17 @@ class UserSettingsService {
 			};
 		}
 
+		// Merge visiblePlayerColumns
+		if (stored.visiblePlayerColumns) {
+			merged.visiblePlayerColumns = {
+				...defaults.visiblePlayerColumns,
+				...stored.visiblePlayerColumns
+			};
+		}
+
 		// Merge other properties
 		Object.keys(stored).forEach((key) => {
-			if (key !== 'autoRefresh' && key !== 'visibleColumns' && key in stored) {
+			if (key !== 'autoRefresh' && key !== 'visibleColumns' && key !== 'visiblePlayerColumns' && key in stored) {
 				(merged as any)[key] = stored[key];
 			}
 		});
