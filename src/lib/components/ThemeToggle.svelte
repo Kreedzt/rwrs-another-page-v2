@@ -2,6 +2,7 @@
 	import { Moon, Sun, Monitor } from '@lucide/svelte';
 	import { theme } from '$lib/stores/theme';
 	import { getCurrentTheme } from '$lib/stores/theme';
+	import analytics from '$lib/utils/analytics';
 
 	const themes = [
 		{ value: 'light', icon: Sun, label: 'Light' },
@@ -24,7 +25,9 @@
 	function toggleTheme() {
 		const currentIndex = themes.findIndex((t) => t.value === currentTheme);
 		const nextIndex = (currentIndex + 1) % themes.length;
-		theme.set(themes[nextIndex].value);
+		const newTheme = themes[nextIndex].value;
+		theme.set(newTheme);
+		analytics.trackThemeChange(newTheme);
 	}
 </script>
 

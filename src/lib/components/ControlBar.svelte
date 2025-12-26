@@ -7,6 +7,7 @@
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
 	import type { PlayerDatabase, IPlayerColumn } from '$lib/models/player.model';
 	import type { IColumn } from '$lib/models/server.model';
+	import analytics from '$lib/utils/analytics';
 
 	interface Props {
 		currentView: 'servers' | 'players';
@@ -59,6 +60,11 @@
 			? m['app.search.placeholderPlayers']()
 			: searchPlaceholder
 	);
+
+	function handleRefresh() {
+		onRefresh();
+		analytics.trackRefresh();
+	}
 </script>
 
 <div class="mb-4 flex flex-col items-stretch gap-4 rounded-lg border border-mil bg-mil-secondary p-4 sm:flex-row sm:items-center">
@@ -79,7 +85,7 @@
 	</div>
 
 	<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
-		<button class="btn-tactical w-full min-w-24 px-4 py-2 sm:w-auto" onclick={onRefresh}>
+		<button class="btn-tactical w-full min-w-24 px-4 py-2 sm:w-auto" onclick={handleRefresh}>
 			<TranslatedText key="app.button.refresh" />
 		</button>
 
