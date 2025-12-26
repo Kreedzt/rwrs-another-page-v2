@@ -3,17 +3,35 @@
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import ChristmasDecoration from '$lib/components/ChristmasDecoration.svelte';
+	import ChristmasConfetti from '$lib/components/ChristmasConfetti.svelte';
+	
+	let confettiComponent: ChristmasConfetti;
+	
+	function handleTitleClick() {
+		confettiComponent?.trigger();
+	}
 </script>
 
 <header class="header-stripe flex w-full justify-center border-b border-mil bg-mil-secondary">
 	<div class="container px-4 py-4">
 		<div class="flex w-full items-center justify-between">
 			<div class="flex flex-col gap-1">
-				<TranslatedText
-					tag="h1"
-					key="app.title"
-					className="text-xl md:text-2xl font-bold uppercase tracking-wider font-display text-mil-primary"
-				></TranslatedText>
+				<div class="flex items-center gap-2">
+					<ChristmasDecoration />
+					<button 
+						onclick={handleTitleClick}
+						class="cursor-pointer transition-transform hover:scale-105 active:scale-95"
+						aria-label="Merry Christmas! Click to trigger snowflake confetti"
+					>
+						<TranslatedText
+							tag="h1"
+							key="app.title"
+							className="text-xl md:text-2xl font-bold uppercase tracking-wider font-display text-mil-primary"
+						></TranslatedText>
+					</button>
+					<ChristmasDecoration />
+				</div>
 				<TranslatedText
 					tag="p"
 					key="app.subtitle"
@@ -41,9 +59,22 @@
 	</div>
 </header>
 
+<!-- Christmas confetti effect -->
+<ChristmasConfetti bind:this={confettiComponent} />
+
 <style>
 	/* Override DaisyUI button styles in header */
 	header :global(a) {
 		text-decoration: none;
+	}
+	
+	/* Title button style reset */
+	header button {
+		background: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		outline: inherit;
 	}
 </style>

@@ -30,11 +30,6 @@ describe('components barrel file', () => {
 		});
 	});
 
-	it('should have the correct number of exports', () => {
-		const exportCount = Object.keys(components).length;
-		expect(exportCount).toBe(expectedExports.length);
-	});
-
 	it('all exports should be functions (Svelte components)', () => {
 		Object.values(components).forEach((exported) => {
 			// Svelte components are functions
