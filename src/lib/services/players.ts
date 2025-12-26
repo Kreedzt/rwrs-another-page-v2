@@ -19,7 +19,6 @@ function buildPlayerListUrl(params: IPlayerListParams): string {
 	const queryParams: IPlayerListParams = {
 		search: params.search,
 		db: params.db ?? DEFAULT_PARAMS.db,
-		sort: params.sort ?? DEFAULT_PARAMS.sort,
 		start: params.start ?? 0,
 		size: params.size ?? DEFAULT_PARAMS.size
 	};
@@ -33,8 +32,9 @@ function buildPlayerListUrl(params: IPlayerListParams): string {
 	if (queryParams.db) {
 		searchParams.append('db', queryParams.db);
 	}
-	if (queryParams.sort) {
-		searchParams.append('sort', queryParams.sort);
+	// Only add sort parameter if explicitly provided (not undefined)
+	if (params.sort !== undefined) {
+		searchParams.append('sort', params.sort);
 	}
 	if (queryParams.start !== undefined) {
 		searchParams.append('start', queryParams.start.toString());

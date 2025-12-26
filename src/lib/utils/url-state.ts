@@ -111,7 +111,7 @@ export function updateUrlState(state: Partial<UrlState>, replace: boolean = fals
 	}
 
 	// 更新排序参数
-	if (state.sortColumn !== undefined) {
+	if ('sortColumn' in state) {
 		if (state.sortColumn) {
 			urlParams.set(URL_PARAMS.SORT_COLUMN, state.sortColumn);
 		} else {
@@ -119,7 +119,7 @@ export function updateUrlState(state: Partial<UrlState>, replace: boolean = fals
 		}
 	}
 
-	if (state.sortDirection !== undefined) {
+	if ('sortDirection' in state) {
 		if (state.sortDirection) {
 			urlParams.set(URL_PARAMS.SORT_DIRECTION, state.sortDirection);
 		} else {

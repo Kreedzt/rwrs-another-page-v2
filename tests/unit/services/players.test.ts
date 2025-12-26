@@ -168,9 +168,10 @@ describe('PlayerService', () => {
 			const url = callArgs[0] as string;
 
 			expect(url).toContain('db=invasion');
-			expect(url).toContain('sort=rank_progression');
 			expect(url).toContain('start=0');
 			expect(url).toContain('size=20');
+			// Sort parameter should not be included by default
+			expect(url).not.toContain('sort=');
 		});
 
 		test('should not include search parameter if not provided', async () => {
@@ -334,9 +335,10 @@ describe('PlayerService', () => {
 			const url = callArgs[0] as string;
 
 			expect(url).toContain('db=invasion');
-			expect(url).toContain('sort=rank_progression');
 			expect(url).toContain('start=0');
 			expect(url).toContain('size=20');
+			// Sort parameter should not be included by default
+			expect(url).not.toContain('sort=');
 		});
 
 		test('should return correct pagination structure', async () => {

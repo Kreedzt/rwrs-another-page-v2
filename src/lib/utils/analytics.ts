@@ -120,10 +120,11 @@ class Analytics {
 
 		// Remove any potentially sensitive fields
 		// Search content should NEVER be sent
-		delete (sanitized as any).search_query;
-		delete (sanitized as any).query;
-		delete (sanitized as any).q;
-		delete (sanitized as any).search;
+		const temp = sanitized as Partial<AnalyticsEventParams>;
+		delete temp.search_query;
+		delete temp.query;
+		delete temp.q;
+		delete temp.search;
 
 		return sanitized;
 	}

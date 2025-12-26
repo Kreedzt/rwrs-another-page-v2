@@ -1,8 +1,8 @@
 import type { UrlState } from '$lib/utils/url-state';
 import { filters as quickFilters } from '$lib/utils/quick-filters';
 import type { PlayerDatabase } from '$lib/models/player.model';
-import type { ServerState } from './use-server-state';
-import type { PlayerState } from './use-player-state';
+import type { ServerState } from './use-server-state.svelte';
+import type { PlayerState } from './use-player-state.svelte';
 
 interface UrlSyncOptions {
 	serverState: ServerState;
@@ -26,7 +26,11 @@ export function createUrlSync(options: UrlSyncOptions) {
 	/**
 	 * Initialize state from URL parameters on mount
 	 */
-	function initializeFromUrl(urlState: UrlState): void {
+	function initializeFromUrl(urlState: UrlState): {
+		activeQuickFilters: string[];
+		initialView: 'servers' | 'players' | undefined;
+		initialPlayerDb: PlayerDatabase | undefined;
+	} {
 		// Initialize search query
 		if (urlState.search !== undefined && onSearchChange) {
 			onSearchChange(urlState.search);
@@ -57,7 +61,7 @@ export function createUrlSync(options: UrlSyncOptions) {
 	/**
 	 * Handle URL state changes from browser back/forward
 	 */
-	function handleUrlStateChange(urlState: UrlState): void {
+	function handleUrlStateChange(urlState: UrlState): { quickFilters?: string[] } | void {
 		// Search query change
 		if (urlState.search !== undefined && onSearchChange) {
 			onSearchChange(urlState.search);

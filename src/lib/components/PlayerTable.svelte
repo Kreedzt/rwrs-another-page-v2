@@ -94,8 +94,8 @@
 							<th
 								class="sticky top-0 z-10 h-12 border-mil px-4 py-2 align-middle text-mil-primary {getStickyClass(column.key)}"
 							>
-								{#if column.key === 'rowNumber'}
-									<!-- No sort button for rowNumber -->
+								{#if column.key === 'rowNumber' || column.key === 'rankName'}
+									<!-- No sort button for rowNumber and rankName -->
 									<span class="px-2 py-1">
 										{#if column.i18n}<TranslatedText
 												key={column.i18n}

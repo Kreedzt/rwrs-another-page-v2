@@ -109,7 +109,7 @@
 		<div class="md:hidden">
 			<!-- Mobile sort controls -->
 			<div class="mb-4 flex flex-wrap gap-2">
-				{#each playerColumns.filter((col) => col.key !== 'rowNumber') as column (column.key)}
+				{#each playerColumns.filter((col) => col.key !== 'rowNumber' && col.key !== 'rankName') as column (column.key)}
 					<button
 						class="btn btn-sm btn-outline flex items-center gap-2"
 						onclick={() => onSort(column.key as string)}

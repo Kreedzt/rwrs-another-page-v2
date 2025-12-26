@@ -223,16 +223,26 @@
 
 	function handlePlayerSort(column: string) {
 		playerState.handleSort(column);
-		const direction = playerState.playerSortDirection || 'asc';
-		updateUrlState(
-			{
-				sortColumn: playerState.playerSortColumn ?? null,
-				sortDirection: direction
-			},
-			true
-		);
+		// Clear both sort column and direction from URL when sorting is cleared
+		if (playerState.playerSortColumn === null) {
+			updateUrlState(
+				{
+					sortColumn: undefined,
+					sortDirection: undefined
+				},
+				true
+			);
+		} else {
+			updateUrlState(
+				{
+					sortColumn: playerState.playerSortColumn,
+					sortDirection: playerState.playerSortDirection!
+				},
+				true
+			);
+		}
 		playerState.loadPlayers({ searchQuery });
-		analytics.trackColumnSort(column, direction);
+		analytics.trackColumnSort(column, playerState.playerSortDirection || 'asc');
 	}
 
 	function toggleMobileCard(id: string) {
