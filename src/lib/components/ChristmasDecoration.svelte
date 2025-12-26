@@ -33,28 +33,5 @@
 			transform: rotate(360deg);
 		}
 	}
-
-	.snowflake-icon {
-		filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.6));
-		transition: all 0.3s ease;
-	}
-
-	/* Hover effect */
-	.christmas-decoration:hover .snowflake-icon {
-		filter: drop-shadow(0 0 8px rgba(147, 197, 253, 0.8));
-		transform: scale(1.1);
-	}
-
-	/* Dark mode optimization */
-	:global([data-theme='dark']) .snowflake-icon {
-		filter: drop-shadow(0 0 6px rgba(186, 230, 253, 0.7));
-	}
-
-	/* Simplified effects for mobile */
-	@media (max-width: 768px) {
-		.snowflake-icon {
-			filter: drop-shadow(0 0 2px rgba(147, 197, 253, 0.4));
-		}
-	}
 </style>
 

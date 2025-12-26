@@ -231,7 +231,7 @@
 												class="btn btn-success btn-sm text-white"
 												onclick={(e) => {
 													e.stopPropagation();
-													onMapView(mapData);
+													onMapView(mapData!);
 												}}
 												type="button"
 											>

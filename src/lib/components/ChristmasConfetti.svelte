@@ -26,7 +26,7 @@
 			destroyAfterDone: true,
 			duration: 3000
 		}}
-	/>
+	></div>
 {/if}
 
 <style>

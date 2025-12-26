@@ -92,7 +92,16 @@
 			class="modal modal-open"
 			onclose={closeModal}
 		>
-			<div class="modal-box p-0 max-w-6xl flex flex-col" onclick={(e) => e.stopPropagation()}>
+			<div
+				class="modal-box p-0 max-w-6xl flex flex-col"
+				role="dialog"
+				aria-modal="true"
+				tabindex="-1"
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={(e) => {
+					if (e.key === 'Escape') closeModal();
+				}}
+			>
 				<!-- Header - always visible, fixed height -->
 				<div class="flex-shrink-0 p-4 border-b border-base-300">
 					<h3 class="font-semibold text-lg truncate">{mapData.name}</h3>

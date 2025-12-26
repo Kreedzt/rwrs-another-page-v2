@@ -17,7 +17,7 @@
 		options = [10, 20, 50, 100]
 	}: Props = $props();
 
-	const filteredOptions = options.filter((size) => size >= min && size <= max);
+	const filteredOptions = $derived(options.filter((size) => size >= min && size <= max));
 
 	function handleChange(event: Event) {
 		const select = event.target as HTMLSelectElement;
