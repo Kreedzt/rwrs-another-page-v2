@@ -6,7 +6,7 @@
 	let { children } = $props();
 </script>
 
-<!-- 圣诞雪花背景 -->
+<!-- Christmas snowfall background -->
 <ChristmasSnowfall />
 
 <div class="flex min-h-screen flex-col">

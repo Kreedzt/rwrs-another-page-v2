@@ -22,7 +22,7 @@
 					<button 
 						onclick={handleTitleClick}
 						class="cursor-pointer transition-transform hover:scale-105 active:scale-95"
-						aria-label="圣诞快乐！点击触发雪花效果"
+						aria-label="Merry Christmas! Click to trigger snowflake confetti"
 					>
 						<TranslatedText
 							tag="h1"
@@ -59,7 +59,7 @@
 	</div>
 </header>
 
-<!-- 圣诞彩纸效果 -->
+<!-- Christmas confetti effect -->
 <ChristmasConfetti bind:this={confettiComponent} />
 
 <style>
@@ -68,7 +68,7 @@
 		text-decoration: none;
 	}
 	
-	/* 标题按钮样式重置 */
+	/* Title button style reset */
 	header button {
 		background: none;
 		border: none;

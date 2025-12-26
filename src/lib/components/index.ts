@@ -18,7 +18,7 @@ export { default as StatsBar } from './StatsBar.svelte';
 export { default as ServerView } from './ServerView.svelte';
 export { default as PlayerView } from './PlayerView.svelte';
 
-// 圣诞节主题组件
+// Christmas theme components
 export { default as ChristmasSnowfall } from './ChristmasSnowfall.svelte';
 export { default as ChristmasDecoration } from './ChristmasDecoration.svelte';
 export { default as ChristmasConfetti } from './ChristmasConfetti.svelte';

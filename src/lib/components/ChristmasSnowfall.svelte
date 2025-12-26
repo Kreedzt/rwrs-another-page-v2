@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	
-	// 响应式圣诞雪花背景效果 - 纯 CSS 实现
-	// PC端：50个雪花，移动端：10个雪花
+	// Responsive Christmas snowfall background effect - Pure CSS implementation
+	// Desktop: 50 snowflakes, Mobile: 10 snowflakes
 	
-	let snowflakeCount = $state(10); // 默认移动端数量
+	let snowflakeCount = $state(10); // Default mobile count
 	let snowflakes = $state<Array<{
 		id: number;
 		left: number;
@@ -26,8 +26,8 @@
 	}
 	
 	function updateSnowflakeCount() {
-		// PC端（>= 768px）：50个雪花
-		// 移动端（< 768px）：10个雪花
+		// Desktop (>= 768px): 50 snowflakes
+		// Mobile (< 768px): 10 snowflakes
 		const isMobile = window.innerWidth < 768;
 		const newCount = isMobile ? 10 : 50;
 		
@@ -38,10 +38,10 @@
 	}
 	
 	onMount(() => {
-		// 初始化
+		// Initialize
 		updateSnowflakeCount();
 		
-		// 监听窗口尺寸变化
+		// Listen for window resize
 		window.addEventListener('resize', updateSnowflakeCount);
 		
 		return () => {
@@ -88,20 +88,20 @@
 		}
 	}
 
-	/* 移动端优化：减少模糊效果 */
+	/* Mobile optimization: reduce blur effect */
 	@media (max-width: 768px) {
 		.snowflake {
 			text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
 		}
 	}
 
-	/* 深色模式下雪花更明显 */
+	/* More visible snowflakes in dark mode */
 	:global([data-theme='dark']) .snowflake {
 		color: #e0f2fe;
 		text-shadow: 0 0 8px rgba(224, 242, 254, 0.6);
 	}
 
-	/* 浅色模式下雪花稍微透明 */
+	/* Slightly transparent snowflakes in light mode */
 	:global([data-theme='light']) .snowflake {
 		color: #bae6fd;
 		text-shadow: 0 0 5px rgba(186, 230, 253, 0.4);

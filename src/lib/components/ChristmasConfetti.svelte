@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { confetti } from '@neoconfetti/svelte';
 	
-	// 交互式圣诞彩纸效果组件
-	// 使用项目已安装的 @neoconfetti/svelte
+	// Interactive Christmas confetti effect component
+	// Uses @neoconfetti/svelte (already installed)
 	
 	let showConfetti = $state(false);
 	
