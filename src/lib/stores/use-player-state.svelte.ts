@@ -1,7 +1,5 @@
 import { PlayerService } from '$lib/services/players';
-import { sortPlayers } from '$lib/utils/sorting';
-import type { IPlayerItem, PlayerDatabase } from '$lib/models/player.model';
-import { playerColumns } from '$lib/config/player-columns';
+import type { IPlayerItem, PlayerDatabase, PlayerSortField } from '$lib/models/player.model';
 
 interface PlayerStats {
 	totalPlayers: number;
@@ -32,7 +30,7 @@ export function createPlayerState(initialDb: PlayerDatabase = 'invasion' as Play
 	let players = $state<IPlayerItem[]>([]);
 	let playerDb = $state<PlayerDatabase>(initialDb);
 	let loading = $state(false);
-	let refreshing = $state(false);
+	const refreshing = $state(false);
 	let error = $state<string | null>(null);
 
 	// Pagination state from API
@@ -69,8 +67,8 @@ export function createPlayerState(initialDb: PlayerDatabase = 'invasion' as Play
 			loading = true;
 
 			// Convert camelCase to snake_case for API
-			const sortParam = playerSortColumn
-				? playerSortColumn.replace(/([A-Z])/g, '_$1').toLowerCase()
+			const sortParam: PlayerSortField | undefined = playerSortColumn
+				? (playerSortColumn.replace(/([A-Z])/g, '_$1').toLowerCase() as PlayerSortField)
 				: undefined;
 
 			const result = await PlayerService.listWithPagination({
@@ -101,8 +99,8 @@ export function createPlayerState(initialDb: PlayerDatabase = 'invasion' as Play
 			const start = (mobilePlayerCurrentPage - 1) * playerPageSize;
 
 			// Convert camelCase to snake_case for API
-			const sortParam = playerSortColumn
-				? playerSortColumn.replace(/([A-Z])/g, '_$1').toLowerCase()
+			const sortParam: PlayerSortField | undefined = playerSortColumn
+				? (playerSortColumn.replace(/([A-Z])/g, '_$1').toLowerCase() as PlayerSortField)
 				: undefined;
 
 			const result = await PlayerService.listWithPagination({
