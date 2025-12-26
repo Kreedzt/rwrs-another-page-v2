@@ -6,12 +6,12 @@ export interface RequestOptions extends RequestInit {
 	timeout?: number;
 }
 
-// Default timeout increased to 10 seconds to give more time for API response
+// Default timeout increased to 20 seconds to give more time for API response
 export async function request<T>(
 	url: string,
 	options: RequestOptions = {},
 	responseType: ResponseType = 'json',
-	timeout: number = 10000
+	timeout: number = 20000
 ): Promise<T> {
 	const controller = new AbortController();
 	const { signal } = controller;

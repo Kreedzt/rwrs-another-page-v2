@@ -7,6 +7,7 @@
 		playerColumns: IPlayerColumn[];
 		visibleColumns: Record<string, boolean>;
 		searchQuery: string;
+		highlightedUsername?: string;
 		sortColumn: string | null;
 		onSort?: (column: string) => void;
 	}
@@ -16,6 +17,7 @@
 		playerColumns = [],
 		visibleColumns = {},
 		searchQuery = '',
+		highlightedUsername,
 		sortColumn = null,
 		onSort = () => {}
 	}: Props = $props();
@@ -123,11 +125,12 @@
 			</thead>
 			<tbody>
 				{#each data as item (item.id)}
-					<tr class="hover hover:bg-base-300 min-h-12 border-b border-mil">
+					{@const isHighlighted = highlightedUsername && item.username.toLowerCase() === highlightedUsername.toLowerCase()}
+					<tr class="min-h-12 border-b border-mil {isHighlighted ? 'bg-accent text-accent-content font-semibold' : 'hover hover:bg-base-300'}">
 						{#each playerColumns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td
-									class="border-mil px-4 py-2 text-mil-primary {getStickyClass(column.key)} {column.alignment === 'center'
+									class="border-mil px-4 py-2 {getStickyClass(column.key)} {isHighlighted ? 'text-accent-content' : 'text-mil-primary'} {column.alignment === 'center'
 										? 'align-middle text-center'
 										: column.alignment === 'right'
 											? 'align-middle text-right'
@@ -164,6 +167,12 @@
 		min-width: 10rem;
 		background: var(--color-bg-secondary);
 		border-right: 1px solid var(--color-border);
+	}
+
+	/* Highlighted row - override sticky column backgrounds */
+	:global(tr.bg-accent .sticky-row-number),
+	:global(tr.bg-accent .sticky-username) {
+		background: hsl(var(--ac));
 	}
 
 	/* Mobile responsive styles */

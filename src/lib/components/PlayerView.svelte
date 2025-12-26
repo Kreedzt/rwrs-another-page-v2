@@ -11,6 +11,7 @@
 		loading: boolean;
 		error: string | null;
 		searchQuery: string;
+		highlightedUsername?: string;
 		paginatedPlayers: IPlayerItem[];
 		mobilePaginatedPlayers: IPlayerItem[];
 		mobileHasMore: boolean;
@@ -34,6 +35,7 @@
 		loading,
 		error,
 		searchQuery,
+		highlightedUsername,
 		paginatedPlayers,
 		mobilePaginatedPlayers,
 		mobileHasMore,
@@ -200,6 +202,7 @@
 				{playerColumns}
 				{visibleColumns}
 				{searchQuery}
+				{highlightedUsername}
 				{sortColumn}
 				onSort={onSort}
 			/>

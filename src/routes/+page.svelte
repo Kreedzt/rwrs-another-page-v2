@@ -51,6 +51,18 @@
 	// Mobile expanded cards state
 	let mobileExpandedCards = $state<Record<string, boolean>>({});
 
+	// Highlighted username for search results
+	let highlightedUsername = $state<string | undefined>(undefined);
+
+	// Update highlighted username when search changes
+	$effect(() => {
+		if (searchQuery && currentView === 'players') {
+			highlightedUsername = searchQuery.trim();
+		} else {
+			highlightedUsername = undefined;
+		}
+	});
+
 	// User settings from localStorage
 	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
 	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
@@ -318,7 +330,7 @@
 		const loadData = async () => {
 			await loadMaps();
 			if (currentView === 'players') {
-				await playerState.loadPlayers();
+				await playerState.loadPlayers({ searchQuery });
 			} else {
 				await serverState.refreshList();
 			}
@@ -443,6 +455,7 @@
 				loading={playerState.loading}
 				error={playerState.error}
 				{searchQuery}
+				{highlightedUsername}
 				paginatedPlayers={derivedPlayerData.paginatedPlayers}
 				mobilePaginatedPlayers={derivedPlayerData.mobilePaginatedPlayers}
 				mobileHasMore={derivedPlayerData.mobileHasMore}

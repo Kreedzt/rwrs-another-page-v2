@@ -50,22 +50,18 @@ export const ServerService: IServerService = {
 		const size = 100;
 		const totalServerList: IDisplayServerItem[] = [];
 		let hasMoreData = true;
-		const requestTimeout = options.timeout || 10000; // Default timeout for each request
+		const requestTimeout = options.timeout || 20000; // Default timeout for each request
 
 		// Maximum number of batches to try (to prevent infinite loops)
 		const MAX_BATCHES = 10;
 		let batchCount = 0;
 		let lastError: Error | null = null;
 
-		// Reset any previous error state
-		console.info(`Starting server list fetch with timeout: ${requestTimeout}ms`);
-
 		try {
 			while (hasMoreData && batchCount < MAX_BATCHES) {
 				batchCount++;
 
 				try {
-					console.info(`Fetching batch ${batchCount}, starting at index ${start}`);
 					// Use Promise.race to implement a timeout for each batch
 					const newServerList = await ServerService.list({
 						start,
@@ -76,16 +72,13 @@ export const ServerService: IServerService = {
 
 					if (newServerList.length === 0) {
 						// No more data to fetch
-						console.info(`Batch ${batchCount} returned no servers, stopping`);
 						hasMoreData = false;
 					} else {
-						console.info(`Batch ${batchCount} returned ${newServerList.length} servers`);
 						totalServerList.push(...newServerList);
 						start += size;
 
 						// If we got fewer items than requested, we've reached the end
 						if (newServerList.length < size) {
-							console.info(`Batch ${batchCount} returned fewer than ${size} servers, stopping`);
 							hasMoreData = false;
 						}
 					}
@@ -96,8 +89,6 @@ export const ServerService: IServerService = {
 					hasMoreData = false;
 				}
 			}
-
-			console.info(`Total servers fetched: ${totalServerList.length}`);
 
 			// If we have data but also encountered an error, log a warning but return the data we have
 			if (lastError && totalServerList.length > 0) {
