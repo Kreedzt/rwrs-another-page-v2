@@ -1,9 +1,13 @@
 <script lang="ts">
 	import '../app.css';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import ChristmasSnowfall from '$lib/components/ChristmasSnowfall.svelte';
 
 	let { children } = $props();
 </script>
+
+<!-- 圣诞雪花背景 -->
+<ChristmasSnowfall />
 
 <div class="flex min-h-screen flex-col">
 	<main class="flex w-full flex-1 flex-col">
