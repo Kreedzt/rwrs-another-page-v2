@@ -94,7 +94,7 @@
 					{#each playerColumns as column (column.key)}
 						{#if visibleColumns[column.key]}
 							<th
-								class="sticky top-0 z-10 h-12 border-mil px-4 py-2 align-middle text-mil-primary {getStickyClass(column.key)}"
+								class="sticky top-0 z-10 h-12 border-mil px-1 py-1 align-middle text-mil-primary {getStickyClass(column.key)}"
 							>
 								{#if column.key === 'rowNumber' || column.key === 'rankName'}
 									<!-- No sort button for rowNumber and rankName -->
@@ -105,7 +105,7 @@
 									</span>
 								{:else}
 									<button
-										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
+										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-2 text-left transition-colors duration-200"
 										onclick={() => handleColumnSort(column.key as string)}
 										type="button"
 										title="Click to sort"

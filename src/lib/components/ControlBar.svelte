@@ -67,7 +67,7 @@
 	}
 </script>
 
-<div class="mb-4 flex flex-col items-stretch gap-4 rounded-lg border border-mil bg-mil-secondary p-4 sm:flex-row sm:items-center">
+<div class="mb-4 md:mb-2 flex flex-col items-stretch gap-4 rounded-lg border border-mil bg-mil-secondary p-4 sm:flex-row sm:items-center">
 	<!-- Left side: Player DB selector (only in players view) + Search input -->
 	<div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
 		{#if currentView === 'players'}

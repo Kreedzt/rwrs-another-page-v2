@@ -120,8 +120,8 @@
 			/>
 		</div>
 
-		<!-- Desktop pagination - fixed at bottom -->
-		<div class="flex items-center justify-between border-t border-mil bg-mil-secondary p-4">
+		<!-- Desktop pagination - fixed at bottom, hidden when no pagination needed -->
+		<div class="flex items-center justify-between border-t border-mil bg-mil-secondary px-3 py-2" class:hidden={!hasNext && !hasPrevious}>
 			<PaginationPrevNext
 				{currentPage}
 				{hasNext}

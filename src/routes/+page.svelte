@@ -351,13 +351,13 @@
 
 <Header />
 
-<section aria-label="Server List" class="flex flex-1 flex-col items-center justify-center overflow-hidden">
-	<div class="container flex flex-1 flex-col overflow-hidden p-4">
+<section aria-label="Server List" class="flex flex-1 flex-col items-center md:overflow-hidden">
+	<div class="container flex flex-1 flex-col px-4 py-2 md:py-3 md:overflow-hidden">
 		<!-- View Tabs -->
-		<div role="tablist" class="tabs tabs-border mb-4 border-mil">
+		<div role="tablist" class="tabs tabs-border mb-2 md:mb-3 border-mil">
 			<button
 				role="tab"
-				class="tab text-mil-secondary"
+				class="tab md:tabs-sm text-mil-secondary"
 				class:tab-active={currentView === 'servers'}
 				onclick={() => handleViewChange('servers')}
 			>
@@ -365,7 +365,7 @@
 			</button>
 			<button
 				role="tab"
-				class="tab text-mil-secondary"
+				class="tab md:tabs-sm text-mil-secondary"
 				class:tab-active={currentView === 'players'}
 				onclick={() => handleViewChange('players')}
 			>

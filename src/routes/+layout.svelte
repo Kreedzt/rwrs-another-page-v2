@@ -9,14 +9,15 @@
 <!-- Christmas snowfall background -->
 <ChristmasSnowfall />
 
-<div class="flex h-screen flex-col overflow-hidden">
-	<main class="flex w-full flex-1 flex-col overflow-hidden">
+<!-- PC端: 固定高度布局; 移动端: 正常流式布局 -->
+<div class="flex min-h-screen flex-col md:h-screen md:overflow-hidden">
+	<main class="flex w-full flex-1 flex-col md:overflow-hidden">
 		{@render children()}
 	</main>
 
-	<footer class="footer sm:footer-horizontal footer-center border-t border-mil bg-mil-secondary p-6">
-		<aside class="flex flex-col items-center gap-2">
-			<p class="text-sm text-mil-primary">
+	<footer class="footer sm:footer-horizontal footer-center border-t border-mil bg-mil-secondary px-4 py-4 md:py-3">
+		<aside class="flex flex-col items-center gap-2 md:gap-1">
+			<p class="text-sm md:text-xs text-mil-primary">
 				<TranslatedText key="app.footer.developedBy" />
 				<a href="https://www.kreedzt.com" target="_blank" rel="noopener noreferrer" class="link link-hover font-bold hover:underline text-mil-primary">
 					Kreedzt

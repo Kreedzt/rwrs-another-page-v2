@@ -18,7 +18,7 @@
 <div class="join">
 	<!-- Previous page button -->
 	<button
-		class="join-item btn"
+		class="join-item btn btn-sm"
 		disabled={!hasPrevious}
 		onclick={() => goToPage(currentPage - 1)}
 		title="Previous page"
@@ -27,13 +27,13 @@
 	</button>
 
 	<!-- Current page indicator -->
-	<button class="join-item btn btn-active">
+	<button class="join-item btn btn-sm btn-active">
 		{currentPage}
 	</button>
 
 	<!-- Next page button -->
 	<button
-		class="join-item btn"
+		class="join-item btn btn-sm"
 		disabled={!hasNext}
 		onclick={() => goToPage(currentPage + 1)}
 		title="Next page"

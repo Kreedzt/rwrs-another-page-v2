@@ -154,8 +154,8 @@
 			/>
 		</div>
 
-		<!-- Desktop pagination - fixed at bottom -->
-		<div class="border-t border-mil bg-mil-secondary p-4">
+		<!-- Desktop pagination - fixed at bottom, hidden when totalPages <= 1 -->
+		<div class="border-t border-mil bg-mil-secondary px-3 py-2" class:hidden={totalPages <= 1}>
 			<Pagination
 				{currentPage}
 				{totalPages}

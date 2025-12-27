@@ -50,16 +50,16 @@
 </script>
 
 {#if totalPages > 1}
-	<div class="mt-4 flex items-center justify-center space-x-2">
+	<div class="flex items-center justify-center space-x-2">
 		<div class="join">
 			<!-- First page button -->
-			<button class="join-item btn" disabled={currentPage === 1} onclick={() => goToPage(1)}>
+			<button class="join-item btn btn-sm" disabled={currentPage === 1} onclick={() => goToPage(1)}>
 				«
 			</button>
 
 			<!-- Previous page button -->
 			<button
-				class="join-item btn"
+				class="join-item btn btn-sm"
 				disabled={currentPage === 1}
 				onclick={() => goToPage(currentPage - 1)}
 			>
@@ -69,7 +69,7 @@
 			<!-- Page number buttons -->
 			{#each pageNumbers as pageNum}
 				<button
-					class="join-item btn {currentPage === pageNum ? 'btn-active' : ''}"
+					class="join-item btn btn-sm {currentPage === pageNum ? 'btn-active' : ''}"
 					onclick={() => goToPage(pageNum)}
 				>
 					{pageNum}
@@ -78,7 +78,7 @@
 
 			<!-- Next page button -->
 			<button
-				class="join-item btn"
+				class="join-item btn btn-sm"
 				disabled={currentPage === totalPages}
 				onclick={() => goToPage(currentPage + 1)}
 			>
@@ -87,7 +87,7 @@
 
 			<!-- Last page button -->
 			<button
-				class="join-item btn"
+				class="join-item btn btn-sm"
 				disabled={currentPage === totalPages}
 				onclick={() => goToPage(totalPages)}
 			>

@@ -37,7 +37,7 @@
 	);
 </script>
 
-<div class="stats-container mb-4 flex items-center justify-between text-sm">
+<div class="stats-container mb-4 md:mb-2 px-4 py-4 md:py-2 flex items-center justify-between text-sm">
 	<div class="flex items-center gap-4">
 		{#if currentView === 'servers'}
 			<span class="font-medium">
@@ -67,7 +67,6 @@
 		background: linear-gradient(135deg, hsl(var(--b1) / 0.5) 0%, hsl(var(--b2) / 0.3) 100%);
 		border: 1px solid hsl(var(--bc) / 0.1);
 		border-radius: 0.5rem;
-		padding: 0.75rem 1rem;
 		box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
 		backdrop-filter: blur(8px);
 	}

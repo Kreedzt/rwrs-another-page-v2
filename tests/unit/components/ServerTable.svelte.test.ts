@@ -354,7 +354,7 @@ describe('ServerTable', () => {
 			actionCells.forEach((cell) => {
 				expect(cell).toHaveClass('border-mil');
 				expect(cell).toHaveClass('px-4');
-				expect(cell).toHaveClass('py-2');
+				expect(cell).toHaveClass('py-1');
 				expect(cell).toHaveClass('text-mil-primary');
 			});
 		});

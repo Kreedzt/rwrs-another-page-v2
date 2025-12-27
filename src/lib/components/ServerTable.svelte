@@ -118,7 +118,7 @@
 					{#each columns as column (column.key)}
 						{#if visibleColumns[column.key]}
 							<th
-								class="sticky top-0 z-10 h-12 border-mil px-4 py-2 align-middle text-mil-primary {getStickyClass(column.key)} {column.headerClass ||
+								class="sticky top-0 z-10 h-10 border-mil px-1 py-1 align-middle text-mil-primary {getStickyClass(column.key)} {column.headerClass ||
 									''}"
 								class:action-header={column.key === 'action'}
 								class:sticky-name-header={column.key === 'name'}
@@ -153,12 +153,12 @@
 						{#each columns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td
-									class="border-mil px-4 py-2 text-mil-primary {getStickyClass(column.key)} {getAlignmentClass(column)} {column.cellClass ||
+									class="border-mil px-4 py-1 text-mil-primary {getStickyClass(column.key)} {getAlignmentClass(column)} {column.cellClass ||
 										''} {column.key === 'playerList' ? 'align-top' : ''}"
 									class:action-cell={column.key === 'action'}
 								>
 									{#if column.key === 'action'}
-										<div class="flex min-h-[3rem] items-center justify-center text-center">
+										<div class="flex items-center justify-center text-center">
 											<button
 												type="button"
 												class="btn btn-sm btn-primary mobile-btn"
