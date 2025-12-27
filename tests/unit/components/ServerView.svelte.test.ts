@@ -282,7 +282,7 @@ describe('ServerView Component', () => {
 				}
 			});
 
-			const contentArea = container.querySelector('.flex.w-full.flex-col');
+			const contentArea = container.querySelector('.hidden.md\\:flex');
 			expect(contentArea).toBeInTheDocument();
 		});
 
@@ -603,7 +603,7 @@ describe('ServerView Component', () => {
 				}
 			});
 
-			const desktopContainer = container.querySelector('.hidden.md\\:block');
+			const desktopContainer = container.querySelector('.hidden.md\\:flex');
 			expect(desktopContainer).toBeInTheDocument();
 		});
 	});
@@ -644,7 +644,7 @@ describe('ServerView Component', () => {
 			});
 
 			// Should render without errors
-			const contentArea = container.querySelector('.flex.w-full.flex-col');
+			const contentArea = container.querySelector('.hidden.md\\:flex');
 			expect(contentArea).toBeInTheDocument();
 		});
 
