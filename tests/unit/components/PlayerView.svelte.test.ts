@@ -260,7 +260,7 @@ describe('PlayerView Component', () => {
 				}
 			});
 
-			const contentArea = container.querySelector('.flex.w-full.flex-col');
+			const contentArea = container.querySelector('.hidden.md\\:flex');
 			expect(contentArea).toBeInTheDocument();
 		});
 
@@ -385,7 +385,7 @@ describe('PlayerView Component', () => {
 				}
 			});
 
-			const desktopContainer = container.querySelector('.hidden.md\\:block');
+			const desktopContainer = container.querySelector('.hidden.md\\:flex');
 			expect(desktopContainer).toBeInTheDocument();
 		});
 
@@ -417,7 +417,7 @@ describe('PlayerView Component', () => {
 
 			// PlayerTable is now a separate component
 			// Just verify the desktop container exists
-			const desktopContainer = container.querySelector('.hidden.md\\:block');
+			const desktopContainer = container.querySelector('.hidden.md\\:flex');
 			expect(desktopContainer).toBeInTheDocument();
 		});
 
@@ -449,7 +449,7 @@ describe('PlayerView Component', () => {
 
 			// PlayerTable is now a separate component that handles sorting
 			// The desktop container should still be present
-			const desktopContainer = container.querySelector('.hidden.md\\:block');
+			const desktopContainer = container.querySelector('.hidden.md\\:flex');
 			expect(desktopContainer).toBeInTheDocument();
 		});
 
@@ -481,7 +481,7 @@ describe('PlayerView Component', () => {
 
 			// PlayerTable component handles empty state internally
 			// Just verify the desktop container exists
-			const desktopContainer = container.querySelector('.hidden.md\\:block');
+			const desktopContainer = container.querySelector('.hidden.md\\:flex');
 			expect(desktopContainer).toBeInTheDocument();
 		});
 
@@ -577,7 +577,7 @@ describe('PlayerView Component', () => {
 
 			// PlayerTable is now a separate component that handles column visibility
 			// Just verify the desktop container exists
-			const desktopContainer = container.querySelector('.hidden.md\\:block');
+			const desktopContainer = container.querySelector('.hidden.md\\:flex');
 			expect(desktopContainer).toBeInTheDocument();
 		});
 	});
@@ -610,7 +610,7 @@ describe('PlayerView Component', () => {
 			});
 
 			// Should render without errors
-			const contentArea = container.querySelector('.flex.w-full.flex-col');
+			const contentArea = container.querySelector('.hidden.md\\:flex');
 			expect(contentArea).toBeInTheDocument();
 		});
 
@@ -670,7 +670,7 @@ describe('PlayerView Component', () => {
 				}
 			});
 
-			const desktopContainer = container.querySelector('.hidden.md\\:block');
+			const desktopContainer = container.querySelector('.hidden.md\\:flex');
 			expect(desktopContainer).toBeInTheDocument();
 		});
 	});

@@ -94,7 +94,9 @@
 					{#each playerColumns as column (column.key)}
 						{#if visibleColumns[column.key]}
 							<th
-								class="sticky top-0 z-10 h-12 border-mil px-4 py-2 align-middle text-mil-primary {getStickyClass(column.key)}"
+								class="sticky top-0 z-10 h-12 border-mil px-1 py-1 align-middle text-mil-primary {getStickyClass(column.key)}"
+								class:sticky-row-number-header={column.key === 'rowNumber'}
+								class:sticky-username-header={column.key === 'username'}
 							>
 								{#if column.key === 'rowNumber' || column.key === 'rankName'}
 									<!-- No sort button for rowNumber and rankName -->
@@ -105,7 +107,7 @@
 									</span>
 								{:else}
 									<button
-										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-1 text-left transition-colors duration-200"
+										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-2 text-left transition-colors duration-200"
 										onclick={() => handleColumnSort(column.key as string)}
 										type="button"
 										title="Click to sort"
@@ -148,14 +150,29 @@
 {/if}
 
 <style>
+	/* Ensure table-pin-rows header has higher z-index than sticky column cells */
+	:global(.table-pin-rows thead tr) {
+		z-index: 25 !important;
+	}
+
 	/* Row number - sticky first column on left */
 	:global(.sticky-row-number) {
 		position: sticky;
 		left: 0;
-		z-index: 15;
+		z-index: 20;
 		min-width: 4rem;
 		width: 4rem;
 		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
+	}
+
+	:global(.sticky-row-number-header) {
+		position: sticky;
+		left: 0;
+		z-index: 30 !important;
+		min-width: 4rem;
+		width: 4rem;
+		background: var(--color-bg-secondary) !important;
 		border-right: 1px solid var(--color-border);
 	}
 
@@ -163,9 +180,18 @@
 	:global(.sticky-username) {
 		position: sticky;
 		left: 4rem;
-		z-index: 15;
+		z-index: 20;
 		min-width: 10rem;
 		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
+	}
+
+	:global(.sticky-username-header) {
+		position: sticky;
+		left: 4rem;
+		z-index: 30 !important;
+		min-width: 10rem;
+		background: var(--color-bg-secondary) !important;
 		border-right: 1px solid var(--color-border);
 	}
 
@@ -178,11 +204,14 @@
 	/* Mobile responsive styles */
 	@media (max-width: 768px) {
 		:global(.sticky-row-number),
-		:global(.sticky-username) {
+		:global(.sticky-username),
+		:global(.sticky-row-number-header),
+		:global(.sticky-username-header) {
 			min-width: 3rem;
 		}
 
-		:global(.sticky-username) {
+		:global(.sticky-username),
+		:global(.sticky-username-header) {
 			left: 3rem;
 		}
 	}

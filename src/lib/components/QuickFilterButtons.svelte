@@ -28,23 +28,21 @@
 	}
 </script>
 
-<div class="mt-2 mb-4 flex flex-col gap-2">
-	<div class="flex items-center gap-2">
-		<label class="flex cursor-pointer items-center gap-2">
-			<input
-				type="checkbox"
-				checked={isMultiSelect}
-				onchange={handleMultiSelectChange}
-				disabled={isLoading}
-				class="toggle toggle-md sm:toggle-sm"
-				aria-label="Toggle multiple selection"
-				name="multiple-select"
-			/>
-			<span class="text-sm">
-				<TranslatedText key="app.switch.multipleSelect" />
-			</span>
-		</label>
-	</div>
+<div class="mt-2 mb-3 md:mb-2 flex flex-wrap items-center gap-3">
+	<label class="flex cursor-pointer items-center gap-2">
+		<input
+			type="checkbox"
+			checked={isMultiSelect}
+			onchange={handleMultiSelectChange}
+			disabled={isLoading}
+			class="toggle toggle-md sm:toggle-sm"
+			aria-label="Toggle multiple selection"
+			name="multiple-select"
+		/>
+		<span class="text-sm">
+			<TranslatedText key="app.switch.multipleSelect" />
+		</span>
+	</label>
 
 	<div class="flex flex-wrap gap-2" id="quick-filter-buttons">
 		{#each filters as filter (filter.id)}

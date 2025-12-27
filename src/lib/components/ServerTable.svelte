@@ -118,7 +118,7 @@
 					{#each columns as column (column.key)}
 						{#if visibleColumns[column.key]}
 							<th
-								class="sticky top-0 z-10 h-12 border-mil px-4 py-2 align-middle text-mil-primary {getStickyClass(column.key)} {column.headerClass ||
+								class="sticky top-0 z-10 h-10 border-mil px-1 py-1 align-middle text-mil-primary {getStickyClass(column.key)} {column.headerClass ||
 									''}"
 								class:action-header={column.key === 'action'}
 								class:sticky-name-header={column.key === 'name'}
@@ -153,12 +153,12 @@
 						{#each columns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td
-									class="border-mil px-4 py-2 text-mil-primary {getStickyClass(column.key)} {getAlignmentClass(column)} {column.cellClass ||
+									class="border-mil px-4 py-1 text-mil-primary {getStickyClass(column.key)} {getAlignmentClass(column)} {column.cellClass ||
 										''} {column.key === 'playerList' ? 'align-top' : ''}"
 									class:action-cell={column.key === 'action'}
 								>
 									{#if column.key === 'action'}
-										<div class="flex min-h-[3rem] items-center justify-center text-center">
+										<div class="flex items-center justify-center text-center">
 											<button
 												type="button"
 												class="btn btn-sm btn-primary mobile-btn"
@@ -212,17 +212,13 @@
 {/if}
 
 <style>
-	/* Name column - sticky first column on left with military styling */
-	:global(.sticky-name) {
-		position: sticky;
-		left: 0;
-		z-index: 15;
-		min-width: 14rem;
-		background: var(--color-bg-secondary);
-		border-right: 1px solid var(--color-border);
+	/* Ensure table-pin-rows header has higher z-index than sticky column cells */
+	:global(.table-pin-rows thead tr) {
+		z-index: 25 !important;
 	}
 
-	:global(.sticky-name-header) {
+	/* Name column - sticky first column on left with military styling */
+	:global(.sticky-name) {
 		position: sticky;
 		left: 0;
 		z-index: 20;
@@ -231,11 +227,20 @@
 		border-right: 1px solid var(--color-border);
 	}
 
+	:global(.sticky-name-header) {
+		position: sticky;
+		left: 0;
+		z-index: 30 !important;
+		min-width: 14rem;
+		background: var(--color-bg-secondary) !important;
+		border-right: 1px solid var(--color-border);
+	}
+
 	/* Action column styling - sticky right with military theme */
 	:global(.action-cell) {
 		position: sticky;
 		right: 0;
-		z-index: 15;
+		z-index: 20;
 		min-width: 9rem;
 		width: 9rem;
 		background: var(--color-bg-secondary);
@@ -245,10 +250,10 @@
 	:global(.action-header) {
 		position: sticky;
 		right: 0;
-		z-index: 20;
+		z-index: 30 !important;
 		min-width: 9rem;
 		width: 9rem;
-		background: var(--color-bg-secondary);
+		background: var(--color-bg-secondary) !important;
 		border-left: 1px solid var(--color-border);
 	}
 
