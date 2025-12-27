@@ -8,6 +8,7 @@
 	import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
 	import type { IDisplayServerItem, IColumn } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
+	import { highlightMatch } from '$lib/utils/highlight';
 
 	interface Props {
 		loading: boolean;
@@ -182,7 +183,7 @@
 							</div>
 							<div class="flex-shrink-0">
 								<span class="badge bg-success/70 text-white font-medium text-xs px-2 py-1">
-									{item.mapId.split('/').pop() || ''}
+									{@html highlightMatch(item.mapId.split('/').pop() || '', searchQuery)}
 								</span>
 							</div>
 						</div>
@@ -210,11 +211,11 @@
 												</a>
 											{:else if column.key === 'comment' || column.key === 'playerList'}
 												<div class="text-left break-words whitespace-pre-wrap">
-													{@html getDisplayValue(item, column)}
+													{@html getDisplayValue(item, column, searchQuery)}
 												</div>
 											{:else}
 												<div class="flex items-center justify-end">
-													{@html getDisplayValue(item, column)}
+													{@html getDisplayValue(item, column, searchQuery)}
 												</div>
 											{/if}
 										</div>
