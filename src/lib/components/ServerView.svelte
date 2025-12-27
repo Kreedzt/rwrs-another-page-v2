@@ -136,8 +136,37 @@
 		onMultiSelectChange={onMultiSelectChange}
 	/>
 
-	<!-- Content area -->
-	<div class="flex w-full flex-col">
+	<!-- Desktop scrollable table container -->
+	<div class="hidden md:flex md:flex-1 md:flex-col md:overflow-hidden">
+		<!-- Desktop table with scroll -->
+		<div class="flex-1 overflow-auto">
+			<ServerTable
+				data={paginatedServers}
+				{columns}
+				{searchQuery}
+				{maps}
+				onRowAction={onRowAction}
+				{visibleColumns}
+				onSort={onSort}
+				{sortColumn}
+				{sortDirection}
+				{onMapView}
+			/>
+		</div>
+
+		<!-- Desktop pagination - fixed at bottom -->
+		<div class="border-t border-mil bg-mil-secondary p-4">
+			<Pagination
+				{currentPage}
+				{totalPages}
+				totalItems={filteredServersCount}
+				pageChange={onPageChange}
+			/>
+		</div>
+	</div>
+
+	<!-- Mobile content area - 保持原有行为 -->
+	<div class="flex w-full flex-col md:hidden">
 		<!-- Mobile table cards -->
 		<div class="md:hidden">
 			<!-- Mobile sort controls -->
@@ -271,37 +300,11 @@
 			{/if}
 		</div>
 
-		<!-- Desktop table -->
-		<div class="hidden overflow-x-auto md:block">
-			<ServerTable
-				data={paginatedServers}
-				{columns}
-				{searchQuery}
-				{maps}
-				onRowAction={onRowAction}
-				{visibleColumns}
-				onSort={onSort}
-				{sortColumn}
-				{sortDirection}
-				{onMapView}
-			/>
-		</div>
-
 		<!-- Mobile infinite scroll -->
 		<MobileInfiniteScroll
 			hasMore={mobileHasMore}
 			isLoading={mobileLoadingMore}
 			onLoadMore={onLoadMore}
 		/>
-
-		<!-- Desktop pagination -->
-		<div class="hidden md:block">
-			<Pagination
-				{currentPage}
-				{totalPages}
-				totalItems={filteredServersCount}
-				pageChange={onPageChange}
-			/>
-		</div>
 	</div>
 {/if}

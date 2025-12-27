@@ -351,8 +351,8 @@
 
 <Header />
 
-<section aria-label="Server List" class="flex flex-col items-center justify-center">
-	<div class="container p-4">
+<section aria-label="Server List" class="flex flex-1 flex-col items-center justify-center overflow-hidden">
+	<div class="container flex flex-1 flex-col overflow-hidden p-4">
 		<!-- View Tabs -->
 		<div role="tablist" class="tabs tabs-border mb-4 border-mil">
 			<button

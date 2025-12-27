@@ -105,8 +105,35 @@
 		<span>{error}</span>
 	</div>
 {:else}
-	<!-- Content area -->
-	<div class="flex w-full flex-col">
+	<!-- Desktop scrollable table container -->
+	<div class="hidden md:flex md:flex-1 md:flex-col md:overflow-hidden">
+		<!-- Desktop table with scroll -->
+		<div class="flex-1 overflow-auto">
+			<PlayerTable
+				data={paginatedPlayers}
+				{playerColumns}
+				{visibleColumns}
+				{searchQuery}
+				{highlightedUsername}
+				{sortColumn}
+				onSort={onSort}
+			/>
+		</div>
+
+		<!-- Desktop pagination - fixed at bottom -->
+		<div class="flex items-center justify-between border-t border-mil bg-mil-secondary p-4">
+			<PaginationPrevNext
+				{currentPage}
+				{hasNext}
+				{hasPrevious}
+				onPageChange={onPageChange}
+			/>
+			<PageSizeSelector currentSize={pageSize} onSizeChange={onPageSizeChange} />
+		</div>
+	</div>
+
+	<!-- Mobile content area - 保持原有行为 -->
+	<div class="flex w-full flex-col md:hidden">
 		<!-- Mobile table cards -->
 		<div class="md:hidden">
 			<!-- Mobile sort controls -->
@@ -195,19 +222,6 @@
 			{/if}
 		</div>
 
-		<!-- Desktop table -->
-		<div class="hidden overflow-x-auto md:block">
-			<PlayerTable
-				data={paginatedPlayers}
-				{playerColumns}
-				{visibleColumns}
-				{searchQuery}
-				{highlightedUsername}
-				{sortColumn}
-				onSort={onSort}
-			/>
-		</div>
-
 		<!-- Mobile infinite scroll -->
 		<MobileInfiniteScroll
 			hasMore={mobileHasMore}
@@ -215,17 +229,6 @@
 			onLoadMore={onLoadMore}
 			loadingTextKey="app.player.loading.text"
 		/>
-
-		<!-- Desktop pagination -->
-		<div class="mt-6 hidden md:flex md:items-center md:justify-between">
-			<PaginationPrevNext
-				{currentPage}
-				{hasNext}
-				{hasPrevious}
-				onPageChange={onPageChange}
-			/>
-			<PageSizeSelector currentSize={pageSize} onSizeChange={onPageSizeChange} />
-		</div>
 	</div>
 {/if}
 

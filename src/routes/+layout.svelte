@@ -9,8 +9,8 @@
 <!-- Christmas snowfall background -->
 <ChristmasSnowfall />
 
-<div class="flex min-h-screen flex-col">
-	<main class="flex w-full flex-1 flex-col">
+<div class="flex h-screen flex-col overflow-hidden">
+	<main class="flex w-full flex-1 flex-col overflow-hidden">
 		{@render children()}
 	</main>
 
