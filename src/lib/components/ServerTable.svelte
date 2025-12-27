@@ -212,17 +212,13 @@
 {/if}
 
 <style>
-	/* Name column - sticky first column on left with military styling */
-	:global(.sticky-name) {
-		position: sticky;
-		left: 0;
-		z-index: 15;
-		min-width: 14rem;
-		background: var(--color-bg-secondary);
-		border-right: 1px solid var(--color-border);
+	/* Ensure table-pin-rows header has higher z-index than sticky column cells */
+	:global(.table-pin-rows thead tr) {
+		z-index: 25 !important;
 	}
 
-	:global(.sticky-name-header) {
+	/* Name column - sticky first column on left with military styling */
+	:global(.sticky-name) {
 		position: sticky;
 		left: 0;
 		z-index: 20;
@@ -231,11 +227,20 @@
 		border-right: 1px solid var(--color-border);
 	}
 
+	:global(.sticky-name-header) {
+		position: sticky;
+		left: 0;
+		z-index: 30 !important;
+		min-width: 14rem;
+		background: var(--color-bg-secondary) !important;
+		border-right: 1px solid var(--color-border);
+	}
+
 	/* Action column styling - sticky right with military theme */
 	:global(.action-cell) {
 		position: sticky;
 		right: 0;
-		z-index: 15;
+		z-index: 20;
 		min-width: 9rem;
 		width: 9rem;
 		background: var(--color-bg-secondary);
@@ -245,10 +250,10 @@
 	:global(.action-header) {
 		position: sticky;
 		right: 0;
-		z-index: 20;
+		z-index: 30 !important;
 		min-width: 9rem;
 		width: 9rem;
-		background: var(--color-bg-secondary);
+		background: var(--color-bg-secondary) !important;
 		border-left: 1px solid var(--color-border);
 	}
 

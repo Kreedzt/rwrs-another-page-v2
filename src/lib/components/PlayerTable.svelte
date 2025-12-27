@@ -95,6 +95,8 @@
 						{#if visibleColumns[column.key]}
 							<th
 								class="sticky top-0 z-10 h-12 border-mil px-1 py-1 align-middle text-mil-primary {getStickyClass(column.key)}"
+								class:sticky-row-number-header={column.key === 'rowNumber'}
+								class:sticky-username-header={column.key === 'username'}
 							>
 								{#if column.key === 'rowNumber' || column.key === 'rankName'}
 									<!-- No sort button for rowNumber and rankName -->
@@ -148,14 +150,29 @@
 {/if}
 
 <style>
+	/* Ensure table-pin-rows header has higher z-index than sticky column cells */
+	:global(.table-pin-rows thead tr) {
+		z-index: 25 !important;
+	}
+
 	/* Row number - sticky first column on left */
 	:global(.sticky-row-number) {
 		position: sticky;
 		left: 0;
-		z-index: 15;
+		z-index: 20;
 		min-width: 4rem;
 		width: 4rem;
 		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
+	}
+
+	:global(.sticky-row-number-header) {
+		position: sticky;
+		left: 0;
+		z-index: 30 !important;
+		min-width: 4rem;
+		width: 4rem;
+		background: var(--color-bg-secondary) !important;
 		border-right: 1px solid var(--color-border);
 	}
 
@@ -163,9 +180,18 @@
 	:global(.sticky-username) {
 		position: sticky;
 		left: 4rem;
-		z-index: 15;
+		z-index: 20;
 		min-width: 10rem;
 		background: var(--color-bg-secondary);
+		border-right: 1px solid var(--color-border);
+	}
+
+	:global(.sticky-username-header) {
+		position: sticky;
+		left: 4rem;
+		z-index: 30 !important;
+		min-width: 10rem;
+		background: var(--color-bg-secondary) !important;
 		border-right: 1px solid var(--color-border);
 	}
 
@@ -178,11 +204,14 @@
 	/* Mobile responsive styles */
 	@media (max-width: 768px) {
 		:global(.sticky-row-number),
-		:global(.sticky-username) {
+		:global(.sticky-username),
+		:global(.sticky-row-number-header),
+		:global(.sticky-username-header) {
 			min-width: 3rem;
 		}
 
-		:global(.sticky-username) {
+		:global(.sticky-username),
+		:global(.sticky-username-header) {
 			left: 3rem;
 		}
 	}
