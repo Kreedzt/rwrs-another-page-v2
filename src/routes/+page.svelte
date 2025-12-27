@@ -51,6 +51,18 @@
 	// Mobile expanded cards state
 	let mobileExpandedCards = $state<Record<string, boolean>>({});
 
+	// Highlighted username for search results
+	let highlightedUsername = $state<string | undefined>(undefined);
+
+	// Update highlighted username when search changes
+	$effect(() => {
+		if (searchQuery && currentView === 'players') {
+			highlightedUsername = searchQuery.trim();
+		} else {
+			highlightedUsername = undefined;
+		}
+	});
+
 	// User settings from localStorage
 	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
 	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
@@ -58,24 +70,8 @@
 	// Visible columns (from user settings)
 	let visibleColumns = $state<Record<string, boolean>>({ ...userSettings.visibleColumns });
 
-	// Visible player columns - default to specified columns
-	const defaultPlayerVisibleColumns = [
-		'rowNumber',
-		'username',
-		'kills',
-		'deaths',
-		'score',
-		'kd',
-		'timePlayed',
-		'rankProgression',
-		'rankName'
-	];
-	let visiblePlayerColumns = $state<Record<string, boolean>>(
-		playerColumns.reduce((acc, col) => {
-			acc[col.key as string] = defaultPlayerVisibleColumns.includes(col.key as string);
-			return acc;
-		}, {} as Record<string, boolean>)
-	);
+	// Visible player columns - load from user settings with defaults fallback
+	let visiblePlayerColumns = $state<Record<string, boolean>>({ ...userSettings.visiblePlayerColumns });
 
 	// URL sync setup
 	const urlSync = createUrlSync({
@@ -172,6 +168,7 @@
 
 		if (isPlayerColumn) {
 			visiblePlayerColumns[column.key as string] = visible;
+			userSettingsService.updateNested('visiblePlayerColumns', column.key as string, visible);
 		} else {
 			visibleColumns[column.key] = visible;
 			userSettingsService.updateNested('visibleColumns', column.key, visible);
@@ -318,7 +315,7 @@
 		const loadData = async () => {
 			await loadMaps();
 			if (currentView === 'players') {
-				await playerState.loadPlayers();
+				await playerState.loadPlayers({ searchQuery });
 			} else {
 				await serverState.refreshList();
 			}
@@ -443,6 +440,7 @@
 				loading={playerState.loading}
 				error={playerState.error}
 				{searchQuery}
+				{highlightedUsername}
 				paginatedPlayers={derivedPlayerData.paginatedPlayers}
 				mobilePaginatedPlayers={derivedPlayerData.mobilePaginatedPlayers}
 				mobileHasMore={derivedPlayerData.mobileHasMore}
