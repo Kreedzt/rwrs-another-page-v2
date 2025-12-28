@@ -4,18 +4,16 @@
 [![codecov](https://codecov.io/gh/Kreedzt/rwrs-another-page-v2/branch/master/graph/badge.svg?token=MWGXZH7GO9)](https://codecov.io/gh/Kreedzt/rwrs-another-page-v2)
 ![build status](https://github.com/Kreedzt/rwrs-another-page-v2/actions/workflows/ci.yml/badge.svg?branch=master)
 
-A clean and modern server browser for Running with Rifles (RWR) game, inspired by [rwrstats](https://rwrstats.com/).
+A clean and modern data browser for Running with Rifles (RWR) game, inspired by [rwrstats](https://rwrstats.com/).
 
 ## Overview
 
 Robin web provides a pure and efficient way to browse Running with Rifles game servers and player statistics. Built with modern web technologies, it offers:
 
-- Real-time server list with auto-refresh capability
-- Player leaderboard browsing with comprehensive statistics
-- Multi-database player statistics (Invasion, Pacific, Prereset Invasion)
-- Advanced filtering and search functionality
-- Multiple view modes (table and map-based)
-- Multilingual support (English and Chinese)
+- Real-time server list and player leaderboard browsing
+- Multi-database statistics (Invasion, Pacific, Prereset Invasion)
+- Advanced filtering and full-text search
+- Multiple view modes with multilingual support
 - Mobile-friendly responsive design
 
 ## Technical Stack
@@ -29,18 +27,24 @@ Robin web provides a pure and efficient way to browse Running with Rifles game s
 
 ## Features
 
+**Server & Player Data**
 - Real-time server list with auto-refresh capability
-- Player leaderboard browser with 15+ statistics (kills, deaths, K/D, score, time played, rank progression, etc.)
-- Multi-database player statistics (Invasion, Pacific, Prereset Invasion)
-- Advanced filtering with preset quick filters (Official, WW2, Dominance, Castling, HellDivers mods)
+- Player leaderboard with 15+ statistics (kills, deaths, K/D, score, time played, rank progression, etc.)
+- Multi-database support (Invasion, Pacific, Prereset Invasion)
+
+**Search & Filtering**
 - Full-text search across servers and players with keyboard shortcut (/) support
+- Preset quick filters (Official, WW2, Dominance, Castling, HellDivers mods)
 - Multi-level column sorting (ascending/descending/clear)
-- Configurable pagination with adjustable page size (10/20/50/100)
+
+**User Interface**
 - Dual view modes: data table (desktop) and responsive cards (mobile)
-- Column visibility toggles with persistent localStorage settings
+- Column visibility toggles with persistent settings
 - Map preview images with modal display
-- Multilingual support (English and Chinese) with dynamic switching
-- Mobile-friendly responsive design with infinite scroll
+- Dynamic language switching (English and Chinese)
+- Mobile-friendly with infinite scroll
+
+**Developer Features**
 - Accessible keyboard navigation and ARIA-compliant markup
 - URL state management for bookmarkable views
 - Multi-platform analytics tracking (Google Analytics, Baidu Analytics, Umami)
@@ -222,20 +226,13 @@ docker run -p 80:80 -e "HEADER_SCRIPTS=<script>console.log('Custom script');</sc
 
 ## Disclaimer
 
-This project is an independent work and is **not affiliated, associated, authorized, endorsed by, or in any way officially connected with the original "rwrs" project or its authors**.  
-The only relation is that this project was **inspired by the idea of rwrs**, but it is written entirely from scratch and does not contain any code, documentation, or resources from the original repository.
+This project is an independent work and is **not affiliated, associated, authorized, endorsed by, or in any way officially connected with RWRS (Running with Rifles Stats) or its authors**.
 
-All data used by this project is obtained transparently and directly from the public API provided by the official RWR service.  
-This project:
+The only relation is that this project was **inspired by RWRS**, but it is written entirely from scratch and does not contain any code, documentation, or resources from the original repository.
 
-- Does not store, cache, modify, or permanently retain any external data.
-- Acts only as a live data viewer/relay querying the official API at request time.
-- Does not operate any independent backend database or persistent storage.
-- Does not claim ownership over the data provided by the official RWR API.
+This project is a **frontend application** that displays data obtained from the official RWR API. All data displayed is sourced from and belongs to the official RWR service.
 
-All trademarks, service names, and project names mentioned belong to their respective owners. Their use here is purely for **identification and reference purposes**, and does not imply any form of partnership or endorsement.
-
-Users should refer to the official RWR project and its documentation for authoritative information.
+All trademarks, service marks, and project names mentioned belong to their respective owners. Their use here is purely for identification and reference purposes only, and does not imply any form of partnership or endorsement.
 
 ## License
 
