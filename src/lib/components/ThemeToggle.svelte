@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Moon, Sun, Monitor } from '@lucide/svelte';
+	import { Moon, Sun, Palette } from '@lucide/svelte';
 	import { theme } from '$lib/stores/theme';
 	import { getCurrentTheme } from '$lib/stores/theme';
 	import analytics from '$lib/utils/analytics';
@@ -7,7 +7,7 @@
 	const themes = [
 		{ value: 'light', icon: Sun, label: 'Light' },
 		{ value: 'dark', icon: Moon, label: 'Dark' },
-		{ value: 'system', icon: Monitor, label: 'System' }
+		{ value: 'system', icon: Palette, label: 'System' }
 	] as const;
 
 	let currentTheme = $state<'light' | 'dark' | 'system'>('system');
@@ -44,7 +44,7 @@
 		{:else if currentTheme === 'dark'}
 			<Moon class="h-5 w-5" />
 		{:else}
-			<Monitor class="h-5 w-5" />
+			<Palette class="h-5 w-5" />
 		{/if}
 	</div>
 </button>
