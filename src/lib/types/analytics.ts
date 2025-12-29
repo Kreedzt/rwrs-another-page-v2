@@ -83,10 +83,10 @@ export interface HMT {
 
 // Event mapping for Baidu Analytics
 export interface BaiduEventCategory {
-	'navigation': string;
-	'search': string;
-	'data': string;
-	'engagement': string;
+	navigation: string;
+	search: string;
+	data: string;
+	engagement: string;
 }
 
 // Baidu event type

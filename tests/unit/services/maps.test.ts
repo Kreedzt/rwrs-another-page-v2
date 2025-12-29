@@ -86,10 +86,7 @@ describe('Maps Service', () => {
 			const result = await getMaps();
 
 			expect(result).toEqual([]); // Should return empty array on error
-			expect(console.error).toHaveBeenCalledWith(
-				'Failed to fetch maps:',
-				expect.any(Error)
-			);
+			expect(console.error).toHaveBeenCalledWith('Failed to fetch maps:', expect.any(Error));
 		});
 
 		test('should handle HTTP error responses', async () => {
@@ -104,10 +101,7 @@ describe('Maps Service', () => {
 			const result = await getMaps();
 
 			expect(result).toEqual([]); // Should return empty array on error
-			expect(console.error).toHaveBeenCalledWith(
-				'Failed to fetch maps:',
-				expect.any(Error)
-			);
+			expect(console.error).toHaveBeenCalledWith('Failed to fetch maps:', expect.any(Error));
 		});
 
 		test('should handle malformed JSON gracefully', async () => {
@@ -120,10 +114,7 @@ describe('Maps Service', () => {
 			const result = await getMaps();
 
 			expect(result).toEqual([]); // Should return empty array on error
-			expect(console.error).toHaveBeenCalledWith(
-				'Failed to fetch maps:',
-				expect.any(Error)
-			);
+			expect(console.error).toHaveBeenCalledWith('Failed to fetch maps:', expect.any(Error));
 		});
 
 		test('should validate MapData interface structure', async () => {

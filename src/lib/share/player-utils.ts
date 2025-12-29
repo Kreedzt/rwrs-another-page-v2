@@ -95,10 +95,7 @@ function findPaginationLinks(parsed: any): { hasNext: boolean; hasPrevious: bool
 	return { hasNext, hasPrevious };
 }
 
-export function parsePlayerListFromString(
-	htmlString: string,
-	db: PlayerDatabase
-): IPlayerItem[] {
+export function parsePlayerListFromString(htmlString: string, db: PlayerDatabase): IPlayerItem[] {
 	const parser = new XMLParser({
 		ignoreAttributes: false,
 		attributeNamePrefix: '@_',

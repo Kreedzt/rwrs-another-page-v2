@@ -31,14 +31,30 @@ describe('createUrlSync', () => {
 				mobilePaginatedServers: [],
 				mobileHasMore: false
 			})),
-			get servers() { return []; },
-			get loading() { return false; },
-			get error() { return null; },
-			get currentPage() { return 1; },
-			get mobileServerCurrentPage() { return 1; },
-			get mobileServerLoadingMore() { return false; },
-			get sortColumn() { return null; },
-			get sortDirection() { return null; }
+			get servers() {
+				return [];
+			},
+			get loading() {
+				return false;
+			},
+			get error() {
+				return null;
+			},
+			get currentPage() {
+				return 1;
+			},
+			get mobileServerCurrentPage() {
+				return 1;
+			},
+			get mobileServerLoadingMore() {
+				return false;
+			},
+			get sortColumn() {
+				return null;
+			},
+			get sortDirection() {
+				return null;
+			}
 		} as unknown as ServerState;
 
 		// Mock player state
@@ -62,19 +78,45 @@ describe('createUrlSync', () => {
 				mobilePaginatedPlayers: [],
 				mobileHasMore: false
 			})),
-			get players() { return []; },
-			get playerDb() { return 'invasion'; },
-			get loading() { return false; },
-			get refreshing() { return false; },
-			get error() { return null; },
-			get playerHasNext() { return false; },
-			get playerHasPrevious() { return false; },
-			get playerPageSize() { return 20; },
-			get currentPage() { return 1; },
-			get mobilePlayerCurrentPage() { return 1; },
-			get mobilePlayerLoadingMore() { return false; },
-			get playerSortColumn() { return null; },
-			get playerSortDirection() { return null; }
+			get players() {
+				return [];
+			},
+			get playerDb() {
+				return 'invasion';
+			},
+			get loading() {
+				return false;
+			},
+			get refreshing() {
+				return false;
+			},
+			get error() {
+				return null;
+			},
+			get playerHasNext() {
+				return false;
+			},
+			get playerHasPrevious() {
+				return false;
+			},
+			get playerPageSize() {
+				return 20;
+			},
+			get currentPage() {
+				return 1;
+			},
+			get mobilePlayerCurrentPage() {
+				return 1;
+			},
+			get mobilePlayerLoadingMore() {
+				return false;
+			},
+			get playerSortColumn() {
+				return null;
+			},
+			get playerSortDirection() {
+				return null;
+			}
 		} as unknown as PlayerState;
 
 		mockOnViewChange = vi.fn();

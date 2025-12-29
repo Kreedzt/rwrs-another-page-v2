@@ -28,16 +28,19 @@ Robin web provides a pure and efficient way to browse Running with Rifles game s
 ## Features
 
 **Server & Player Data**
+
 - Real-time server list with auto-refresh capability
 - Player leaderboard with 15+ statistics (kills, deaths, K/D, score, time played, rank progression, etc.)
 - Multi-database support (Invasion, Pacific, Prereset Invasion)
 
 **Search & Filtering**
+
 - Full-text search across servers and players with keyboard shortcut (/) support
 - Preset quick filters (Official, WW2, Dominance, Castling, HellDivers mods)
 - Multi-level column sorting (ascending/descending/clear)
 
 **User Interface**
+
 - Dual view modes: data table (desktop) and responsive cards (mobile)
 - Column visibility toggles with persistent settings
 - Map preview images with modal display
@@ -45,6 +48,7 @@ Robin web provides a pure and efficient way to browse Running with Rifles game s
 - Mobile-friendly with infinite scroll
 
 **Developer Features**
+
 - Accessible keyboard navigation and ARIA-compliant markup
 - URL state management for bookmarkable views
 - Multi-platform analytics tracking (Google Analytics, Baidu Analytics, Umami)
@@ -56,7 +60,7 @@ The application includes a comprehensive analytics system that tracks user inter
 ### Supported Platforms
 
 - **Google Analytics (gtag)** - Track events via externally injected gtag script
-- **Baidu Analytics (_hmt)** - Track events via Baidu's analytics platform
+- **Baidu Analytics (\_hmt)** - Track events via Baidu's analytics platform
 - **Umami Analytics** - Track events via Umami's privacy-focused analytics
 
 ### Privacy-First Design
@@ -67,21 +71,21 @@ The application includes a comprehensive analytics system that tracks user inter
 
 ### Tracked Events
 
-| Event | Description |
-|-------|-------------|
-| `view_switch` | Switching between server/player views |
-| `theme_change` | Changing UI theme |
-| `language_change` | Changing interface language |
-| `search_triggered` | Search interactions (without query content) |
-| `quick_filter_applied` | Applying preset filters |
-| `column_sort` | Sorting data columns |
-| `pagination_change` | Page navigation |
-| `load_more_click` | Loading more data (mobile) |
-| `auto_refresh_toggle` | Toggling auto-refresh |
-| `player_database_change` | Switching player databases |
-| `column_visibility_toggle` | Showing/hiding columns |
-| `server_join_click` | Clicking server join button |
-| `map_preview_open` | Opening map preview |
+| Event                      | Description                                 |
+| -------------------------- | ------------------------------------------- |
+| `view_switch`              | Switching between server/player views       |
+| `theme_change`             | Changing UI theme                           |
+| `language_change`          | Changing interface language                 |
+| `search_triggered`         | Search interactions (without query content) |
+| `quick_filter_applied`     | Applying preset filters                     |
+| `column_sort`              | Sorting data columns                        |
+| `pagination_change`        | Page navigation                             |
+| `load_more_click`          | Loading more data (mobile)                  |
+| `auto_refresh_toggle`      | Toggling auto-refresh                       |
+| `player_database_change`   | Switching player databases                  |
+| `column_visibility_toggle` | Showing/hiding columns                      |
+| `server_join_click`        | Clicking server join button                 |
+| `map_preview_open`         | Opening map preview                         |
 
 ### Debug Mode
 

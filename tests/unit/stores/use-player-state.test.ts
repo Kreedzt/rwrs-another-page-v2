@@ -270,7 +270,13 @@ describe('createPlayerState', () => {
 
 		it('should set loading to true during fetch', async () => {
 			vi.mocked(PlayerService.listWithPagination).mockImplementation(
-				() => new Promise((resolve) => setTimeout(() => resolve({ players: mockPlayers, hasNext: false, hasPrevious: false }), 10))
+				() =>
+					new Promise((resolve) =>
+						setTimeout(
+							() => resolve({ players: mockPlayers, hasNext: false, hasPrevious: false }),
+							10
+						)
+					)
 			);
 
 			const promise = playerState.loadPlayers();
@@ -430,7 +436,8 @@ describe('createPlayerState', () => {
 			await playerState.handleLoadMore();
 
 			// Second call should have start: 20 (page 2)
-			expect(PlayerService.listWithPagination).toHaveBeenNthCalledWith(2,
+			expect(PlayerService.listWithPagination).toHaveBeenNthCalledWith(
+				2,
 				expect.objectContaining({
 					start: 20
 				})
@@ -533,7 +540,13 @@ describe('createPlayerState', () => {
 
 		it('should set mobilePlayerLoadingMore to true during load', async () => {
 			vi.mocked(PlayerService.listWithPagination).mockImplementation(
-				() => new Promise((resolve) => setTimeout(() => resolve({ players: mockPlayers, hasNext: true, hasPrevious: false }), 10))
+				() =>
+					new Promise((resolve) =>
+						setTimeout(
+							() => resolve({ players: mockPlayers, hasNext: true, hasPrevious: false }),
+							10
+						)
+					)
 			);
 
 			await playerState.loadPlayers();

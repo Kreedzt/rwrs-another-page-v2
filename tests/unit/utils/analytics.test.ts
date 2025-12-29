@@ -14,7 +14,8 @@ const mockGtag = vi.fn();
 let mockHmtCalls: unknown[][] = [];
 
 // Storage for umami track calls
-let mockUmamiCalls: Array<{ eventName: string; data?: Record<string, string | number | boolean> }> = [];
+let mockUmamiCalls: Array<{ eventName: string; data?: Record<string, string | number | boolean> }> =
+	[];
 
 // Create an actual array with custom push method for _hmt
 const createMockHmt = (): unknown[] => {
@@ -177,7 +178,9 @@ describe('Analytics Utility (Multi-platform: gtag + Baidu + Umami)', () => {
 		test('should track GitHub link click to both platforms', () => {
 			analytics.trackGitHubClick();
 
-			expect(mockGtag).toHaveBeenCalledWith('event', 'github_link_click', { action: 'external_link' });
+			expect(mockGtag).toHaveBeenCalledWith('event', 'github_link_click', {
+				action: 'external_link'
+			});
 			const hmtCall = mockHmtCalls[mockHmtCalls.length - 1];
 			expect(hmtCall[0]).toBe('_trackEvent');
 			expect(hmtCall[1]).toBe('navigation');
@@ -369,10 +372,9 @@ describe('Analytics Utility (Multi-platform: gtag + Baidu + Umami)', () => {
 
 			analytics.trackViewSwitch('players');
 
-			expect(consoleSpy).toHaveBeenCalledWith(
-				'[Analytics] Tracked: view_switch',
-				{ view: 'players' }
-			);
+			expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Tracked: view_switch', {
+				view: 'players'
+			});
 
 			consoleSpy.mockRestore();
 		});
@@ -382,7 +384,9 @@ describe('Analytics Utility (Multi-platform: gtag + Baidu + Umami)', () => {
 			createTestAnalytics();
 
 			// The actual implementation logs as a single string with template literal
-			expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Initialized successfully with: gtag, _hmt, umami');
+			expect(consoleSpy).toHaveBeenCalledWith(
+				'[Analytics] Initialized successfully with: gtag, _hmt, umami'
+			);
 
 			consoleSpy.mockRestore();
 		});

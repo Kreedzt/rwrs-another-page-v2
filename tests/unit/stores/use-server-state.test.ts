@@ -392,7 +392,7 @@ describe('createServerState', () => {
 				expect(result.filteredServers[1].name).toBe('Server B1');
 				expect(result.filteredServers[2].name).toBe('Server C2');
 				// Verify sorting is working
-				const names = result.filteredServers.map(s => s.name);
+				const names = result.filteredServers.map((s) => s.name);
 				const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
 				expect(names).toEqual(sortedNames);
 			});
@@ -418,7 +418,7 @@ describe('createServerState', () => {
 				expect(result.filteredServers).toHaveLength(25);
 			});
 		});
-});
+	});
 
 	describe('refreshList', () => {
 		it('should load servers from API', async () => {

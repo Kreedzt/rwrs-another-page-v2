@@ -30,7 +30,10 @@ describe('Request function', () => {
 
 			const result = await request<{ result: string }>('/test');
 
-			expect(fetch).toHaveBeenCalledWith('/test', expect.objectContaining({ signal: expect.any(AbortSignal) }));
+			expect(fetch).toHaveBeenCalledWith(
+				'/test',
+				expect.objectContaining({ signal: expect.any(AbortSignal) })
+			);
 			expect(result).toEqual(mockData);
 		});
 
@@ -57,7 +60,10 @@ describe('Request function', () => {
 
 			await request<{ result: string }>('/test', {}, 'json', 5000);
 
-			expect(fetch).toHaveBeenCalledWith('/test', expect.objectContaining({ signal: expect.any(AbortSignal) }));
+			expect(fetch).toHaveBeenCalledWith(
+				'/test',
+				expect.objectContaining({ signal: expect.any(AbortSignal) })
+			);
 		});
 	});
 
@@ -81,7 +87,9 @@ describe('Request function', () => {
 
 			vi.mocked(fetch).mockRejectedValueOnce(abortError);
 
-			await expect(request('/test', {}, 'json', 1000)).rejects.toThrow('Request timed out after 1000ms');
+			await expect(request('/test', {}, 'json', 1000)).rejects.toThrow(
+				'Request timed out after 1000ms'
+			);
 			expect(console.error).toHaveBeenCalledWith('Request to /test timed out after 1000ms');
 		});
 
@@ -123,7 +131,9 @@ describe('Request function', () => {
 
 			vi.mocked(fetch).mockRejectedValueOnce(disconnectError);
 
-			await expect(request('/test')).rejects.toThrow('NetworkError when attempting to fetch resource.');
+			await expect(request('/test')).rejects.toThrow(
+				'NetworkError when attempting to fetch resource.'
+			);
 		});
 	});
 
@@ -141,7 +151,10 @@ describe('Request function', () => {
 
 			// Since we can't directly test the timeout value in the mock,
 			// we just verify the request was made successfully
-			expect(fetch).toHaveBeenCalledWith('/test', expect.objectContaining({ signal: expect.any(AbortSignal) }));
+			expect(fetch).toHaveBeenCalledWith(
+				'/test',
+				expect.objectContaining({ signal: expect.any(AbortSignal) })
+			);
 		});
 
 		test('should clear timeout even when request fails', async () => {
@@ -194,12 +207,15 @@ describe('Request function', () => {
 
 			await request('/test', options);
 
-			expect(fetch).toHaveBeenCalledWith('/test', expect.objectContaining({
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ test: 'data' }),
-				signal: expect.any(AbortSignal)
-			}));
+			expect(fetch).toHaveBeenCalledWith(
+				'/test',
+				expect.objectContaining({
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ test: 'data' }),
+					signal: expect.any(AbortSignal)
+				})
+			);
 		});
 	});
 });

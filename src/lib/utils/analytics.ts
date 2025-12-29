@@ -16,7 +16,11 @@
  */
 
 import { browser } from '$app/environment';
-import type { AnalyticsEventName, AnalyticsEventParams, AnalyticsConfig } from '$lib/types/analytics';
+import type {
+	AnalyticsEventName,
+	AnalyticsEventParams,
+	AnalyticsConfig
+} from '$lib/types/analytics';
 
 // Event category mapping for Baidu Analytics
 const BAIDU_CATEGORIES = {
@@ -76,7 +80,11 @@ class Analytics {
 	 * Check if umami is available (Umami Analytics)
 	 */
 	private isUmamiAvailable(): boolean {
-		return typeof window !== 'undefined' && typeof window.umami === 'object' && typeof window.umami.track === 'function';
+		return (
+			typeof window !== 'undefined' &&
+			typeof window.umami === 'object' &&
+			typeof window.umami.track === 'function'
+		);
 	}
 
 	/**
@@ -132,7 +140,10 @@ class Analytics {
 	/**
 	 * Convert event name and params to Baidu format
 	 */
-	private toBaiduEvent(eventName: AnalyticsEventName, params: AnalyticsEventParams): {
+	private toBaiduEvent(
+		eventName: AnalyticsEventName,
+		params: AnalyticsEventParams
+	): {
 		category: string;
 		action: string;
 		opt_label?: string;
@@ -189,7 +200,13 @@ class Analytics {
 		if (this.isHmtAvailable()) {
 			try {
 				const baiduEvent = this.toBaiduEvent(eventName, sanitizedParams);
-				window._hmt!.push(['_trackEvent', baiduEvent.category, baiduEvent.action, baiduEvent.opt_label, baiduEvent.opt_value]);
+				window._hmt!.push([
+					'_trackEvent',
+					baiduEvent.category,
+					baiduEvent.action,
+					baiduEvent.opt_label,
+					baiduEvent.opt_value
+				]);
 			} catch (error) {
 				console.error('[Analytics] _hmt error:', error);
 			}

@@ -165,7 +165,10 @@ export function createServerState() {
 		);
 
 		// Mobile pagination
-		const mobilePaginatedServers = sortedFiltered.slice(0, mobileServerCurrentPage * ITEMS_PER_PAGE);
+		const mobilePaginatedServers = sortedFiltered.slice(
+			0,
+			mobileServerCurrentPage * ITEMS_PER_PAGE
+		);
 		const mobileHasMore = mobilePaginatedServers.length < sortedFiltered.length;
 
 		return {

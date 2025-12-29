@@ -399,7 +399,9 @@ describe('ServerView Component', () => {
 				}
 			});
 
-			const checkbox = container.querySelector('.md\\:hidden .collapse input[type="checkbox"]') as HTMLElement;
+			const checkbox = container.querySelector(
+				'.md\\:hidden .collapse input[type="checkbox"]'
+			) as HTMLElement;
 			await fireEvent.click(checkbox);
 
 			expect(mockOnToggleMobileCard).toHaveBeenCalledWith('server1');
@@ -442,7 +444,7 @@ describe('ServerView Component', () => {
 			// Need to expand card first by setting mobileExpandedCards
 			const mapButtons = container.querySelectorAll('.md\\:hidden .btn-success');
 			// Find map preview button (success button with white text)
-			const previewButton = Array.from(mapButtons).find(btn =>
+			const previewButton = Array.from(mapButtons).find((btn) =>
 				btn.classList.contains('text-white')
 			);
 			expect(previewButton).toBeDefined();
@@ -483,7 +485,7 @@ describe('ServerView Component', () => {
 			});
 
 			const mapButtons = container.querySelectorAll('.md\\:hidden button');
-			const previewButton = Array.from(mapButtons).find(btn =>
+			const previewButton = Array.from(mapButtons).find((btn) =>
 				(btn as HTMLElement).classList.contains('text-green-600')
 			) as HTMLElement;
 

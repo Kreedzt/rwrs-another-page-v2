@@ -21,7 +21,6 @@
 	import { createUrlSync } from '$lib/stores/use-url-sync.svelte';
 
 	// Components
-	import Header from './Header.svelte';
 	import ControlBar from '$lib/components/ControlBar.svelte';
 	import StatsBar from '$lib/components/StatsBar.svelte';
 	import ServerView from '$lib/components/ServerView.svelte';
@@ -348,8 +347,6 @@
 		};
 	});
 </script>
-
-<Header />
 
 <section aria-label="Server List" class="flex flex-1 flex-col items-center md:overflow-hidden">
 	<div class="container flex flex-1 flex-col px-4 py-2 md:py-3 md:overflow-hidden">

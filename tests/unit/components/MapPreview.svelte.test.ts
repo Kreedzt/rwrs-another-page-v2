@@ -129,7 +129,9 @@ describe('MapPreview Component', () => {
 			expect(loadingDots).toBeTruthy();
 
 			// Should show loading container
-			const loadingContainer = document.querySelector('.flex.flex-col.items-center.justify-center.p-8');
+			const loadingContainer = document.querySelector(
+				'.flex.flex-col.items-center.justify-center.p-8'
+			);
 			expect(loadingContainer).toBeTruthy();
 		});
 	});

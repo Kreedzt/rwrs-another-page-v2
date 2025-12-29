@@ -64,7 +64,8 @@ vi.mock('$lib/components/TranslatedText.svelte', () => ({
 			'app.mapView.title': 'Map Order: {filters}',
 			'app.mapView.allMaps': 'All Maps',
 			'app.mapView.selectFilters': 'Select Quick Filters to View Map Order',
-			'app.mapView.chooseCategories': 'Choose your preferred map categories in Quick Filters to display the corresponding server list',
+			'app.mapView.chooseCategories':
+				'Choose your preferred map categories in Quick Filters to display the corresponding server list',
 			'app.mapView.noMaps': 'No maps found for selected filters.',
 			'app.mapView.servers': '{count} servers',
 			'app.mapView.bots': '{count} Bots'
@@ -73,7 +74,6 @@ vi.mock('$lib/components/TranslatedText.svelte', () => ({
 		return keyToText[props.key] || props.key;
 	}
 }));
-
 
 // Mock environment variables
 vi.stubEnv('VITE_API_URL', '');

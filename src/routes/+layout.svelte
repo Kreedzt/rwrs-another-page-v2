@@ -2,6 +2,7 @@
 	import '../app.css';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import ChristmasSnowfall from '$lib/components/ChristmasSnowfall.svelte';
+	import Header from './Header.svelte';
 
 	let { children } = $props();
 </script>
@@ -11,6 +12,8 @@
 
 <!-- PC端: 固定高度布局; 移动端: 正常流式布局 -->
 <div class="flex min-h-screen flex-col md:h-screen md:overflow-hidden">
+	<Header />
+
 	<main class="flex w-full flex-1 flex-col md:overflow-hidden">
 		{@render children()}
 	</main>

@@ -23,7 +23,7 @@ export default defineConfig({
 		renderBuiltUrl(filename) {
 			if (isCdnBuild) {
 				const ext = path.extname(filename).toLowerCase();
-				
+
 				// 图片资源处理
 				if (cdnImageUrl && /\.(png|jpe?g|svg|gif|tiff|bmp|ico|webp)$/i.test(ext)) {
 					// 确保 URL 正确拼接，避免双重斜杠
@@ -31,7 +31,7 @@ export default defineConfig({
 					const path = filename.startsWith('/') ? filename.slice(1) : filename;
 					return { runtime: JSON.stringify(`${baseUrl}/${path}`) };
 				}
-				
+
 				// 其他资源处理 (JS/CSS)
 				if (cdnUrl) {
 					const baseUrl = cdnUrl.endsWith('/') ? cdnUrl.slice(0, -1) : cdnUrl;
@@ -51,7 +51,7 @@ export default defineConfig({
 				// Separate images into their own directory with hash-only filenames for CDN builds
 				assetFileNames: (assetInfo) => {
 					if (!isCdnBuild) return 'assets/[name]-[hash][extname]';
-					
+
 					if (assetInfo.name) {
 						const info = assetInfo.name.split('.');
 						const ext = info[info.length - 1].toLowerCase();
@@ -91,7 +91,10 @@ export default defineConfig({
 					name: 'client',
 					environment: 'jsdom',
 					clearMocks: true,
-					include: ['src/**/*.svelte.{test,spec}.{js,ts}', 'tests/unit/**/*.svelte.{test,spec}.{js,ts}'],
+					include: [
+						'src/**/*.svelte.{test,spec}.{js,ts}',
+						'tests/unit/**/*.svelte.{test,spec}.{js,ts}'
+					],
 					exclude: ['src/lib/server/**', 'src/lib/paraglide/**'],
 					setupFiles: ['./vitest-setup-client.ts']
 				}
@@ -102,7 +105,10 @@ export default defineConfig({
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}', 'tests/unit/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}', 'tests/unit/**/*.svelte.{test,spec}.{js,ts}']
+					exclude: [
+						'src/**/*.svelte.{test,spec}.{js,ts}',
+						'tests/unit/**/*.svelte.{test,spec}.{js,ts}'
+					]
 				}
 			}
 		],

@@ -1,5 +1,10 @@
 import { describe, test, expect, vi } from 'vitest';
-import { parseServerListFromString, getMapKey, getCurrentTimeStr, generateEmptyOnlineStatItem } from '$lib/share/utils';
+import {
+	parseServerListFromString,
+	getMapKey,
+	getCurrentTimeStr,
+	generateEmptyOnlineStatItem
+} from '$lib/share/utils';
 import type { IDisplayServerItem } from '$lib/models/data-table.model';
 
 describe('XML Player List Parsing', () => {
@@ -182,7 +187,11 @@ describe('XML Player List Parsing', () => {
 
 			// Should preserve valid players with special characters
 			expect(result).toHaveLength(1);
-			expect(result[0].playerList).toEqual(['[Admin] PlayerName', 'Player with spaces', 'Player-Name_123']);
+			expect(result[0].playerList).toEqual([
+				'[Admin] PlayerName',
+				'Player with spaces',
+				'Player-Name_123'
+			]);
 		});
 	});
 });

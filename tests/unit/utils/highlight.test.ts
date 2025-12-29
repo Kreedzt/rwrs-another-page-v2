@@ -1,5 +1,9 @@
 import { describe, test, expect } from 'vitest';
-import { highlightMatch, highlightInBadge, renderPlayerListWithHighlight } from '$lib/utils/highlight';
+import {
+	highlightMatch,
+	highlightInBadge,
+	renderPlayerListWithHighlight
+} from '$lib/utils/highlight';
 
 describe('highlightMatch', () => {
 	test('should return original text if query is empty', () => {
