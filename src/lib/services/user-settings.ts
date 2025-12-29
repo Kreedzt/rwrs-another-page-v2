@@ -124,7 +124,12 @@ class UserSettingsService {
 
 		// Merge other properties
 		Object.keys(stored).forEach((key) => {
-			if (key !== 'autoRefresh' && key !== 'visibleColumns' && key !== 'visiblePlayerColumns' && key in stored) {
+			if (
+				key !== 'autoRefresh' &&
+				key !== 'visibleColumns' &&
+				key !== 'visiblePlayerColumns' &&
+				key in stored
+			) {
 				(merged as any)[key] = stored[key];
 			}
 		});

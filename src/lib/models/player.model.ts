@@ -68,5 +68,7 @@ export interface IPlayerColumn {
 
 export interface IPlayerService {
 	list(params?: IPlayerListParams): Promise<IPlayerItem[]>;
-	listWithPagination(params?: IPlayerListParams): Promise<{ players: IPlayerItem[]; hasNext: boolean; hasPrevious: boolean }>;
+	listWithPagination(
+		params?: IPlayerListParams
+	): Promise<{ players: IPlayerItem[]; hasNext: boolean; hasPrevious: boolean }>;
 }

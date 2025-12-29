@@ -54,7 +54,12 @@ describe('PlayerView Component', () => {
 		{ key: 'deaths', label: 'Deaths', i18n: 'app.column.deaths', alignment: 'right' },
 		{ key: 'kd', label: 'K/D', i18n: 'app.column.kd', alignment: 'right' },
 		{ key: 'score', label: 'Score', i18n: 'app.column.score', alignment: 'right' },
-		{ key: 'rankProgression', label: 'Rank', i18n: 'app.column.rankProgression', alignment: 'right' }
+		{
+			key: 'rankProgression',
+			label: 'Rank',
+			i18n: 'app.column.rankProgression',
+			alignment: 'right'
+		}
 	];
 
 	const mockPlayers: IPlayerItem[] = [
@@ -320,7 +325,9 @@ describe('PlayerView Component', () => {
 				}
 			});
 
-			const checkbox = container.querySelector('.md\\:hidden .collapse input[type="checkbox"]') as HTMLElement;
+			const checkbox = container.querySelector(
+				'.md\\:hidden .collapse input[type="checkbox"]'
+			) as HTMLElement;
 			await fireEvent.click(checkbox);
 
 			expect(mockOnToggleMobileCard).toHaveBeenCalledWith('player1');

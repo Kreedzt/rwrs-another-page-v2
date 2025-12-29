@@ -193,8 +193,10 @@ export function createUrlStateSubscriber(callback: (state: UrlState) => void) {
 				| 'asc'
 				| 'desc'
 				| undefined,
-			view: ($page.url.searchParams.get(URL_PARAMS.VIEW) as 'servers' | 'players' | null) || undefined,
-			playerDb: $page.url.searchParams.get(URL_PARAMS.PLAYER_DB) as PlayerDatabase | null || undefined
+			view:
+				($page.url.searchParams.get(URL_PARAMS.VIEW) as 'servers' | 'players' | null) || undefined,
+			playerDb:
+				($page.url.searchParams.get(URL_PARAMS.PLAYER_DB) as PlayerDatabase | null) || undefined
 		};
 		callback(state);
 	});

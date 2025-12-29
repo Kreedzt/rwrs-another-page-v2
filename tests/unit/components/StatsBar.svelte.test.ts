@@ -244,7 +244,13 @@ describe('StatsBar Component', () => {
 			});
 
 			const statsContainer = container.querySelector('.stats-container');
-			expect(statsContainer).toHaveClass('mb-4', 'flex', 'items-center', 'justify-between', 'text-sm');
+			expect(statsContainer).toHaveClass(
+				'mb-4',
+				'flex',
+				'items-center',
+				'justify-between',
+				'text-sm'
+			);
 		});
 
 		it('should render stats numbers with correct class', async () => {

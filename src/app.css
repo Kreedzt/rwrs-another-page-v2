@@ -118,13 +118,25 @@ body {
 			rgba(0, 0, 0, 0.01) 2px,
 			rgba(0, 0, 0, 0.01) 4px
 		),
-		/* Grid overlay */
-		linear-gradient(var(--color-grid) 1px, transparent 1px),
+		/* Grid overlay */ linear-gradient(var(--color-grid) 1px, transparent 1px),
 		linear-gradient(90deg, var(--color-grid) 1px, transparent 1px),
 		/* Main gradient background */
-		linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
-	background-position: 0 0, 0 0, 0 0, 0 0;
-	background-size: 100% 100%, 40px 40px, 40px 40px, 100% 100%;
+		linear-gradient(
+				180deg,
+				var(--color-bg-primary) 0%,
+				var(--color-bg-secondary) 50%,
+				var(--color-bg-tertiary) 100%
+			);
+	background-position:
+		0 0,
+		0 0,
+		0 0,
+		0 0;
+	background-size:
+		100% 100%,
+		40px 40px,
+		40px 40px,
+		100% 100%;
 	transition: background 0.3s ease;
 }
 
@@ -138,11 +150,15 @@ body {
 			rgba(0, 0, 0, 0.02) 2px,
 			rgba(0, 0, 0, 0.02) 4px
 		),
-		/* Grid overlay */
-		linear-gradient(var(--color-grid) 1px, transparent 1px),
+		/* Grid overlay */ linear-gradient(var(--color-grid) 1px, transparent 1px),
 		linear-gradient(90deg, var(--color-grid) 1px, transparent 1px),
 		/* Main gradient background */
-		linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
+		linear-gradient(
+				180deg,
+				var(--color-bg-primary) 0%,
+				var(--color-bg-secondary) 50%,
+				var(--color-bg-tertiary) 100%
+			);
 }
 
 a {
@@ -220,10 +236,7 @@ button:focus:not(:focus-visible) {
 	left: 0;
 	right: 0;
 	height: 2px;
-	background: linear-gradient(90deg,
-		transparent 0%,
-		var(--color-accent) 50%,
-		transparent 100%);
+	background: linear-gradient(90deg, transparent 0%, var(--color-accent) 50%, transparent 100%);
 	opacity: 0.5;
 }
 
@@ -254,8 +267,13 @@ button:focus:not(:focus-visible) {
 
 /* Status indicator pulse */
 @keyframes status-pulse {
-	0%, 100% { opacity: 1; }
-	50% { opacity: 0.5; }
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
 }
 
 .status-online {
@@ -379,11 +397,22 @@ button:focus:not(:focus-visible) {
 
 /* Glitch text effect (subtle) */
 @keyframes glitch {
-	0%, 100% { transform: translate(0); }
-	20% { transform: translate(-1px, 1px); }
-	40% { transform: translate(-1px, -1px); }
-	60% { transform: translate(1px, 1px); }
-	80% { transform: translate(1px, -1px); }
+	0%,
+	100% {
+		transform: translate(0);
+	}
+	20% {
+		transform: translate(-1px, 1px);
+	}
+	40% {
+		transform: translate(-1px, -1px);
+	}
+	60% {
+		transform: translate(1px, 1px);
+	}
+	80% {
+		transform: translate(1px, -1px);
+	}
 }
 
 .glitch-hover:hover {

@@ -48,7 +48,10 @@ export function createPlayerState(initialDb: PlayerDatabase = 'invasion' as Play
 	let playerSortDirection = $state<'asc' | 'desc' | null>(null);
 
 	// Calculate statistics
-	const calculatePlayerStats = (playerList: IPlayerItem[], paginatedList?: IPlayerItem[]): PlayerStats => {
+	const calculatePlayerStats = (
+		playerList: IPlayerItem[],
+		paginatedList?: IPlayerItem[]
+	): PlayerStats => {
 		return {
 			totalPlayers: playerList.length,
 			paginatedCount: paginatedList?.length ?? playerList.length

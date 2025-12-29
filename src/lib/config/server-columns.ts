@@ -5,7 +5,7 @@ import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highli
 // Function to get map preview HTML for desktop
 function getMapPreviewHtml(server: IDisplayServerItem, query?: string, maps?: MapData[]): string {
 	const mapId = server.mapId;
-	const mapData = maps?.find(map => map.path === mapId);
+	const mapData = maps?.find((map) => map.path === mapId);
 	const mapName = mapId.split('/').pop() || '';
 
 	if (!mapData) {
@@ -41,7 +41,7 @@ function getMapPreviewHtml(server: IDisplayServerItem, query?: string, maps?: Ma
 // Function to get map preview HTML for mobile
 function getMobileMapPreviewHtml(server: IDisplayServerItem, maps?: MapData[]): string {
 	const mapId = server.mapId;
-	const mapData = maps?.find(map => map.path === mapId);
+	const mapData = maps?.find((map) => map.path === mapId);
 	const mapName = mapId.split('/').pop() || '';
 
 	if (!mapData) {
@@ -170,7 +170,8 @@ export const columns: IColumn[] = [
 		i18n: 'app.column.capacity',
 		alignment: 'center',
 		getValue: (server: IDisplayServerItem) => getCapacityStyling(server),
-		getValueWithHighlight: (server: IDisplayServerItem, query: string) => getCapacityStyling(server, query)
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+			getCapacityStyling(server, query)
 	},
 	{
 		key: 'playerList',
@@ -180,7 +181,8 @@ export const columns: IColumn[] = [
 		cellClass: 'min-w-96',
 		alignment: 'top',
 		getValue: (server: IDisplayServerItem) => renderPlayerListWithHighlight(server.playerList),
-		getValueWithHighlight: (server: IDisplayServerItem, query: string) => renderPlayerListWithHighlight(server.playerList, query)
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+			renderPlayerListWithHighlight(server.playerList, query)
 	},
 	{ key: 'comment', label: 'Comment', i18n: 'app.column.comment' },
 	{

@@ -5,7 +5,7 @@ import PaginationPrevNext from '$lib/components/PaginationPrevNext.svelte';
 // Mock TranslatedText component - return a simple text rendering component
 vi.mock('$lib/components/TranslatedText.svelte', () => ({
 	default: (props: { key: string; fallback?: string }) => {
-		return (props.key || '');
+		return props.key || '';
 	}
 }));
 
@@ -204,28 +204,28 @@ describe('PaginationPrevNext Component', () => {
 		});
 
 		it('should handle rapid page changes', async () => {
-		render(PaginationPrevNext, {
-			props: {
-				currentPage: 2,
-				hasNext: true,
-				hasPrevious: true,
-				onPageChange: mockOnPageChange
-			}
+			render(PaginationPrevNext, {
+				props: {
+					currentPage: 2,
+					hasNext: true,
+					hasPrevious: true,
+					onPageChange: mockOnPageChange
+				}
+			});
+
+			const prevButton = screen.getByTitle('Previous page');
+			const nextButton = screen.getByTitle('Next page');
+
+			await fireEvent.click(nextButton);
+			await fireEvent.click(nextButton);
+			await fireEvent.click(prevButton);
+
+			// Since currentPage prop doesn't update without parent intervention,
+			// all clicks will use the initial currentPage value (2)
+			expect(mockOnPageChange).toHaveBeenNthCalledWith(1, 3);
+			expect(mockOnPageChange).toHaveBeenNthCalledWith(2, 3);
+			expect(mockOnPageChange).toHaveBeenNthCalledWith(3, 1);
 		});
-
-		const prevButton = screen.getByTitle('Previous page');
-		const nextButton = screen.getByTitle('Next page');
-
-		await fireEvent.click(nextButton);
-		await fireEvent.click(nextButton);
-		await fireEvent.click(prevButton);
-
-		// Since currentPage prop doesn't update without parent intervention,
-		// all clicks will use the initial currentPage value (2)
-		expect(mockOnPageChange).toHaveBeenNthCalledWith(1, 3);
-		expect(mockOnPageChange).toHaveBeenNthCalledWith(2, 3);
-		expect(mockOnPageChange).toHaveBeenNthCalledWith(3, 1);
-	});
 	});
 
 	describe('Reactive Updates', () => {

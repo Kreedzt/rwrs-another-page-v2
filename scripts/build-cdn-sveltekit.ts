@@ -1,5 +1,13 @@
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, readdirSync, statSync, unlinkSync, existsSync, mkdirSync } from 'fs';
+import {
+	readFileSync,
+	writeFileSync,
+	readdirSync,
+	statSync,
+	unlinkSync,
+	existsSync,
+	mkdirSync
+} from 'fs';
 import { join, basename, extname } from 'path';
 import { createHash } from 'crypto';
 
@@ -35,7 +43,7 @@ function buildCDNForSvelteKit() {
 		if (process.env.CDN_URL) {
 			env.CDN_URL = process.env.CDN_URL;
 		}
-		
+
 		execSync('vite build', { stdio: 'inherit', env });
 		console.log('✅ Standard build completed\n');
 
@@ -61,13 +69,13 @@ function buildCDNForSvelteKit() {
 		// writeFileSync(guidePath, deploymentGuide);
 		// console.log(`📋 Deployment guide: ${guidePath}\n`);
 
-        // 清理临时文件
-        console.log('🧹 Cleaning up temporary files...');
-        const manifestPath = join(buildDir, 'cdn-manifest.json');
-        if (existsSync(manifestPath)) {
-            unlinkSync(manifestPath);
-        }
-        console.log('✅ Cleanup completed\n');
+		// 清理临时文件
+		console.log('🧹 Cleaning up temporary files...');
+		const manifestPath = join(buildDir, 'cdn-manifest.json');
+		if (existsSync(manifestPath)) {
+			unlinkSync(manifestPath);
+		}
+		console.log('✅ Cleanup completed\n');
 
 		// 生成摘要
 		const totalAssets = Object.keys(manifest.assets).length;
@@ -86,14 +94,17 @@ function buildCDNForSvelteKit() {
 		console.log('   1. Upload all files from build/ directory to your OSS');
 		console.log('   2. Update your web server to serve the HTML files');
 		console.log('   3. Configure CDN domain to point to your OSS bucket');
-
 	} catch (error) {
 		console.error('❌ CDN build failed:', error);
 		process.exit(1);
 	}
 }
 
-function processAssetsForCDN(buildDir: string, cdnBaseUrl: string, cdnImageUrl: string): CDNManifest {
+function processAssetsForCDN(
+	buildDir: string,
+	cdnBaseUrl: string,
+	cdnImageUrl: string
+): CDNManifest {
 	const manifest: CDNManifest = {
 		assets: {},
 		buildTime: new Date().toISOString(),
@@ -102,7 +113,21 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string, cdnImageUrl: 
 		htmlFile: ''
 	};
 
-	const assetExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
+	const assetExtensions = [
+		'.js',
+		'.css',
+		'.png',
+		'.jpg',
+		'.jpeg',
+		'.gif',
+		'.svg',
+		'.webp',
+		'.ico',
+		'.woff',
+		'.woff2',
+		'.ttf',
+		'.eot'
+	];
 	const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico'];
 
 	function processDirectory(dir: string, relativePath: string = '') {
@@ -125,7 +150,13 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string, cdnImageUrl: 
 				const ext = extname(item).toLowerCase();
 
 				// 跳过 HTML 文件和系统文件
-				if (ext === '.html' || ext === '.json' || ext === '.map' || item.startsWith('.') || item.includes('.DS_Store')) {
+				if (
+					ext === '.html' ||
+					ext === '.json' ||
+					ext === '.map' ||
+					item.startsWith('.') ||
+					item.includes('.DS_Store')
+				) {
 					continue;
 				}
 
@@ -134,20 +165,20 @@ function processAssetsForCDN(buildDir: string, cdnBaseUrl: string, cdnImageUrl: 
 					try {
 						const content = readFileSync(fullPath);
 						const md5Hash = createHash('md5').update(content).digest('hex');
-						
+
 						const isImage = imageExtensions.includes(ext);
-						
+
 						let cdnFileName: string;
 						let cdnUrl: string;
 						let targetPath: string;
-						
+
 						if (isImage) {
 							// 图片移动到 images 目录
 							const imagesDir = join(buildDir, 'images');
 							if (!existsSync(imagesDir)) {
 								mkdirSync(imagesDir, { recursive: true });
 							}
-							
+
 							cdnFileName = `${md5Hash}${ext}`; // 使用完整 MD5 哈希文件名
 							targetPath = join(imagesDir, cdnFileName);
 							cdnUrl = `${cdnImageUrl}/images/${cdnFileName}`;
@@ -230,20 +261,21 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 	let content = readFileSync(htmlPath, 'utf-8');
 
 	// 替换 favicon 引用
-	content = content.replace(
-		/<link[^>]+href=["']\.\/favicon\.png["'][^>]*>/g,
-		(match) => {
-			const assetInfo = Object.values(manifest.assets).find(asset => asset.originalName === 'favicon.png');
-			if (assetInfo) {
-				return match.replace('./favicon.png', assetInfo.cdnUrl);
-			}
-			return match;
+	content = content.replace(/<link[^>]+href=["']\.\/favicon\.png["'][^>]*>/g, (match) => {
+		const assetInfo = Object.values(manifest.assets).find(
+			(asset) => asset.originalName === 'favicon.png'
+		);
+		if (assetInfo) {
+			return match.replace('./favicon.png', assetInfo.cdnUrl);
 		}
-	);
+		return match;
+	});
 
 	// 强制替换 SvelteKit 生成的 _app 引用 (修复 SvelteKit 配置在某些情况下不生效的问题)
-	const baseUrl = manifest.cdnBaseUrl.endsWith('/') ? manifest.cdnBaseUrl.slice(0, -1) : manifest.cdnBaseUrl;
-	
+	const baseUrl = manifest.cdnBaseUrl.endsWith('/')
+		? manifest.cdnBaseUrl.slice(0, -1)
+		: manifest.cdnBaseUrl;
+
 	// 1. 替换 import("./_app/...") 或 import("/_app/...")
 	// 2. 替换 href="./_app/..." 或 href="/_app/..."
 	// 3. 替换 src="./_app/..." 或 src="/_app/..."

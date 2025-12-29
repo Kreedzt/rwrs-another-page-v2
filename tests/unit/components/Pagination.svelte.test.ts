@@ -299,7 +299,9 @@ describe('Pagination Component', () => {
 			);
 
 			// Should have page numbers like 3, 4, 5, 6, 7
-			const pageNumbers = pageButtons.map((btn) => parseInt((btn as HTMLElement).textContent || '0'));
+			const pageNumbers = pageButtons.map((btn) =>
+				parseInt((btn as HTMLElement).textContent || '0')
+			);
 			expect(pageNumbers).toContain(5);
 		});
 	});
