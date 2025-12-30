@@ -329,25 +329,61 @@ function processManifestFile(buildDir: string, manifest: CDNManifest): void {
 		const content = readFileSync(manifestPath, 'utf-8');
 		const manifestJson = JSON.parse(content);
 
-		// Update icon src URLs to use CDN
+		const imageCdnUrl = process.env.CDN_IMAGE_URL || manifest.cdnBaseUrl;
+
+		// Helper function to update icon URLs
+		const updateIcon = (icon: { src: string }, label: string) => {
+			const originalSrc = icon.src;
+			// Skip if already a full URL
+			if (originalSrc.startsWith('http://') || originalSrc.startsWith('https://')) {
+				return;
+			}
+
+			// Find matching asset in manifest
+			const assetInfo = Object.values(manifest.assets).find(
+				(asset) => asset.originalPath === originalSrc.replace(/^\//, '') || asset.originalName === basename(originalSrc)
+			);
+
+			if (assetInfo) {
+				icon.src = assetInfo.cdnUrl;
+				console.log(`  📦 ${label}: ${originalSrc} -> ${assetInfo.cdnUrl}`);
+			} else {
+				// If not found in assets, construct CDN URL directly for images
+				const filename = basename(originalSrc);
+				console.log(`  ⚠️  ${label}: ${originalSrc} not in assets, using direct CDN URL`);
+				icon.src = `${imageCdnUrl}/images/${filename}`;
+			}
+		};
+
+		// Update top-level icons
 		if (manifestJson.icons && Array.isArray(manifestJson.icons)) {
 			for (const icon of manifestJson.icons) {
-				const originalSrc = icon.src;
-				// Skip if already a full URL
-				if (originalSrc.startsWith('http://') || originalSrc.startsWith('https://')) {
-					continue;
-				}
+				updateIcon(icon, 'icon');
+			}
+		}
 
-				// Find matching asset in manifest
-				const assetInfo = Object.values(manifest.assets).find(
-					(asset) => asset.originalPath === originalSrc.replace(/^\//, '') || asset.originalName === basename(originalSrc)
-				);
-
-				if (assetInfo) {
-					icon.src = assetInfo.cdnUrl;
-					console.log(`  📦 ${originalSrc} -> ${assetInfo.cdnUrl}`);
+		// Update shortcuts icons
+		if (manifestJson.shortcuts && Array.isArray(manifestJson.shortcuts)) {
+			for (const shortcut of manifestJson.shortcuts) {
+				if (shortcut.icons && Array.isArray(shortcut.icons)) {
+					for (const icon of shortcut.icons) {
+						updateIcon(icon, `shortcut.${shortcut.name}.icon`);
+					}
 				}
 			}
+		}
+
+		// Update screenshots
+		if (manifestJson.screenshots && Array.isArray(manifestJson.screenshots)) {
+			for (const screenshot of manifestJson.screenshots) {
+				updateIcon(screenshot, 'screenshot');
+			}
+		}
+
+		// Add scope to fix cross-origin warnings
+		if (!manifestJson.scope) {
+			manifestJson.scope = '/';
+			console.log(`  📦 Added scope: /`);
 		}
 
 		// Write updated manifest
@@ -392,15 +428,18 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 		return `${quote}${baseUrl}/_app/${path}${quote}`;
 	});
 
+	// Note: manifest.webmanifest should NOT be served from CDN - it must be same-origin for PWA to work
+	// The manifest file itself stays local, but icons within it use CDN URLs (handled by processManifestFile)
+
 	// Add CDN preconnect links (optimized to avoid duplicates)
 	const imageCdnUrl = process.env.CDN_IMAGE_URL || manifest.cdnBaseUrl;
 	const needsPreconnect =
 		manifest.cdnBaseUrl && manifest.cdnBaseUrl.startsWith('http');
 
 	if (needsPreconnect) {
-		// Remove existing preconnect placeholders
+		// Remove existing preconnect placeholders (matches comments containing link tags)
 		content = content.replace(
-			/<!-- Preconnect to CDN[^>]*-->(\s*<link[^>]*preconnect[^>]*>)+\s*/g,
+			/<!-- Preconnect to CDN[\s\S]*?-->(\s*<!--[\s\S]*?preconnect[\s\S]*?-->\s*<!--[\s\S]*?dns-prefetch[\s\S]*?-->\s*)/g,
 			''
 		);
 
@@ -425,8 +464,8 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 		// Insert preconnect links after charset meta tag
 		const preconnectHtml = '\n' + preconnectLinks.join('\n');
 		content = content.replace(
-			/(<meta charset="[^"]*"\/?>)/,
-			`$1${preconnectHtml}\n`
+			/<meta charset="[^"]*"\s*\/?>/i,
+			`<meta charset="utf-8" />${preconnectHtml}\n`
 		);
 	}
 
