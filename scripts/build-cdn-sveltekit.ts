@@ -11,6 +11,32 @@ import {
 import { join, basename, extname } from 'path';
 import { createHash } from 'crypto';
 
+// Load .env file into process.env
+function loadEnvFile(envPath = '.env') {
+	if (existsSync(envPath)) {
+		const content = readFileSync(envPath, 'utf-8');
+		for (const line of content.split('\n')) {
+			const trimmedLine = line.trim();
+			// Skip empty lines and comments
+			if (!trimmedLine || trimmedLine.startsWith('#')) {
+				continue;
+			}
+			const equalIndex = trimmedLine.indexOf('=');
+			if (equalIndex > 0) {
+				const key = trimmedLine.substring(0, equalIndex).trim();
+				const value = trimmedLine.substring(equalIndex + 1).trim();
+				process.env[key] = value;
+			}
+		}
+		console.log(`📄 Loaded ${envPath}`);
+	} else {
+		console.log(`⚠️  ${envPath} not found`);
+	}
+}
+
+// Load .env file at startup
+loadEnvFile();
+
 interface AssetInfo {
 	originalPath: string;
 	originalName: string;
@@ -36,16 +62,46 @@ function buildCDNForSvelteKit() {
 	const buildDir = 'build';
 
 	try {
-		// Step 1: 标准构建
-		console.log('🏗️  Step 1: Building with standard SvelteKit process...');
-		// 传递 CDN_BUILD 环境变量，如果有 CDN_URL 也传递下去
-		const env = { ...process.env, CDN_BUILD: 'true' };
-		if (process.env.CDN_URL) {
-			env.CDN_URL = process.env.CDN_URL;
-		}
+		// Step 0: Pre-process app.html for build-time environment variable replacement
+		// For static builds, we need to replace %VITE_*% placeholders directly in app.html
+		console.log('📝 Step 0: Pre-processing app.html for environment variables...');
+		const appHtmlPath = 'src/app.html';
+		let appHtmlContent = readFileSync(appHtmlPath, 'utf-8');
 
-		execSync('vite build', { stdio: 'inherit', env });
-		console.log('✅ Standard build completed\n');
+		// Replace %VITE_SITE_URL% and %VITE_CDN_IMAGE_URL% placeholders
+		const siteUrl = process.env.VITE_SITE_URL || 'https://robin.kreedzt.com';
+		const cdnImageUrl = process.env.VITE_CDN_IMAGE_URL || siteUrl;
+
+		appHtmlContent = appHtmlContent.replace(/%VITE_SITE_URL%/g, siteUrl);
+		appHtmlContent = appHtmlContent.replace(/%VITE_CDN_IMAGE_URL%/g, cdnImageUrl);
+
+		writeFileSync(appHtmlPath, appHtmlContent);
+		console.log(`  ✓ Replaced %VITE_SITE_URL% with ${siteUrl}`);
+		console.log(`  ✓ Replaced %VITE_CDN_IMAGE_URL% with ${cdnImageUrl}`);
+		console.log('✅ app.html pre-processed\n');
+
+		try {
+			// Step 1: 标准构建
+			console.log('🏗️  Step 1: Building with standard SvelteKit process...');
+			// 传递 CDN_BUILD 环境变量
+			const env = { ...process.env, CDN_BUILD: 'true' };
+			if (process.env.CDN_URL) {
+				env.CDN_URL = process.env.CDN_URL;
+			}
+			// Ensure VITE_* variables are passed for $env/static/public
+			for (const key in process.env) {
+				if (key.startsWith('VITE_')) {
+					env[key] = process.env[key];
+				}
+			}
+
+			execSync('vite build', { stdio: 'inherit', env });
+			console.log('✅ Standard build completed\n');
+		} finally {
+			// Restore original app.html after build
+			execSync('git checkout src/app.html', { stdio: 'inherit' });
+			console.log('✅ Restored original app.html\n');
+		}
 
 		// Step 2: 处理资源文件
 		console.log('📦 Step 2: Processing assets for CDN...');
@@ -306,47 +362,38 @@ function processManifestFile(buildDir: string, manifest: CDNManifest): void {
 function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 	let content = readFileSync(htmlPath, 'utf-8');
 
-	// 替换 favicon 引用
-	content = content.replace(/<link[^>]+href=["']\.\/favicon\.png["'][^>]*>/g, (match) => {
-		const assetInfo = Object.values(manifest.assets).find(
-			(asset) => asset.originalName === 'favicon.png'
-		);
-		if (assetInfo) {
-			return match.replace('./favicon.png', assetInfo.cdnUrl);
-		}
-		return match;
-	});
+	// Replace all asset references with CDN URLs
+	for (const [relativePath, assetInfo] of Object.entries(manifest.assets)) {
+		const filename = assetInfo.originalName;
+		const cdnUrl = assetInfo.cdnUrl;
 
-	// 强制替换 SvelteKit 生成的 _app 引用 (修复 SvelteKit 配置在某些情况下不生效的问题)
+		// Match href="./filename" or href="/filename" or href="filename"
+		const hrefPattern = new RegExp(`href=["']([.\/]*${filename})["']`, 'g');
+		content = content.replace(hrefPattern, `href="${cdnUrl}"`);
+
+		// Match src="./filename" or src="/filename" or src="filename"
+		const srcPattern = new RegExp(`src=["']([.\/]*${filename})["']`, 'g');
+		content = content.replace(srcPattern, `src="${cdnUrl}"`);
+
+		// Match content="./filename" (for meta tags)
+		const contentPattern = new RegExp(`content=["']([.\/]*${filename})["']`, 'g');
+		content = content.replace(contentPattern, `content="${cdnUrl}"`);
+	}
+
+	// Replace SvelteKit _app references with CDN URLs
 	const baseUrl = manifest.cdnBaseUrl.endsWith('/')
 		? manifest.cdnBaseUrl.slice(0, -1)
 		: manifest.cdnBaseUrl;
 
-	// 1. 替换 import("./_app/...") 或 import("/_app/...")
-	// 2. 替换 href="./_app/..." 或 href="/_app/..."
-	// 3. 替换 src="./_app/..." 或 src="/_app/..."
-	// 使用正则匹配所有以 ./-app/ 或 /_app/ 开头的路径引用
+	// Replace import("./_app/...") or import("/_app/...")
+	// Replace href="./_app/..." or href="/_app/..."
+	// Replace src="./_app/..." or src="/_app/..."
 	content = content.replace(/["'](\.?\/_app\/)([^"']+)["']/g, (match, prefix, path) => {
 		const quote = match[0];
 		return `${quote}${baseUrl}/_app/${path}${quote}`;
 	});
 
-	// 替换所有资源引用（包括相对路径和绝对路径）
-	for (const [relativePath, assetInfo] of Object.entries(manifest.assets)) {
-		// 替换 ./ 开头的相对路径
-		const relativePattern = new RegExp(`(["'])\\.${relativePath.replace(/^\//, '\\/')}\\1`, 'g');
-		content = content.replace(relativePattern, `"${assetInfo.cdnUrl}"`);
-
-		// 替换直接路径引用（不带 ./ 前缀）
-		const directPattern = new RegExp(`(["'])${relativePath.replace(/^\//, '\\/')}\\1`, 'g');
-		content = content.replace(directPattern, `"${assetInfo.cdnUrl}"`);
-
-		// 替换 modulepreload 和其他预加载引用
-		const preloadPattern = new RegExp(`href=["']\\.${relativePath.replace(/^\//, '\\/')}["']`, 'g');
-		content = content.replace(preloadPattern, `href="${assetInfo.cdnUrl}"`);
-	}
-
-	// 添加 CDN 基础 URL meta 标签
+	// Add CDN base URL meta tag
 	const metaTag = `\n  <meta name="cdn-base-url" content="${manifest.cdnBaseUrl}">`;
 	if (content.includes('<head>')) {
 		content = content.replace('<head>', `<head>${metaTag}`);

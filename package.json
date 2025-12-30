@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "node --experimental-strip-types scripts/build-sveltekit.ts",
 		"build:cdn": "node --experimental-strip-types scripts/build-cdn-sveltekit.ts",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
