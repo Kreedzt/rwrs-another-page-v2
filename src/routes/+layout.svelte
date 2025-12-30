@@ -1,10 +1,20 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import '../app.css';
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import ChristmasSnowfall from '$lib/components/ChristmasSnowfall.svelte';
 	import Header from './Header.svelte';
 
 	let { children } = $props();
+
+	// Hide loading screen when SvelteKit hydrates
+	onMount(() => {
+		const loading = document.getElementById('svelte-loading');
+		if (loading) {
+			loading.style.opacity = '0';
+			setTimeout(() => loading.remove(), 300);
+		}
+	});
 </script>
 
 <!-- Christmas snowfall background -->

@@ -191,6 +191,22 @@
 			"page": "第",
 			"previousPage": "上一页",
 			"nextPage": "下一页"
+		},
+		"pwa": {
+			"install": {
+				"title": "安装 Robin",
+				"description": "安装以获得离线访问和更好的体验。",
+				"button": "安装",
+				"later": "稍后"
+			},
+			"status": {
+				"online": "在线",
+				"offline": "离线",
+				"updated": "更新时间:"
+			},
+			"offline": {
+				"banner": "您处于离线状态。显示缓存数据。"
+			}
 		}
 	}
 }

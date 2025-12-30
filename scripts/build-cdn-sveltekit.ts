@@ -57,6 +57,11 @@ function buildCDNForSvelteKit() {
 		const htmlFiles = processHTMLFiles(buildDir, manifest);
 		console.log('✅ HTML processing completed\n');
 
+		// Step 3.5: 处理 manifest.webmanifest
+		console.log('📱 Step 3.5: Processing PWA manifest for CDN references...');
+		processManifestFile(buildDir, manifest);
+		console.log('✅ Manifest processing completed\n');
+
 		// Step 4: 创建CDN部署结构
 		// console.log('📁 Step 4: Creating CDN deployment structure...');
 		// createCDNDeploymentStructure(buildDir);
@@ -255,6 +260,47 @@ function processHTMLFiles(buildDir: string, manifest: CDNManifest): string[] {
 
 	findAndProcessHTMLFiles(buildDir);
 	return htmlFiles;
+}
+
+function processManifestFile(buildDir: string, manifest: CDNManifest): void {
+	const manifestPath = join(buildDir, 'manifest.webmanifest');
+
+	if (!existsSync(manifestPath)) {
+		console.log('  ⚠️  manifest.webmanifest not found, skipping...');
+		return;
+	}
+
+	try {
+		let content = readFileSync(manifestPath, 'utf-8');
+		const manifestJson = JSON.parse(content);
+
+		// Update icon src URLs to use CDN
+		if (manifestJson.icons && Array.isArray(manifestJson.icons)) {
+			for (const icon of manifestJson.icons) {
+				const originalSrc = icon.src;
+				// Skip if already a full URL
+				if (originalSrc.startsWith('http://') || originalSrc.startsWith('https://')) {
+					continue;
+				}
+
+				// Find matching asset in manifest
+				const assetInfo = Object.values(manifest.assets).find(
+					(asset) => asset.originalPath === originalSrc.replace(/^\//, '') || asset.originalName === basename(originalSrc)
+				);
+
+				if (assetInfo) {
+					icon.src = assetInfo.cdnUrl;
+					console.log(`  📦 ${originalSrc} -> ${assetInfo.cdnUrl}`);
+				}
+			}
+		}
+
+		// Write updated manifest
+		writeFileSync(manifestPath, JSON.stringify(manifestJson, null, '\t'));
+		console.log('  ✅ manifest.webmanifest updated with CDN URLs');
+	} catch (error) {
+		console.error('  ❌ Error processing manifest.webmanifest:', error);
+	}
 }
 
 function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {

@@ -1,4 +1,4 @@
-import pwaAssetGenerator from 'pwa-asset-generator';
+import * as pwaAssetGenerator from 'pwa-asset-generator';
 import { readFile } from 'fs/promises';
 
 const sourceIcon = 'static/favicon.png';

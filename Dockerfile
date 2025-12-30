@@ -1,6 +1,11 @@
 # Build stage
 FROM node:22-alpine AS build
 
+# Build arguments with defaults
+ARG TAG_NAME
+ARG VITE_SITE_URL=https://robin.kreedzt.com
+ARG VITE_CDN_IMAGE_URL=
+
 # Set working directory
 WORKDIR /app
 
@@ -12,10 +17,14 @@ RUN corepack enable && \
     corepack prepare pnpm@10.8.0 --activate && \
     pnpm install --frozen-lockfile
 
+# Create .env file from build args
+RUN echo "VITE_SITE_URL=${VITE_SITE_URL}" > .env && \
+    echo "VITE_CDN_IMAGE_URL=${VITE_CDN_IMAGE_URL}" >> .env
+
 # Copy the rest of the code
 COPY . .
 
-# Build the app
+# Build the app (Vite will read .env)
 RUN pnpm build
 
 # Production stage with Nginx

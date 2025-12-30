@@ -16,7 +16,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"coverage": "vitest run --coverage"
+		"coverage": "vitest run --coverage",
+		"generate-icons": "tsx scripts/generate-icons.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.1",
@@ -41,10 +42,12 @@
 		"prettier": "^3.7.4",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.6.14",
+		"pwa-asset-generator": "^8.1.2",
 		"svelte": "^5.46.1",
 		"svelte-check": "^4.3.5",
 		"tailwindcss": "^4.1.18",
 		"ts-node": "^10.9.2",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.50.1",
 		"vite": "^6.4.1",
