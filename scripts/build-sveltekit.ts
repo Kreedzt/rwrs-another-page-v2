@@ -37,16 +37,26 @@ function buildSvelteKit() {
 		const appHtmlPath = 'src/app.html';
 		let appHtmlContent = readFileSync(appHtmlPath, 'utf-8');
 
-		// Replace %VITE_SITE_URL% and %VITE_CDN_IMAGE_URL% placeholders
-		const siteUrl = process.env.VITE_SITE_URL || 'https://robin.kreedzt.com';
-		const cdnImageUrl = process.env.VITE_CDN_IMAGE_URL || siteUrl;
+		// Only replace placeholders if KEEP_PLACEHOLDERS is not set
+		// This allows community builds to keep placeholders for runtime replacement
+		const keepPlaceholders = process.env.KEEP_PLACEHOLDERS === 'true';
+		let modified = false;
 
-		appHtmlContent = appHtmlContent.replace(/%VITE_SITE_URL%/g, siteUrl);
-		appHtmlContent = appHtmlContent.replace(/%VITE_CDN_IMAGE_URL%/g, cdnImageUrl);
+		if (!keepPlaceholders) {
+			// Replace __VITE_SITE_URL__ and __VITE_CDN_IMAGE_URL__ placeholders
+			const siteUrl = process.env.VITE_SITE_URL || 'https://robin.kreedzt.com';
+			const cdnImageUrl = process.env.VITE_CDN_IMAGE_URL || siteUrl;
 
-		writeFileSync(appHtmlPath, appHtmlContent);
-		console.log(`  ✓ Replaced %VITE_SITE_URL% with ${siteUrl}`);
-		console.log(`  ✓ Replaced %VITE_CDN_IMAGE_URL% with ${cdnImageUrl}`);
+			appHtmlContent = appHtmlContent.replace(/__VITE_SITE_URL__/g, siteUrl);
+			appHtmlContent = appHtmlContent.replace(/__VITE_CDN_IMAGE_URL__/g, cdnImageUrl);
+
+			writeFileSync(appHtmlPath, appHtmlContent);
+			modified = true;
+			console.log(`  ✓ Replaced __VITE_SITE_URL__ with ${siteUrl}`);
+			console.log(`  ✓ Replaced __VITE_CDN_IMAGE_URL__ with ${cdnImageUrl}`);
+		} else {
+			console.log('  ⏭️  Keeping placeholders for runtime replacement');
+		}
 		console.log('✅ app.html pre-processed\n');
 
 		try {
@@ -57,9 +67,11 @@ function buildSvelteKit() {
 			execSync('vite build', { stdio: 'inherit', env });
 			console.log('✅ Build completed\n');
 		} finally {
-			// Restore original app.html after build
-			execSync('git checkout src/app.html', { stdio: 'inherit' });
-			console.log('✅ Restored original app.html\n');
+			// Restore original app.html after build (only if we modified it)
+			if (modified) {
+				execSync('git checkout src/app.html', { stdio: 'inherit' });
+				console.log('✅ Restored original app.html\n');
+			}
 		}
 
 		console.log('🎉 SvelteKit build completed successfully!');

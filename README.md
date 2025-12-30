@@ -160,35 +160,60 @@ CDN_URL=https://assets.kreedzt.cn/rwrs-v2-web-assets CDN_IMAGE_URL=https://img.k
 
 ### Docker
 
-There are two ways to deploy using Docker:
+#### Community Image
 
-#### Option 1: Separate Containers with Network
+The `robin-web-community` image automatically detects the current domain at runtime - no configuration needed:
+
+```bash
+docker pull zhaozisong0/robin-web-community:latest
+docker run -d --name robin-web -p 80:80 zhaozisong0/robin-web-community:latest
+```
+
+**Features:**
+- Automatically uses `window.location.origin` for meta tags and SEO
+- No environment variables required for basic usage
+- Optionally override `VITE_SITE_URL` and `VITE_CDN_IMAGE_URL` at runtime
+
+Optional runtime configuration:
+
+```bash
+docker run -d --name robin-web -p 80:80 \
+  -e "VITE_SITE_URL=https://your-domain.com" \
+  zhaozisong0/robin-web-community:latest
+```
+
+#### Deployment with Backend
+
+##### Option 1: Separate Containers with Network
 
 1. Create a Docker network:
 
    ```bash
-   docker network create rwrs-network
+   docker network create robin-network
    ```
 
 2. Start the rwrs-server container:
 
    ```bash
    docker pull zhaozisong0/rwrs-server:latest
-   docker run -d --name rwrs-server --network rwrs-network -e "HOST=0.0.0.0" -e "PORT=80" zhaozisong0/rwrs-server:latest
+   docker run -d --name rwrs-server --network robin-network \
+     -e "HOST=0.0.0.0" -e "PORT=80" \
+     zhaozisong0/rwrs-server:latest
    ```
 
-3. Start the rwrs-another-page-v2 container:
+3. Start the robin-web container:
 
    ```bash
-   docker pull zhaozisong0/rwrs-another-page-v2:latest
-   docker run -d --name rwrs-another-page-v2 --network rwrs-network -p 80:80 zhaozisong0/rwrs-another-page-v2:latest
+   docker pull zhaozisong0/robin-web-community:latest
+   docker run -d --name robin-web --network robin-network -p 80:80 \
+     zhaozisong0/robin-web-community:latest
    ```
 
 4. Configure a reverse proxy (like Nginx) to route:
    - `/api/*` requests to the rwrs-server container
-   - `/*` requests to the rwrs-another-page-v2 container
+   - `/*` requests to the robin-web container
 
-#### Option 2: Single Container
+##### Option 2: Single Container
 
 You can also deploy by copying the frontend build to the rwrs-server's static directory:
 
@@ -207,13 +232,19 @@ You can also deploy by copying the frontend build to the rwrs-server's static di
    Or mount the directory when starting the container:
 
    ```bash
-   docker run -d -p 80:80 -e "HOST=0.0.0.0" -e "PORT=80" -v $(pwd)/build:/static zhaozisong0/rwrs-server:latest
+   docker run -d -p 80:80 -e "HOST=0.0.0.0" -e "PORT=80" \
+     -v $(pwd)/build:/static \
+     zhaozisong0/rwrs-server:latest
    ```
 
-You can inject custom header scripts using the `HEADER_SCRIPTS` environment variable:
+#### Custom Header Scripts
+
+You can inject custom header scripts (e.g., analytics) using the `HEADER_SCRIPTS` environment variable:
 
 ```bash
-docker run -p 80:80 -e "HEADER_SCRIPTS=<script>console.log('Custom script');</script>" zhaozisong0/rwrs-another-page-v2:latest
+docker run -p 80:80 \
+  -e "HEADER_SCRIPTS=<script src=\"https://analytics.example.com/script.js\"></script>" \
+  zhaozisong0/robin-web-community:latest
 ```
 
 ### Manual Deployment

@@ -58,7 +58,6 @@ function buildCDNForSvelteKit() {
 	console.log('🚀 Starting SvelteKit CDN build process...\n');
 
 	const cdnBaseUrl = process.env.CDN_URL || 'https://assets.kreedzt.cn/rwrs-v2-web-assets';
-	const cdnImageUrl = process.env.CDN_IMAGE_URL || cdnBaseUrl;
 	const buildDir = 'build';
 
 	try {
@@ -68,30 +67,30 @@ function buildCDNForSvelteKit() {
 		const appHtmlPath = 'src/app.html';
 		let appHtmlContent = readFileSync(appHtmlPath, 'utf-8');
 
-		// Replace %VITE_SITE_URL% and %VITE_CDN_IMAGE_URL% placeholders
+		// Replace __VITE_SITE_URL__ and __VITE_CDN_IMAGE_URL__ placeholders
 		const siteUrl = process.env.VITE_SITE_URL || 'https://robin.kreedzt.com';
 		const cdnImageUrl = process.env.VITE_CDN_IMAGE_URL || siteUrl;
 
-		appHtmlContent = appHtmlContent.replace(/%VITE_SITE_URL%/g, siteUrl);
-		appHtmlContent = appHtmlContent.replace(/%VITE_CDN_IMAGE_URL%/g, cdnImageUrl);
+		appHtmlContent = appHtmlContent.replace(/__VITE_SITE_URL__/g, siteUrl);
+		appHtmlContent = appHtmlContent.replace(/__VITE_CDN_IMAGE_URL__/g, cdnImageUrl);
 
 		writeFileSync(appHtmlPath, appHtmlContent);
-		console.log(`  ✓ Replaced %VITE_SITE_URL% with ${siteUrl}`);
-		console.log(`  ✓ Replaced %VITE_CDN_IMAGE_URL% with ${cdnImageUrl}`);
+		console.log(`  ✓ Replaced __VITE_SITE_URL__ with ${siteUrl}`);
+		console.log(`  ✓ Replaced __VITE_CDN_IMAGE_URL__ with ${cdnImageUrl}`);
 		console.log('✅ app.html pre-processed\n');
 
 		try {
 			// Step 1: 标准构建
 			console.log('🏗️  Step 1: Building with standard SvelteKit process...');
 			// 传递 CDN_BUILD 环境变量
-			const env = { ...process.env, CDN_BUILD: 'true' };
+			const env: Record<string, string> = { ...process.env, CDN_BUILD: 'true' };
 			if (process.env.CDN_URL) {
 				env.CDN_URL = process.env.CDN_URL;
 			}
 			// Ensure VITE_* variables are passed for $env/static/public
 			for (const key in process.env) {
 				if (key.startsWith('VITE_')) {
-					env[key] = process.env[key];
+					env[key] = process.env[key] as string;
 				}
 			}
 
@@ -327,7 +326,7 @@ function processManifestFile(buildDir: string, manifest: CDNManifest): void {
 	}
 
 	try {
-		let content = readFileSync(manifestPath, 'utf-8');
+		const content = readFileSync(manifestPath, 'utf-8');
 		const manifestJson = JSON.parse(content);
 
 		// Update icon src URLs to use CDN
@@ -363,20 +362,20 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 	let content = readFileSync(htmlPath, 'utf-8');
 
 	// Replace all asset references with CDN URLs
-	for (const [relativePath, assetInfo] of Object.entries(manifest.assets)) {
+	for (const [, assetInfo] of Object.entries(manifest.assets)) {
 		const filename = assetInfo.originalName;
 		const cdnUrl = assetInfo.cdnUrl;
 
 		// Match href="./filename" or href="/filename" or href="filename"
-		const hrefPattern = new RegExp(`href=["']([.\/]*${filename})["']`, 'g');
+		const hrefPattern = new RegExp(`href=["']([./]*${filename})["']`, 'g');
 		content = content.replace(hrefPattern, `href="${cdnUrl}"`);
 
 		// Match src="./filename" or src="/filename" or src="filename"
-		const srcPattern = new RegExp(`src=["']([.\/]*${filename})["']`, 'g');
+		const srcPattern = new RegExp(`src=["']([./]*${filename})["']`, 'g');
 		content = content.replace(srcPattern, `src="${cdnUrl}"`);
 
 		// Match content="./filename" (for meta tags)
-		const contentPattern = new RegExp(`content=["']([.\/]*${filename})["']`, 'g');
+		const contentPattern = new RegExp(`content=["']([./]*${filename})["']`, 'g');
 		content = content.replace(contentPattern, `content="${cdnUrl}"`);
 	}
 
@@ -392,6 +391,44 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 		const quote = match[0];
 		return `${quote}${baseUrl}/_app/${path}${quote}`;
 	});
+
+	// Add CDN preconnect links (optimized to avoid duplicates)
+	const imageCdnUrl = process.env.CDN_IMAGE_URL || manifest.cdnBaseUrl;
+	const needsPreconnect =
+		manifest.cdnBaseUrl && manifest.cdnBaseUrl.startsWith('http');
+
+	if (needsPreconnect) {
+		// Remove existing preconnect placeholders
+		content = content.replace(
+			/<!-- Preconnect to CDN[^>]*-->(\s*<link[^>]*preconnect[^>]*>)+\s*/g,
+			''
+		);
+
+		// Build unique preconnect links (avoid duplicates when CDN_URL == CDN_IMAGE_URL)
+		const preconnectLinks: string[] = [];
+		const addedUrls = new Set<string>();
+
+		const addPreconnect = (url: string) => {
+			const origin = new URL(url).origin;
+			if (!addedUrls.has(origin)) {
+				preconnectLinks.push(`  <link rel="preconnect" href="${origin}" />`);
+				preconnectLinks.push(`  <link rel="dns-prefetch" href="${origin}" />`);
+				addedUrls.add(origin);
+			}
+		};
+
+		addPreconnect(manifest.cdnBaseUrl);
+		if (imageCdnUrl !== manifest.cdnBaseUrl) {
+			addPreconnect(imageCdnUrl);
+		}
+
+		// Insert preconnect links after charset meta tag
+		const preconnectHtml = '\n' + preconnectLinks.join('\n');
+		content = content.replace(
+			/(<meta charset="[^"]*"\/?>)/,
+			`$1${preconnectHtml}\n`
+		);
+	}
 
 	// Add CDN base URL meta tag
 	const metaTag = `\n  <meta name="cdn-base-url" content="${manifest.cdnBaseUrl}">`;

@@ -1,16 +1,17 @@
+name: Release
+
 on:
   release:
     types: [created]
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
   docker:
-    name: Publish to Docker Hub
+    name: Build Production Docker Image
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to DockerHub
@@ -18,13 +19,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        id: docker_build
+      - name: Build and push production image
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: zhaozisong0/rwrs-another-page-v2:latest, zhaozisong0/rwrs-another-page-v2:${{ github.ref_name }}
+          tags: |
+            zhaozisong0/robin-web-production:latest
+            zhaozisong0/robin-web-production:${{ github.ref_name }}
           build-args: |
-            "TAG_NAME=${{ github.ref_name }}"
-            "VITE_SITE_URL=${{ secrets.VITE_SITE_URL }}"
-            "VITE_CDN_IMAGE_URL=${{ secrets.VITE_CDN_IMAGE_URL }}"
+            TAG_NAME=${{ github.ref_name }}
+            VITE_SITE_URL=${{ secrets.VITE_SITE_URL }}
+            VITE_CDN_IMAGE_URL=${{ secrets.VITE_CDN_IMAGE_URL }}

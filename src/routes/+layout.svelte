@@ -14,7 +14,64 @@
 			loading.style.opacity = '0';
 			setTimeout(() => loading.remove(), 300);
 		}
+
+		// Replace URL placeholders for community builds
+		// This allows runtime replacement of meta tag URLs without breaking SvelteKit prerendering
+		const siteUrl = import.meta.env.VITE_SITE_URL;
+		const cdnImageUrl = import.meta.env.VITE_CDN_IMAGE_URL || siteUrl;
+
+		if (siteUrl === '__USE_CURRENT_ORIGIN__') {
+			// Community build: use current domain
+			const currentOrigin = window.location.origin;
+			replaceMetaUrls(currentOrigin, currentOrigin);
+		} else if (siteUrl && siteUrl !== '__USE_CURRENT_ORIGIN__') {
+			// Production build: use configured URL
+			replaceMetaUrls(siteUrl, cdnImageUrl);
+		}
 	});
+
+	function replaceMetaUrls(siteUrl: string, cdnImageUrl: string) {
+		// Replace canonical URLs
+		document
+			.querySelectorAll('link[rel="canonical"]')
+			.forEach((el) => el.setAttribute('href', `${siteUrl}/`));
+
+		// Replace alternate language links
+		document
+			.querySelectorAll('link[rel="alternate"][hreflang]')
+			.forEach((el) => el.setAttribute('href', `${siteUrl}/`));
+
+		// Replace OG URLs
+		document
+			.querySelectorAll('meta[property="og:url"]')
+			.forEach((el) => el.setAttribute('content', `${siteUrl}/`));
+
+		// Replace Twitter URLs
+		document
+			.querySelectorAll('meta[name="twitter:url"]')
+			.forEach((el) => el.setAttribute('content', `${siteUrl}/`));
+
+		// Replace OG images
+		if (cdnImageUrl !== siteUrl) {
+			document
+				.querySelectorAll('meta[property="og:image"], meta[property="og:image:url"]')
+				.forEach((el) => {
+					const src = el.getAttribute('content');
+					if (src && src.includes('__VITE_CDN_IMAGE_URL__')) {
+						el.setAttribute('content', src.replace(/__VITE_CDN_IMAGE_URL__/g, cdnImageUrl));
+					}
+				});
+
+			document
+				.querySelectorAll('meta[name="twitter:image"]')
+				.forEach((el) => {
+					const src = el.getAttribute('content');
+					if (src && src.includes('__VITE_CDN_IMAGE_URL__')) {
+						el.setAttribute('content', src.replace(/__VITE_CDN_IMAGE_URL__/g, cdnImageUrl));
+					}
+				});
+		}
+	}
 </script>
 
 <!-- Christmas snowfall background -->
