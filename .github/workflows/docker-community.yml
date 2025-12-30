@@ -1,10 +1,8 @@
 name: Docker Community Build
 
 on:
-  push:
-    branches:
-      - master
-  workflow_dispatch:
+  release:
+    types: [created]
 
 jobs:
   docker:
@@ -24,6 +22,6 @@ jobs:
           push: true
           tags: |
             zhaozisong0/robin-web-community:latest
-            zhaozisong0/robin-web-community:${{ github.sha }}
+            zhaozisong0/robin-web-community:${{ github.ref_name }}
           # Uses default values from Dockerfile (localhost, no CDN)
           # Community users can override with their own values at runtime
