@@ -31,6 +31,9 @@ export interface IResServerItem {
 export interface IRes {
 	result: {
 		server: IResServerItem[];
+		server_list?: {
+			server: IResServerItem[];
+		};
 	};
 }
 

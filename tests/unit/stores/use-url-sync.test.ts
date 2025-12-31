@@ -1,16 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createUrlSync } from '$lib/stores/use-url-sync.svelte';
 import type { UrlState } from '$lib/utils/url-state';
-import type { PlayerDatabase } from '$lib/models/player.model';
-import type { ServerState } from '$lib/stores/use-server-state';
-import type { PlayerState } from '$lib/stores/use-player-state';
+import { PlayerDatabase } from '$lib/models/player.model';
+import type { ServerState } from '$lib/stores/use-server-state.svelte';
+import type { PlayerState } from '$lib/stores/use-player-state.svelte';
 
 describe('createUrlSync', () => {
 	let urlSync: ReturnType<typeof createUrlSync>;
 	let mockServerState: ServerState;
 	let mockPlayerState: PlayerState;
-	let mockOnViewChange: ReturnType<typeof vi.fn>;
-	let mockOnSearchChange: ReturnType<typeof vi.fn>;
+	let mockOnViewChange: ReturnType<typeof vi.fn<(view: 'servers' | 'players') => void>>;
+	let mockOnSearchChange: ReturnType<typeof vi.fn<(search: string) => void>>;
 
 	beforeEach(() => {
 		// Mock server state
@@ -82,7 +82,7 @@ describe('createUrlSync', () => {
 				return [];
 			},
 			get playerDb() {
-				return 'invasion';
+				return PlayerDatabase.INVASION;
 			},
 			get loading() {
 				return false;
@@ -228,10 +228,10 @@ describe('createUrlSync', () => {
 		});
 
 		it('should return initialPlayerDb from URL state', () => {
-			const urlState: UrlState = { playerDb: 'pacific' as PlayerDatabase };
+			const urlState: UrlState = { playerDb: PlayerDatabase.PACIFIC };
 			const result = urlSync.initializeFromUrl(urlState);
 
-			expect(result.initialPlayerDb).toBe('pacific');
+			expect(result.initialPlayerDb).toBe(PlayerDatabase.PACIFIC);
 		});
 
 		it('should return undefined initialPlayerDb when not in URL', () => {
@@ -254,14 +254,14 @@ describe('createUrlSync', () => {
 			const urlState: UrlState = { quickFilters: ['invasion'] };
 			const result = urlSync.handleUrlStateChange(urlState);
 
-			expect(result.quickFilters).toEqual(['invasion']);
+			expect((result as any).quickFilters).toEqual(['invasion']);
 		});
 
 		it('should filter out invalid quick filters on change', () => {
 			const urlState: UrlState = { quickFilters: ['invasion', 'invalid-id'] };
 			const result = urlSync.handleUrlStateChange(urlState);
 
-			expect(result.quickFilters).not.toContain('invalid-id');
+			expect((result as any).quickFilters).not.toContain('invalid-id');
 		});
 
 		it('should set sort state on both states when sortColumn changes', () => {
@@ -278,7 +278,7 @@ describe('createUrlSync', () => {
 		it('should set sort state to null when direction is null', () => {
 			const urlState: UrlState = {
 				sortColumn: 'name',
-				sortDirection: null
+				sortDirection: undefined
 			};
 			urlSync.handleUrlStateChange(urlState);
 
@@ -301,16 +301,16 @@ describe('createUrlSync', () => {
 		});
 
 		it('should call handlePlayerDbChange when playerDb changes', () => {
-			const urlState: UrlState = { playerDb: 'pacific' as PlayerDatabase };
+			const urlState: UrlState = { playerDb: PlayerDatabase.PACIFIC };
 			urlSync.handleUrlStateChange(urlState);
 
-			expect(mockPlayerState.handlePlayerDbChange).toHaveBeenCalledWith('pacific');
+			expect(mockPlayerState.handlePlayerDbChange).toHaveBeenCalledWith(PlayerDatabase.PACIFIC);
 		});
 
 		it('should call onViewChange when playerDb changes in players view', () => {
 			const urlState: UrlState = {
 				view: 'players',
-				playerDb: 'pacific' as PlayerDatabase
+				playerDb: PlayerDatabase.PACIFIC
 			};
 			urlSync.handleUrlStateChange(urlState);
 

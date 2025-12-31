@@ -24,11 +24,17 @@ describe('createServerState', () => {
 			maxPlayers: 32,
 			bots: 0,
 			mapId: `map${i % 3}`,
+			mapName: `Map ${i % 3}`,
 			mode: i % 2 === 0 ? 'ctf' : 'tdm',
-			region: ['us', 'eu', 'asia'][i % 3],
 			country: ['USA', 'Germany', 'Japan'][i % 3],
 			comment: i % 2 === 0 ? 'Test server' : null,
-			playerList: [`Player${i}`]
+			playerList: [`Player${i}`],
+			timeStamp: Date.now(),
+			version: '1.9.8',
+			dedicated: true,
+			mod: false,
+			url: null,
+			realm: null
 		}));
 	};
 

@@ -6,12 +6,15 @@
 	import MapPreview from '$lib/components/MapPreview.svelte';
 	import MobileInfiniteScroll from '$lib/components/MobileInfiniteScroll.svelte';
 	import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
+	import Toast from '$lib/components/Toast.svelte';
+	import { m } from '$lib/paraglide/messages.js';
+	import { ArrowDownUp, ArrowUp, ArrowDown, Eye, CircleX, Info } from '@lucide/svelte';
 	import type { IDisplayServerItem, IColumn } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
-	import { highlightMatch } from '$lib/utils/highlight';
 
 	interface Props {
 		loading: boolean;
+		refreshing?: boolean;
 		error: string | null;
 		searchQuery: string;
 		paginatedServers: IDisplayServerItem[];
@@ -29,6 +32,7 @@
 		sortColumn: string | null;
 		sortDirection: 'asc' | 'desc' | null;
 		mobileExpandedCards: Record<string, boolean>;
+		layoutMode: 'fullPage' | 'tableOnly';
 		onQuickFilter: (filterId: string) => void;
 		onMultiSelectChange: (checked: boolean) => void;
 		onSort: (column: string) => void;
@@ -43,6 +47,7 @@
 
 	let {
 		loading,
+		refreshing = false,
 		error,
 		searchQuery,
 		paginatedServers,
@@ -60,6 +65,7 @@
 		sortColumn,
 		sortDirection,
 		mobileExpandedCards,
+		layoutMode,
 		onQuickFilter,
 		onMultiSelectChange,
 		onSort,
@@ -91,39 +97,37 @@
 		return (item as any)[column.key] ?? '-';
 	}
 
-	// Get sort icon for column
-	function getSortIcon(column: string): string {
-		if (sortColumn !== column) {
-			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
-		}
+	// Toast state for refresh success feedback
+	let showRefreshToast = $state(false);
+	let wasPreviouslyRefreshing = $state(false);
 
-		if (sortDirection === 'desc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
-		} else if (sortDirection === 'asc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
-		}
+	// Monitor refreshing state changes to show toast
+	$effect(() => {
+		// Check if refreshing just finished (transitioned from true to false)
+		const refreshingJustFinished = wasPreviouslyRefreshing && !refreshing;
 
-		return '';
-	}
+		// Update tracking state
+		wasPreviouslyRefreshing = refreshing;
+
+		// Show toast when refresh completes
+		if (refreshingJustFinished) {
+			showRefreshToast = true;
+			setTimeout(() => {
+				showRefreshToast = false;
+			}, 2000);
+		}
+	});
+
+	const tableOnlyContainerClasses = 'md:flex-1 md:min-h-0 md:overflow-hidden';
+	const tableOnlyScrollClasses = 'md:flex-1 md:min-h-0 md:overflow-auto';
+	const fullPageScrollClasses = 'md:overflow-x-auto';
 </script>
 
 {#if loading}
 	<LoadingState type="servers" />
 {:else if error}
 	<div class="alert alert-error">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			class="h-6 w-6 shrink-0 stroke-current"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-			/>
-		</svg>
+		<CircleX class="h-6 w-6 shrink-0 stroke-current" />
 		<span>{error}</span>
 	</div>
 {:else}
@@ -137,9 +141,9 @@
 	/>
 
 	<!-- Desktop scrollable table container -->
-	<div class="hidden md:flex md:flex-1 md:flex-col md:overflow-hidden">
+	<div class={`hidden md:flex md:flex-col ${layoutMode === 'tableOnly' ? tableOnlyContainerClasses : ''}`}>
 		<!-- Desktop table with scroll -->
-		<div class="flex-1 overflow-auto">
+		<div class={`w-full ${layoutMode === 'tableOnly' ? tableOnlyScrollClasses : fullPageScrollClasses}`}>
 			<ServerTable
 				data={paginatedServers}
 				{columns}
@@ -165,8 +169,14 @@
 		</div>
 	</div>
 
-	<!-- Mobile content area - 保持原有行为 -->
+	<!-- Mobile content area -->
 	<div class="flex w-full flex-col md:hidden">
+		<!-- Toast container for mobile only -->
+		<div class="toast toast-top toast-end z-50">
+			{#if showRefreshToast}
+				<Toast message={m['app.toast.refreshSuccess.title']()} type="success" />
+			{/if}
+		</div>
 		<!-- Mobile table cards -->
 		<div class="md:hidden">
 			<!-- Mobile sort controls -->
@@ -178,7 +188,13 @@
 						type="button"
 					>
 						{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
-						{@html getSortIcon(column.key)}
+						{#if sortColumn !== column.key || !sortDirection}
+							<ArrowDownUp class="w-4 h-4 opacity-30" />
+						{:else if sortDirection === 'asc'}
+							<ArrowUp class="w-4 h-4 text-primary" />
+						{:else if sortDirection === 'desc'}
+							<ArrowDown class="w-4 h-4 text-primary" />
+						{/if}
 					</button>
 				{/each}
 			</div>
@@ -189,7 +205,7 @@
 						type="checkbox"
 						checked={mobileExpandedCards[item.id]}
 						onchange={() => onToggleMobileCard(item.id)}
-						aria-label="Toggle server details"
+						aria-label={m['app.ariaLabel.toggleServerDetails']()}
 						aria-expanded={mobileExpandedCards[item.id] ? 'true' : 'false'}
 					/>
 					<div class="collapse-title font-semibold p-4">
@@ -211,9 +227,11 @@
 								</div>
 							</div>
 							<div class="flex-shrink-0">
-								<span class="badge bg-success/70 text-white font-medium text-xs px-2 py-1">
-									{@html highlightMatch(item.mapId.split('/').pop() || '', searchQuery)}
-								</span>
+								{@html getDisplayValue(
+									item,
+									columns.find((col) => col.key === 'mapId')!,
+									searchQuery
+								)}
 							</div>
 						</div>
 					</div>
@@ -265,10 +283,7 @@
 												}}
 												type="button"
 											>
-												<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-												</svg>
+												<Eye class="w-3 h-3 mr-1" />
 												<TranslatedText key="app.map.buttonPreviewMap" />
 											</button>
 										</div>
@@ -282,20 +297,8 @@
 
 			{#if mobilePaginatedServers.length === 0}
 				<div class="alert alert-info">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						class="h-6 w-6 shrink-0 stroke-current"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						></path>
-					</svg>
-					<span>No data found{searchQuery ? ' matching your search' : ''}.</span>
+					<Info class="h-6 w-6 shrink-0 stroke-current" />
+					<span><TranslatedText key="app.server.noDataFound" />{#if searchQuery} <TranslatedText key="app.server.matchingSearch" />{/if}.</span>
 				</div>
 			{/if}
 		</div>

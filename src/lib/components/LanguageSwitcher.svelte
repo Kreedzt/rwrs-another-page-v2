@@ -10,7 +10,7 @@
 	const currentLocale = $derived(getLocale());
 
 	function handleLanguageChange(locale: string) {
-		setLocale(locale);
+		setLocale(locale as 'en-us' | 'zh-cn');
 		analytics.trackLanguageChange(locale);
 	}
 </script>

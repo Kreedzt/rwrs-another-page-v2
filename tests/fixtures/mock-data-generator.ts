@@ -1,4 +1,4 @@
-import type { IResServerItem, IDisplayServerItem } from '$lib/models/data-table.model';
+import type { IResServerItem, IDisplayServerItem } from '$lib/models/server.model';
 
 // Mock server data generator based on real API response
 export class MockDataGenerator {
@@ -214,28 +214,34 @@ export class MockDataGenerator {
 		overrides: Partial<IDisplayServerItem> = {}
 	): IDisplayServerItem[] {
 		const mockServers = this.generateMockServers(count);
-		return mockServers.map((server, index) => ({
-			id: `server_${index}_${Date.now()}`,
-			name: server.name,
-			ipAddress: server.address,
-			port: server.port,
-			mapId: server.map_id,
-			mapName: server.map_name || null,
-			bots: server.bots,
-			country: server.country,
-			currentPlayers: server.current_players,
-			timeStamp: server.timeStamp,
-			version: server.version,
-			dedicated: Boolean(server.dedicated),
-			mod: Boolean(server.mod),
-			playerList: Array.isArray(server.player) ? server.player : [server.player],
-			comment: server.comment || null,
-			url: server.url || null,
-			maxPlayers: server.max_players,
-			mode: server.mode,
-			realm: server.realm || null,
-			...overrides
-		}));
+		return mockServers.map((server, index) => {
+			const item: IDisplayServerItem = {
+				id: `server_${index}_${Date.now()}`,
+				name: server.name,
+				ipAddress: server.address,
+				port: server.port,
+				mapId: server.map_id,
+				mapName: server.map_name || null,
+				bots: server.bots,
+				country: server.country,
+				currentPlayers: server.current_players,
+				timeStamp: server.timeStamp,
+				version: server.version,
+				dedicated: Boolean(server.dedicated),
+				mod: Boolean(server.mod),
+				playerList: Array.isArray(server.player)
+					? (server.player.filter((p) => p !== undefined) as string[])
+					: server.player
+						? [server.player]
+						: [],
+				comment: server.comment || null,
+				url: server.url || null,
+				maxPlayers: server.max_players,
+				mode: server.mode,
+				realm: server.realm || null
+			};
+			return { ...item, ...overrides };
+		});
 	}
 
 	// Generate realistic server distribution for testing
@@ -281,7 +287,7 @@ export class MockDataGenerator {
 		// 5% nearly full servers
 		servers.push(
 			...this.generateDisplayServers(Math.floor(totalServers * 0.05), {
-				currentPlayers: (server) => Math.floor(server.maxPlayers * 0.9),
+				currentPlayers: Math.floor(totalServers * 0.9), // Use a number instead of a function
 				maxPlayers: Math.floor(Math.random() * 20) + 32,
 				bots: Math.floor(Math.random() * 50) + 250
 			})

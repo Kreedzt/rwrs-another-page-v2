@@ -49,8 +49,8 @@ export function sortServers(
 				bValue = b.port;
 				break;
 			default:
-				aValue = (a as Record<string, unknown>)[column!] || '';
-				bValue = (b as Record<string, unknown>)[column!] || '';
+				aValue = (a as unknown as Record<string, unknown>)[column!] || '';
+				bValue = (b as unknown as Record<string, unknown>)[column!] || '';
 				break;
 		}
 
@@ -60,9 +60,9 @@ export function sortServers(
 		}
 
 		if (direction === 'desc') {
-			return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+			return (aValue as string | number) > (bValue as string | number) ? -1 : (aValue as string | number) < (bValue as string | number) ? 1 : 0;
 		} else {
-			return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+			return (aValue as string | number) < (bValue as string | number) ? -1 : (aValue as string | number) > (bValue as string | number) ? 1 : 0;
 		}
 	});
 }
@@ -87,8 +87,8 @@ export function sortPlayers(
 
 		if (columnDef) {
 			const key = columnDef.key as keyof IPlayerItem;
-			aValue = (a as Record<string, unknown>)[key];
-			bValue = (b as Record<string, unknown>)[key];
+			aValue = (a as unknown as Record<string, unknown>)[key];
+			bValue = (b as unknown as Record<string, unknown>)[key];
 		} else {
 			aValue = '';
 			bValue = '';
@@ -105,9 +105,9 @@ export function sortPlayers(
 		}
 
 		if (direction === 'desc') {
-			return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+			return (aValue as string | number) > (bValue as string | number) ? -1 : (aValue as string | number) < (bValue as string | number) ? 1 : 0;
 		} else {
-			return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+			return (aValue as string | number) < (bValue as string | number) ? -1 : (aValue as string | number) > (bValue as string | number) ? 1 : 0;
 		}
 	});
 }

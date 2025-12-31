@@ -27,7 +27,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 1,
 					totalItems: 10,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -41,7 +41,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 0,
 					totalItems: 0,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -55,7 +55,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 5,
 					totalItems: 50,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -69,7 +69,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 5,
 					totalItems: 50,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -83,7 +83,7 @@ describe('Pagination Component', () => {
 					currentPage: 2,
 					totalPages: 10,
 					totalItems: 100,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -98,7 +98,7 @@ describe('Pagination Component', () => {
 					currentPage: 2,
 					totalPages: 10,
 					totalItems: 100,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -114,7 +114,7 @@ describe('Pagination Component', () => {
 					currentPage: 3,
 					totalPages: 10,
 					totalItems: 100,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -130,7 +130,7 @@ describe('Pagination Component', () => {
 					currentPage: 3,
 					totalPages: 10,
 					totalItems: 100,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -147,7 +147,7 @@ describe('Pagination Component', () => {
 					currentPage: 3,
 					totalPages: 10,
 					totalItems: 100,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -165,7 +165,7 @@ describe('Pagination Component', () => {
 					currentPage: 3,
 					totalPages: 10,
 					totalItems: 100,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -185,7 +185,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 5,
 					totalItems: 50,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -203,7 +203,7 @@ describe('Pagination Component', () => {
 					currentPage: 5,
 					totalPages: 5,
 					totalItems: 50,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -221,7 +221,7 @@ describe('Pagination Component', () => {
 					currentPage: 3,
 					totalPages: 5,
 					totalItems: 50,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -247,7 +247,7 @@ describe('Pagination Component', () => {
 					totalPages: 3,
 					totalItems: 30,
 					maxVisiblePages: 5,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -267,7 +267,7 @@ describe('Pagination Component', () => {
 					totalPages: 20,
 					totalItems: 200,
 					maxVisiblePages: 5,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -288,7 +288,7 @@ describe('Pagination Component', () => {
 					totalPages: 10,
 					totalItems: 100,
 					maxVisiblePages: 5,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -313,7 +313,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 5,
 					totalItems: 50,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -334,7 +334,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 1,
 					totalItems: 10,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -350,7 +350,7 @@ describe('Pagination Component', () => {
 					currentPage: 5,
 					totalPages: 5,
 					totalItems: 50,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -365,7 +365,7 @@ describe('Pagination Component', () => {
 					totalPages: 100,
 					totalItems: 1000,
 					maxVisiblePages: 5,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -379,7 +379,7 @@ describe('Pagination Component', () => {
 					currentPage: 1,
 					totalPages: 5,
 					totalItems: 0,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 
@@ -393,7 +393,7 @@ describe('Pagination Component', () => {
 					currentPage: 5,
 					totalPages: 20,
 					totalItems: 200,
-					pageChange: mockPageChange
+					pageChange: mockPageChange as any
 				}
 			});
 

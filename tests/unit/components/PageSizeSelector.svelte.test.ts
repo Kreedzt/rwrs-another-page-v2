@@ -29,7 +29,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -41,7 +41,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -57,7 +57,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 15,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					options: [5, 10, 15, 30],
 					min: 5
 				}
@@ -75,7 +75,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 50,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					min: 20
 				}
 			});
@@ -92,7 +92,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 10,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					max: 50
 				}
 			});
@@ -109,7 +109,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					min: 15,
 					max: 50
 				}
@@ -126,7 +126,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 50,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -138,7 +138,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 10,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					min: 200,
 					max: 300
 				}
@@ -154,7 +154,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -169,7 +169,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 10,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -183,7 +183,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 100,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -197,7 +197,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -217,14 +217,14 @@ describe('PageSizeSelector Component', () => {
 			const { rerender, container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
 			expect(select.value).toBe('20');
 
-			await rerender({ currentSize: 50, onSizeChange: mockOnSizeChange });
+			await rerender({ currentSize: 50, onSizeChange: mockOnSizeChange as any });
 
 			expect(select.value).toBe('50');
 		});
@@ -235,7 +235,7 @@ describe('PageSizeSelector Component', () => {
 			const { container: container1 } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					options: [10, 20, 50]
 				}
 			});
@@ -247,7 +247,7 @@ describe('PageSizeSelector Component', () => {
 			const { container: container2 } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					options: [10, 20, 50, 100, 200],
 					max: 200
 				}
@@ -264,7 +264,7 @@ describe('PageSizeSelector Component', () => {
 			const { container: container1 } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					min: 10
 				}
 			});
@@ -276,7 +276,7 @@ describe('PageSizeSelector Component', () => {
 			const { container: container2 } = render(PageSizeSelector, {
 				props: {
 					currentSize: 50,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					min: 50
 				}
 			});
@@ -292,7 +292,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -304,7 +304,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -318,7 +318,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 25,
-					onSizeChange: mockOnSizeChange
+					onSizeChange: mockOnSizeChange as any
 				}
 			});
 
@@ -332,7 +332,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 10,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					options: []
 				}
 			});
@@ -345,7 +345,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 20,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					options: [20]
 				}
 			});
@@ -371,7 +371,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 1000,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					options: [100, 500, 1000, 5000],
 					max: 5000
 				}
@@ -386,7 +386,7 @@ describe('PageSizeSelector Component', () => {
 			const { container } = render(PageSizeSelector, {
 				props: {
 					currentSize: 10,
-					onSizeChange: mockOnSizeChange,
+					onSizeChange: mockOnSizeChange as any,
 					min: 0,
 					options: [0, 10, 20]
 				}

@@ -99,7 +99,6 @@
 		<span class="text-base-content/70 text-sm">
 			<TranslatedText
 				key="app.pagination.info"
-				defaultText="Page {currentPage} of {totalPages} ({totalItems} items)"
 				params={{ currentPage, totalPages, totalItems }}
 			/>
 		</span>

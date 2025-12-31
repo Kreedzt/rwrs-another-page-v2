@@ -2,7 +2,7 @@ import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
 import { svelteTesting } from '@testing-library/svelte/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import path from 'path';
 
 const isCdnBuild = process.env.CDN_BUILD === 'true';
@@ -26,7 +26,7 @@ export default defineConfig({
 
 				// 图片资源处理
 				if (cdnImageUrl && /\.(png|jpe?g|svg|gif|tiff|bmp|ico|webp)$/i.test(ext)) {
-					// 确保 URL 正确拼接，避免双重斜杠
+					// 确保 URL 正确拼接，避免 double 斜杠
 					const baseUrl = cdnImageUrl.endsWith('/') ? cdnImageUrl.slice(0, -1) : cdnImageUrl;
 					const path = filename.startsWith('/') ? filename.slice(1) : filename;
 					return { runtime: JSON.stringify(`${baseUrl}/${path}`) };

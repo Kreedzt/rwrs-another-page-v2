@@ -12,7 +12,7 @@
 
 	let isEnabled = true;
 	let typingBuffer = '';
-	let typingTimeout: number;
+	let typingTimeout: ReturnType<typeof setTimeout>;
 
 	// Check if we should handle the key event
 	function shouldHandleKeyEvent(event: KeyboardEvent): boolean {

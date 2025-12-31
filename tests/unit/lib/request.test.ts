@@ -26,7 +26,7 @@ describe('Request function', () => {
 				ok: true,
 				json: () => Promise.resolve(mockData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await request<{ result: string }>('/test');
 
@@ -43,7 +43,7 @@ describe('Request function', () => {
 				ok: true,
 				text: () => Promise.resolve(mockText),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await request<string>('/test', {}, 'text');
 
@@ -56,7 +56,7 @@ describe('Request function', () => {
 				ok: true,
 				json: () => Promise.resolve(mockData),
 				headers: new Headers()
-			});
+			} as any);
 
 			await request<{ result: string }>('/test', {}, 'json', 5000);
 
@@ -75,7 +75,7 @@ describe('Request function', () => {
 				statusText: 'Not Found',
 				json: () => Promise.resolve({ error: 'Not found' }),
 				headers: new Headers()
-			});
+			} as any);
 
 			await expect(request('/test')).rejects.toThrow('HTTP error 404: Not Found');
 			expect(console.error).toHaveBeenCalledWith('HTTP error 404: Not Found for /test');
@@ -144,7 +144,7 @@ describe('Request function', () => {
 				ok: true,
 				json: () => Promise.resolve(mockData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const options: RequestOptions = { timeout: 3000 };
 			await request('/test', options);
@@ -181,7 +181,7 @@ describe('Request function', () => {
 				ok: true,
 				json: () => Promise.resolve(mockData),
 				headers: new Headers()
-			});
+			} as any);
 
 			await request('/api/test');
 
@@ -196,7 +196,7 @@ describe('Request function', () => {
 				ok: true,
 				json: () => Promise.resolve(mockData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const options: RequestOptions = {
 				method: 'POST',

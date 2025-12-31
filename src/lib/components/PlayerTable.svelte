@@ -1,5 +1,7 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import { m } from '$lib/paraglide/messages.js';
+	import { ArrowDown, Info } from '@lucide/svelte';
 	import type { IPlayerItem, IPlayerColumn } from '$lib/models/player.model';
 
 	interface Props {
@@ -41,16 +43,6 @@
 		return (item as any)[column.key] ?? '-';
 	}
 
-	// Get sort icon for column (players only has descending sort)
-	function getSortIcon(column: string): string {
-		if (sortColumn !== column) {
-			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
-		}
-
-		// Always show descending icon for sorted column
-		return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
-	}
-
 	// Handle column sort
 	function handleColumnSort(column: string) {
 		onSort?.(column);
@@ -66,19 +58,7 @@
 
 {#if data.length === 0}
 	<div class="alert alert-info">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			class="h-6 w-6 shrink-0 stroke-current"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-			></path>
-		</svg>
+		<Info class="h-6 w-6 shrink-0 stroke-current" />
 		<span>
 			<TranslatedText key="app.player.noPlayersFound" />
 			{#if searchQuery}
@@ -110,14 +90,18 @@
 										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-2 text-left transition-colors duration-200"
 										onclick={() => handleColumnSort(column.key as string)}
 										type="button"
-										title="Click to sort"
+										title={m['app.ariaLabel.clickToSort']()}
 									>
 										<span class="flex-1">
 											{#if column.i18n}<TranslatedText
 													key={column.i18n}
 												/>{:else}{column.label}{/if}
 										</span>
-										{@html getSortIcon(column.key as string)}
+										{#if sortColumn !== column.key}
+											<ArrowDown class="w-4 h-4 opacity-30" />
+										{:else}
+											<ArrowDown class="w-4 h-4 text-primary" />
+										{/if}
 									</button>
 								{/if}
 							</th>

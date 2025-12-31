@@ -20,7 +20,8 @@
 		"title": "Robin",
 		"search": {
 			"placeholder": "搜索服务器、地图、玩家、模式、国家等...",
-			"placeholderPlayers": "搜索玩家用户名..."
+			"placeholderPlayers": "搜索玩家用户名...",
+			"clearAria": "清除搜索"
 		},
 		"button": {
 			"reset": "重置",
@@ -191,6 +192,38 @@
 			"page": "第",
 			"previousPage": "上一页",
 			"nextPage": "下一页"
+		},
+		"pwa": {
+			"install": {
+				"title": "安装 Robin",
+				"description": "安装以获得离线访问和更好的体验。",
+				"button": "安装",
+				"later": "稍后"
+			},
+			"status": {
+				"online": "在线",
+				"offline": "离线",
+				"updated": "更新时间:"
+			},
+			"offline": {
+				"banner": "您处于离线状态。显示缓存数据。"
+			}
+		},
+		"layoutMode": {
+			"button": "布局",
+			"tooltip": "切换布局模式",
+			"fullPage": "整页滚动",
+			"tableOnly": "表格滚动"
+		},
+		"server": {
+			"noDataFound": "未找到数据",
+			"matchingSearch": "匹配您的搜索"
+		},
+		"ariaLabel": {
+			"toggleServerDetails": "切换服务器详情",
+			"togglePlayerDetails": "切换玩家详情",
+			"clickToSort": "点击排序",
+			"previewMap": "预览地图"
 		}
 	}
 }

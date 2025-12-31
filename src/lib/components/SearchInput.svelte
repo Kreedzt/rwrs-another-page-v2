@@ -1,13 +1,17 @@
 <script lang="ts">
+	import { Search, X } from "@lucide/svelte";
+	import { m } from '$lib/paraglide/messages.js';
+
 	interface Props {
 		placeholder?: string;
 		value?: string;
 		oninput?: (value: string) => void;
 		onEnter?: (value: string) => void;
 		onRef?: (input: HTMLInputElement) => void;
+		onClear?: () => void;
 	}
 
-	let { placeholder = 'Search...', value = $bindable(''), oninput, onEnter, onRef }: Props = $props();
+	let { placeholder = 'Search...', value = $bindable(''), oninput, onEnter, onRef, onClear }: Props = $props();
 
 	let inputElement: HTMLInputElement;
 
@@ -21,6 +25,11 @@
 			const target = e.target as HTMLInputElement;
 			onEnter?.(target.value);
 		}
+	}
+
+	function handleClear() {
+		value = '';
+		onClear?.();
 	}
 
 	// Expose the input element to parent
@@ -37,28 +46,26 @@
 </script>
 
 <div class="form-control flex-1">
-	<label class="input input-bordered w-full focus-within:outline-none">
-		<svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-			<g
-				stroke-linejoin="round"
-				stroke-linecap="round"
-				stroke-width="2.5"
-				fill="none"
-				stroke="currentColor"
-			>
-				<circle cx="11" cy="11" r="8"></circle>
-				<path d="m21 21-4.3-4.3"></path>
-			</g>
-		</svg>
+	<label class="input input-bordered w-full focus-within:outline-none relative">
+		<Search class="h-[1em] opacity-50" />
 		<input
 			bind:this={inputElement}
 			type="search"
 			{placeholder}
-			class="grow focus:outline-none"
+			class="grow focus:outline-none pr-8"
 			bind:value
 			oninput={handleInput}
 			onkeydown={handleKeydown}
 		/>
+		<button
+			class="hover:bg-base-300 btn btn-ghost btn-circle btn-xs absolute right-1"
+			class:hidden={!value || value.length === 0}
+			onclick={handleClear}
+			type="button"
+			aria-label={m['app.search.clearAria']()}
+		>
+			<X class="w-4 h-4" />
+		</button>
 	</label>
 </div>
 

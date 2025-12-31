@@ -9,6 +9,7 @@ export type AnalyticsEventName =
 	| 'theme_change'
 	| 'language_change'
 	| 'github_link_click'
+	| 'layout_mode_change'
 	// Search & Filter Events
 	| 'search_triggered'
 	| 'quick_filter_applied'
@@ -53,7 +54,7 @@ export interface AnalyticsEventParams {
 
 	// Action params
 	action?: string;
-	method?: 'click' | 'keyboard' | 'scroll' | 'auto';
+	method?: 'click' | 'keyboard' | 'clear' | 'scroll' | 'auto';
 	visible?: boolean;
 	enabled?: boolean;
 

@@ -26,7 +26,7 @@ describe('PlayerService', () => {
 		{
 			id: 'invasion:player1',
 			username: 'player1',
-			db: 'invasion',
+			db: PlayerDatabase.INVASION,
 			rowNumber: 1,
 			rankProgression: 100,
 			kills: 50,
@@ -48,7 +48,7 @@ describe('PlayerService', () => {
 		{
 			id: 'invasion:player2',
 			username: 'player2',
-			db: 'invasion',
+			db: PlayerDatabase.INVASION,
 			rowNumber: 2,
 			rankProgression: 90,
 			kills: 40,
@@ -86,7 +86,7 @@ describe('PlayerService', () => {
 				expect.objectContaining({}),
 				'text'
 			);
-			expect(mockParsePlayerListFromString).toHaveBeenCalledWith(mockHtmlResponse, 'invasion');
+			expect(mockParsePlayerListFromString).toHaveBeenCalledWith(mockHtmlResponse, PlayerDatabase.INVASION);
 			expect(result).toEqual(mockPlayers);
 		});
 
@@ -97,20 +97,20 @@ describe('PlayerService', () => {
 
 			const params = {
 				search: 'test',
-				db: 'pacific' as const,
+				db: PlayerDatabase.PACIFIC as const,
 				sort: 'score',
 				start: 10,
 				size: 50
 			};
 
-			const result = await PlayerService.list(params);
+			const result = await PlayerService.list(params as any);
 
 			expect(mockRequest).toHaveBeenCalledWith(
 				expect.stringContaining('search=test&db=pacific&sort=score&start=10&size=50'),
 				expect.objectContaining({}),
 				'text'
 			);
-			expect(mockParsePlayerListFromString).toHaveBeenCalledWith(mockHtmlResponse, 'pacific');
+			expect(mockParsePlayerListFromString).toHaveBeenCalledWith(mockHtmlResponse, PlayerDatabase.PACIFIC);
 			expect(result).toEqual(mockPlayers);
 		});
 
@@ -119,7 +119,7 @@ describe('PlayerService', () => {
 			mockRequest.mockResolvedValue(mockHtmlResponse);
 			mockParsePlayerListFromString.mockReturnValue(mockPlayers);
 
-			await PlayerService.list({ db: 'invasion' });
+			await PlayerService.list({ db: PlayerDatabase.INVASION });
 
 			const callArgs = mockRequest.mock.calls[0];
 			const url = callArgs[0] as string;
@@ -179,7 +179,7 @@ describe('PlayerService', () => {
 			mockRequest.mockResolvedValue(mockHtmlResponse);
 			mockParsePlayerListFromString.mockReturnValue(mockPlayers);
 
-			await PlayerService.list({ db: 'pacific' });
+			await PlayerService.list({ db: PlayerDatabase.PACIFIC });
 
 			const callArgs = mockRequest.mock.calls[0];
 			const url = callArgs[0] as string;
@@ -192,7 +192,7 @@ describe('PlayerService', () => {
 			mockRequest.mockResolvedValue(mockHtmlResponse);
 			mockParsePlayerListFromString.mockReturnValue([]);
 
-			const databases: PlayerDatabase[] = ['invasion', 'pacific', 'prereset_invasion'];
+			const databases: PlayerDatabase[] = [PlayerDatabase.INVASION, PlayerDatabase.PACIFIC, PlayerDatabase.PRERESET_INVASION];
 
 			for (const db of databases) {
 				await PlayerService.list({ db });
@@ -223,7 +223,7 @@ describe('PlayerService', () => {
 				expect.objectContaining({}),
 				'text'
 			);
-			expect(mockParsePlayerListWithPagination).toHaveBeenCalledWith(mockHtmlResponse, 'invasion');
+			expect(mockParsePlayerListWithPagination).toHaveBeenCalledWith(mockHtmlResponse, PlayerDatabase.INVASION);
 			expect(result).toEqual(mockPaginationResult);
 		});
 
@@ -240,7 +240,7 @@ describe('PlayerService', () => {
 
 			const result = await PlayerService.listWithPagination({
 				search: 'test',
-				db: 'pacific',
+				db: PlayerDatabase.PACIFIC,
 				sort: 'kills',
 				start: 20,
 				size: 50
@@ -251,7 +251,7 @@ describe('PlayerService', () => {
 				expect.objectContaining({}),
 				'text'
 			);
-			expect(mockParsePlayerListWithPagination).toHaveBeenCalledWith(mockHtmlResponse, 'pacific');
+			expect(mockParsePlayerListWithPagination).toHaveBeenCalledWith(mockHtmlResponse, PlayerDatabase.PACIFIC);
 			expect(result).toEqual(mockPaginationResult);
 		});
 
@@ -266,7 +266,7 @@ describe('PlayerService', () => {
 			mockRequest.mockResolvedValue(mockHtmlResponse);
 			mockParsePlayerListWithPagination.mockReturnValue(mockPaginationResult);
 
-			await PlayerService.listWithPagination({ db: 'invasion' });
+			await PlayerService.listWithPagination({ db: PlayerDatabase.INVASION });
 
 			const callArgs = mockRequest.mock.calls[0];
 			const url = callArgs[0] as string;
@@ -371,7 +371,7 @@ describe('PlayerService', () => {
 
 			await PlayerService.list({
 				search: 'player',
-				db: 'pacific',
+				db: PlayerDatabase.PACIFIC,
 				sort: 'score',
 				start: 5,
 				size: 25

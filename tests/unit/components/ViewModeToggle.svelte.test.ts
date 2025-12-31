@@ -26,7 +26,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -39,7 +39,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'players',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -52,7 +52,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -64,7 +64,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -78,7 +78,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -93,7 +93,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'players',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -108,7 +108,7 @@ describe('ViewModeToggle Component', () => {
 			const { container: container1 } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -121,7 +121,7 @@ describe('ViewModeToggle Component', () => {
 			const { container: container2 } = render(ViewModeToggle, {
 				props: {
 					currentView: 'players',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -135,7 +135,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -157,7 +157,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -170,7 +170,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'players',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -185,7 +185,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -199,7 +199,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 
@@ -212,7 +212,7 @@ describe('ViewModeToggle Component', () => {
 			const { container } = render(ViewModeToggle, {
 				props: {
 					currentView: 'servers',
-					onViewChange: mockOnViewChange
+					onViewChange: mockOnViewChange as any
 				}
 			});
 

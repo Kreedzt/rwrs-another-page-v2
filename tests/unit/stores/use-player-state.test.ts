@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createPlayerState } from '$lib/stores/use-player-state.svelte';
 import { PlayerService } from '$lib/services/players';
 import type { IPlayerItem } from '$lib/models/player.model';
-import type { PlayerDatabase } from '$lib/models/player.model';
+import { PlayerDatabase } from '$lib/models/player.model';
 
 // Mock PlayerService
 vi.mock('$lib/services/players', () => ({
@@ -19,7 +19,7 @@ describe('createPlayerState', () => {
 		return Array.from({ length: count }, (_, i) => ({
 			id: `player-${i + 1}`,
 			username: `Player${i + 1}`,
-			db: 'invasion' as PlayerDatabase,
+			db: PlayerDatabase.INVASION,
 			rowNumber: i + 1,
 			rankProgression: 50 + i,
 			kills: 100 + i * 10,
@@ -53,7 +53,7 @@ describe('createPlayerState', () => {
 		});
 
 		it('should have playerDb set to initialDb', () => {
-			expect(playerState.playerDb).toBe('invasion');
+			expect(playerState.playerDb).toBe(PlayerDatabase.INVASION);
 		});
 
 		it('should have loading set to false', () => {
@@ -195,18 +195,18 @@ describe('createPlayerState', () => {
 
 	describe('handlePlayerDbChange', () => {
 		it('should update playerDb', () => {
-			playerState.handlePlayerDbChange('pacific' as PlayerDatabase);
-			expect(playerState.playerDb).toBe('pacific');
+			playerState.handlePlayerDbChange(PlayerDatabase.PACIFIC);
+			expect(playerState.playerDb).toBe(PlayerDatabase.PACIFIC);
 		});
 
 		it('should handle invasion db', () => {
-			playerState.handlePlayerDbChange('invasion' as PlayerDatabase);
-			expect(playerState.playerDb).toBe('invasion');
+			playerState.handlePlayerDbChange(PlayerDatabase.INVASION);
+			expect(playerState.playerDb).toBe(PlayerDatabase.INVASION);
 		});
 
 		it('should handle prereset_invasion db', () => {
-			playerState.handlePlayerDbChange('prereset_invasion' as PlayerDatabase);
-			expect(playerState.playerDb).toBe('prereset_invasion');
+			playerState.handlePlayerDbChange(PlayerDatabase.PRERESET_INVASION);
+			expect(playerState.playerDb).toBe(PlayerDatabase.PRERESET_INVASION);
 		});
 	});
 
@@ -329,7 +329,7 @@ describe('createPlayerState', () => {
 
 			expect(PlayerService.listWithPagination).toHaveBeenCalledWith(
 				expect.objectContaining({
-					db: 'invasion'
+					db: PlayerDatabase.INVASION
 				})
 			);
 		});

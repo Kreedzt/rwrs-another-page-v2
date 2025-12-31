@@ -1,75 +1,14 @@
 import type { IColumn, IDisplayServerItem } from '$lib/models/server.model';
-import type { MapData } from '$lib/services/maps';
 import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highlight';
 
 // Function to get map preview HTML for desktop
-function getMapPreviewHtml(server: IDisplayServerItem, query?: string, maps?: MapData[]): string {
+function getMapPreviewHtml(server: IDisplayServerItem, query?: string): string {
 	const mapId = server.mapId;
-	const mapData = maps?.find((map) => map.path === mapId);
 	const mapName = mapId.split('/').pop() || '';
 
-	if (!mapData) {
-		// No matching map - just show the map name
-		const displayText = query ? highlightMatch(mapName, query) : mapName;
-		return `<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${displayText}</span>`;
-	}
-
-	// Map with preview available - always show preview button
+	// Just show the map name badge - preview button is handled separately in the component
 	const displayText = query ? highlightMatch(mapName, query) : mapName;
-	return `
-		<div class="flex items-center gap-2">
-			<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${displayText}</span>
-			<button
-				class="btn btn-outline btn-xs text-green-600 border-green-300 hover:bg-green-50"
-				data-map-action="preview"
-				data-map-path="${mapData.path}"
-				data-map-image="${mapData.image}"
-				data-map-name="${mapData.name}"
-				title="Preview map: ${mapData.name}"
-				type="button"
-			>
-				<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542 7z"></path>
-				</svg>
-				Preview
-			</button>
-		</div>
-	`;
-}
-
-// Function to get map preview HTML for mobile
-function getMobileMapPreviewHtml(server: IDisplayServerItem, maps?: MapData[]): string {
-	const mapId = server.mapId;
-	const mapData = maps?.find((map) => map.path === mapId);
-	const mapName = mapId.split('/').pop() || '';
-
-	if (!mapData) {
-		// No matching map - just show map name
-		return `<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${mapName}</span>`;
-	}
-
-	// Map with preview available - show preview button
-	return `
-		<div class="flex items-center gap-2">
-			<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${mapName}</span>
-			<button
-				class="btn btn-outline btn-xs text-green-600 border-green-300 hover:bg-green-50"
-				data-map-action="preview"
-				data-map-path="${mapData.path}"
-				data-map-image="${mapData.image}"
-				data-map-name="${mapData.name}"
-				title="Preview map: ${mapData.name}"
-				type="button"
-			>
-				<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542 7z"></path>
-				</svg>
-				Preview
-			</button>
-		</div>
-	`;
+	return `<span class="badge badge-outline bg-cyan-50 text-cyan-700 border-cyan-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${displayText}</span>`;
 }
 
 // Function to get capacity status and styling
@@ -147,22 +86,22 @@ export const columns: IColumn[] = [
 		i18n: 'app.column.mode',
 		getValue: (server: IDisplayServerItem) => {
 			const modeText = server.mode || 'Unknown';
-			return `<span class="badge badge-outline bg-white text-blue-600 border-blue-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${modeText}</span>`;
+			return `<span class="badge badge-outline bg-blue-50 text-blue-700 border-blue-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${modeText}</span>`;
 		},
 		getValueWithHighlight: (server: IDisplayServerItem, query: string) => {
 			const modeText = server.mode || 'Unknown';
 			const highlightedText = highlightMatch(modeText, query);
-			return `<span class="badge badge-outline bg-white text-blue-600 border-blue-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${highlightedText}</span>`;
+			return `<span class="badge badge-outline bg-blue-50 text-blue-700 border-blue-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${highlightedText}</span>`;
 		}
 	},
 	{
 		key: 'mapId',
 		label: 'Map',
 		i18n: 'app.column.map',
-		getValue: (server: IDisplayServerItem, maps?: MapData[]) =>
-			getMapPreviewHtml(server, undefined, maps),
-		getValueWithHighlight: (server: IDisplayServerItem, query: string, maps?: MapData[]) =>
-			getMapPreviewHtml(server, query, maps)
+		getValue: (server: IDisplayServerItem) =>
+			getMapPreviewHtml(server, undefined),
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+			getMapPreviewHtml(server, query)
 	},
 	{
 		key: 'playerCount',

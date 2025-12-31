@@ -56,7 +56,7 @@
 				onclick={() => handleQuickFilter(filter.id)}
 				type="button"
 			>
-				<TranslatedText key={filter.labelKey} fallback={filter.defaultLabel} />
+				<TranslatedText key={filter.labelKey} />
 			</button>
 		{/each}
 	</div>

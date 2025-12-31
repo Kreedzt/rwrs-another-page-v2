@@ -11,7 +11,7 @@ Object.defineProperty(window, 'innerWidth', {
 
 describe('GlobalKeyboardSearch', () => {
 	let mockSearchInput: HTMLInputElement;
-	let mockOnSearch: ReturnType<typeof vi.fn>;
+	let mockOnSearch: ReturnType<typeof vi.fn<(query: string) => void>>;
 	let component: any;
 
 	beforeEach(() => {

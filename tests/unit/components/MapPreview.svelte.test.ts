@@ -26,7 +26,6 @@ describe('MapPreview Component', () => {
 	beforeEach(() => {
 		mockOnClose = vi.fn();
 		mockMapData = {
-			id: 'test_map',
 			name: 'Test Map',
 			path: 'media/packages/vanilla.maps/maps/test',
 			image: '/images/test_map.png'
@@ -83,7 +82,7 @@ describe('MapPreview Component', () => {
 					show: false,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -97,7 +96,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 100, y: 100 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -120,7 +119,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -143,7 +142,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -162,7 +161,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -179,7 +178,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -194,7 +193,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -211,7 +210,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -228,7 +227,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -241,14 +240,14 @@ describe('MapPreview Component', () => {
 				show: false,
 				mapData: mockMapData,
 				position: { x: 0, y: 0 },
-				onClose: mockOnClose
+				onClose: mockOnClose as any
 			});
 
 			rerender({
 				show: true,
 				mapData: mockMapData,
 				position: { x: 0, y: 0 },
-				onClose: mockOnClose
+				onClose: mockOnClose as any
 			});
 
 			// Should render without crashing
@@ -264,7 +263,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -291,7 +290,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: mockMapData,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 
@@ -308,7 +307,7 @@ describe('MapPreview Component', () => {
 					show: true,
 					mapData: undefined,
 					position: { x: 0, y: 0 },
-					onClose: mockOnClose
+					onClose: mockOnClose as any
 				}
 			});
 

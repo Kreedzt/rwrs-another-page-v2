@@ -23,7 +23,10 @@
 <select
 	class="select select-bordered w-full min-w-48 sm:w-auto"
 	bind:value={currentDb}
-	onchange={(e) => onDbChange(e.target.value as PlayerDatabase)}
+	onchange={(e) => {
+		const target = e.target as HTMLSelectElement;
+		onDbChange(target.value as PlayerDatabase);
+	}}
 	aria-label="Select player database"
 	title="Select player database"
 >

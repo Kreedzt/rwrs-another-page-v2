@@ -4,14 +4,367 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- Primary Meta Tags -->
+		<title>Robin - Community-Driven RWR Data Platform</title>
+		<meta
+			name="title"
+			content="Robin - Community-Driven RWR Data Platform"
+		/>
 		<meta
 			name="description"
-			content="A community-driven data query platform for Running with Rifles game - servers, players, and more."
+			content="A community-driven, unofficial platform for browsing live Running with Rifles game servers and player statistics. Real-time server list, player rankings across Invasion/Pacific databases, advanced search, and multilingual support."
 		/>
-		<title>Robin - RWR Data Query Site</title>
+		<meta
+			name="keywords"
+			content="Running with Rifles, RWR, RWR servers, RWR players, game server browser, player statistics, RWR invasion, RWR Pacific, multiplayer shooter, Steam game"
+		/>
+		<meta name="author" content="Kreedzt" />
+		<meta name="creator" content="Kreedzt" />
+		<meta name="publisher" content="Kreedzt" />
+
+		<!-- Theme Color for PWA -->
+		<meta name="theme-color" content="#ff6b35" />
+
+		<!-- Canonical URL -->
+		<link rel="canonical" href="/" />
+
+		<!-- Alternate Language Links (language stored in localStorage, not routes) -->
+		<link rel="alternate" hreflang="en" href="/" />
+		<link rel="alternate" hreflang="zh" href="/" />
+		<link rel="alternate" hreflang="x-default" href="/" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="/" />
+		<meta property="og:title" content="Robin - Community-Driven RWR Data Platform" />
+		<meta
+			property="og:description"
+			content="A community-driven, unofficial platform for browsing live RWR servers and player statistics. Supports Invasion & Pacific databases with advanced search and multilingual support."
+		/>
+		<meta property="og:image" content="/og-image-1200x630.png" />
+		<meta property="og:image:url" content="/og-image-1200x630.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Robin - RWR Server Browser Interface" />
+		<meta property="og:site_name" content="Robin" />
+		<meta property="og:locale" content="en_US" />
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:url" content="/" />
+		<meta name="twitter:title" content="Robin - Community-Driven RWR Data Platform" />
+		<meta
+			name="twitter:description"
+			content="A community-driven, unofficial platform for browsing live RWR servers and player statistics."
+		/>
+		<meta
+			name="twitter:image"
+			content="/og-image-1200x630.png"
+		/>
+		<meta name="twitter:image:alt" content="Robin - RWR Server Browser Interface" />
+
+		<!-- Apple Touch Icon -->
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-icon-180.png" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="%sveltekit.assets%/apple-icon-180.png"
+		/>
+
+		<!-- Apple Mobile Web App -->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="Robin" />
+
+		<!-- Apple Splash Screens -->
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2048-2732.jpg"
+			media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2732-2048.jpg"
+			media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1668-2388.jpg"
+			media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2388-1668.jpg"
+			media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1536-2048.jpg"
+			media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2048-1536.jpg"
+			media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1640-2360.jpg"
+			media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2360-1640.jpg"
+			media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1668-2224.jpg"
+			media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2224-1668.jpg"
+			media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1620-2160.jpg"
+			media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2160-1620.jpg"
+			media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1488-2266.jpg"
+			media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2266-1488.jpg"
+			media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1320-2868.jpg"
+			media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2868-1320.jpg"
+			media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1206-2622.jpg"
+			media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2622-1206.jpg"
+			media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1260-2736.jpg"
+			media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2736-1260.jpg"
+			media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1290-2796.jpg"
+			media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2796-1290.jpg"
+			media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1179-2556.jpg"
+			media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2556-1179.jpg"
+			media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1170-2532.jpg"
+			media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2532-1170.jpg"
+			media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1284-2778.jpg"
+			media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2778-1284.jpg"
+			media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1125-2436.jpg"
+			media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2436-1125.jpg"
+			media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1242-2688.jpg"
+			media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2688-1242.jpg"
+			media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-828-1792.jpg"
+			media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1792-828.jpg"
+			media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1242-2208.jpg"
+			media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-2208-1242.jpg"
+			media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-750-1334.jpg"
+			media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1334-750.jpg"
+			media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-640-1136.jpg"
+			media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+		/>
+		<link
+			rel="apple-touch-startup-image"
+			href="%sveltekit.assets%/apple-splash-1136-640.jpg"
+			media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)"
+		/>
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/png" sizes="32x32" href="%sveltekit.assets%/favicon.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="%sveltekit.assets%/favicon.png" />
+
+		<!-- PWA Manifest -->
+		<link rel="manifest" href="/manifest.webmanifest" />
+
+		<!-- Preconnect to CDN (uncomment when CDN_IMAGE_URL is configured) -->
+		<!-- <link rel="preconnect" href="__VITE_CDN_IMAGE_URL__" /> -->
+		<!-- <link rel="dns-prefetch" href="__VITE_CDN_IMAGE_URL__" /> -->
+
+		<!-- Loading Screen Styles -->
+		<style>
+			#svelte-loading {
+				position: fixed;
+				inset: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 1.5rem;
+				background: var(--color-bg-primary, #1a1d1f);
+				z-index: 9999;
+				transition: opacity 0.3s ease;
+			}
+
+			.loading-spinner {
+				width: 48px;
+				height: 48px;
+				border: 4px solid var(--color-accent, #ff6b35);
+				border-top-color: transparent;
+				border-radius: 50%;
+				animation: spin 0.8s linear infinite;
+			}
+
+			.loading-text {
+				color: var(--color-text-secondary, #a0a0a0);
+				font-family: var(--font-mono, 'Consolas', monospace);
+				font-size: 0.875rem;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+			}
+
+			@keyframes spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+
+		<!-- Structured Data (JSON-LD) -->
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "SoftwareApplication",
+				"name": "Robin",
+				"applicationCategory": "GameApplication",
+				"operatingSystem": "Web Browser",
+				"description": "A community-driven, unofficial platform for browsing live Running with Rifles game servers and player statistics. Browse live game servers, view player rankings across multiple databases, and join matches instantly with Steam integration.",
+				"url": "/",
+				"author": {
+					"@type": "Person",
+					"name": "Kreedzt"
+				},
+				"featureList": [
+					"Real-time server list",
+					"Player statistics and rankings",
+					"Multi-database support (Invasion, Pacific)",
+					"Advanced search and filtering",
+					"Multilingual interface",
+					"Mobile-responsive design"
+				],
+				"browserRequirements": "Requires JavaScript. Recommended browsers: Chrome, Firefox, Safari, Edge"
+			}
+		</script>
+
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
+		<div style="display: contents">
+			<!-- Loading Screen (will be replaced when SvelteKit hydrates) -->
+			<div id="svelte-loading">
+				<div class="loading-spinner"></div>
+				<div class="loading-text">Initializing...</div>
+			</div>
+			%sveltekit.body%
+		</div>
 	</body>
 </html>

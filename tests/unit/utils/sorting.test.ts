@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { sortServers, sortPlayers, type SortConfig } from '$lib/utils/sorting';
+import { PlayerDatabase } from '$lib/models/player.model';
 import type { IDisplayServerItem } from '$lib/models/server.model';
 import type { IPlayerItem } from '$lib/models/player.model';
 
@@ -16,9 +17,17 @@ describe('sorting utilities', () => {
 				bots: 2,
 				mapId: 'map1',
 				mode: 'ctf',
-				region: 'us',
-				playerList: []
-			},
+				playerList: [],
+				mapName: 'Map 1',
+				country: 'US',
+				version: '1.0',
+				dedicated: true,
+				mod: false,
+				comment: '',
+				url: '',
+				realm: '',
+				timeStamp: 0
+			} as unknown as IDisplayServerItem,
 			{
 				id: '2',
 				name: 'Server A',
@@ -29,9 +38,17 @@ describe('sorting utilities', () => {
 				bots: 0,
 				mapId: 'map2',
 				mode: 'tdm',
-				region: 'eu',
-				playerList: []
-			},
+				playerList: [],
+				mapName: 'Map 2',
+				country: 'EU',
+				version: '1.0',
+				dedicated: true,
+				mod: false,
+				comment: '',
+				url: '',
+				realm: '',
+				timeStamp: 0
+			} as unknown as IDisplayServerItem,
 			{
 				id: '3',
 				name: 'Server B',
@@ -42,9 +59,17 @@ describe('sorting utilities', () => {
 				bots: 1,
 				mapId: 'map3',
 				mode: 'ctf',
-				region: 'asia',
-				playerList: []
-			}
+				playerList: [],
+				mapName: 'Map 3',
+				country: 'Asia',
+				version: '1.0',
+				dedicated: true,
+				mod: false,
+				comment: '',
+				url: '',
+				realm: '',
+				timeStamp: 0
+			} as unknown as IDisplayServerItem
 		];
 
 		describe('edge cases', () => {
@@ -54,7 +79,7 @@ describe('sorting utilities', () => {
 			});
 
 			it('should return original array when column is undefined', () => {
-				const result = sortServers(mockServers, undefined, 'asc');
+				const result = sortServers(mockServers, undefined as unknown as null, 'asc');
 				expect(result).toEqual(mockServers);
 			});
 
@@ -140,11 +165,11 @@ describe('sorting utilities', () => {
 				expect(result[2].name).toBe('Server A');
 			});
 
-			it('should sort by region ascending', () => {
-				const result = sortServers(mockServers, 'region', 'asc');
-				expect(result[0].region).toBe('asia');
-				expect(result[1].region).toBe('eu');
-				expect(result[2].region).toBe('us');
+			it('should sort by country ascending', () => {
+				const result = sortServers(mockServers, 'country', 'asc');
+				expect(result[0].country).toBe('Asia');
+				expect(result[1].country).toBe('EU');
+				expect(result[2].country).toBe('US');
 			});
 
 			it('should sort by mode ascending', () => {
@@ -167,40 +192,70 @@ describe('sorting utilities', () => {
 	describe('sortPlayers', () => {
 		const mockPlayers: IPlayerItem[] = [
 			{
-				id: '1',
+				id: 'pacific:Charlie',
 				rowNumber: 3,
 				username: 'Charlie',
 				kills: 50,
 				deaths: 20,
 				score: 1000,
 				kd: 2.5,
-				timePlayed: 5000,
+				timePlayed: '100h 20min',
 				rankProgression: 75,
-				rankName: 'General'
+				rankName: 'General',
+				db: PlayerDatabase.PACIFIC,
+				rankIcon: 'textures/hud_rank16.png',
+				teamkills: 10,
+				longestKillStreak: 5,
+				targetsDestroyed: 100,
+				vehiclesDestroyed: 50,
+				soldiersHealed: 200,
+				distanceMoved: '10.5km',
+				shotsFired: 1000,
+				throwablesThrown: 50
 			},
 			{
-				id: '2',
+				id: 'pacific:Alice',
 				rowNumber: 1,
 				username: 'Alice',
 				kills: 100,
 				deaths: 50,
 				score: 2000,
 				kd: 2.0,
-				timePlayed: 10000,
+				timePlayed: '200h 40min',
 				rankProgression: 90,
-				rankName: 'Colonel'
+				rankName: 'Colonel',
+				db: PlayerDatabase.PACIFIC,
+				rankIcon: 'textures/hud_rank15.png',
+				teamkills: 5,
+				longestKillStreak: 10,
+				targetsDestroyed: 200,
+				vehiclesDestroyed: 100,
+				soldiersHealed: 400,
+				distanceMoved: '20.1km',
+				shotsFired: 2000,
+				throwablesThrown: 100
 			},
 			{
-				id: '3',
+				id: 'pacific:Bob',
 				rowNumber: 2,
 				username: 'Bob',
 				kills: 30,
 				deaths: 10,
 				score: 500,
 				kd: 3.0,
-				timePlayed: 3000,
+				timePlayed: '50h 10min',
 				rankProgression: 50,
-				rankName: 'Major'
+				rankName: 'Major',
+				db: PlayerDatabase.PACIFIC,
+				rankIcon: 'textures/hud_rank14.png',
+				teamkills: 2,
+				longestKillStreak: 3,
+				targetsDestroyed: 50,
+				vehiclesDestroyed: 25,
+				soldiersHealed: 100,
+				distanceMoved: '5.2km',
+				shotsFired: 500,
+				throwablesThrown: 25
 			}
 		];
 
@@ -264,9 +319,9 @@ describe('sorting utilities', () => {
 
 			it('should sort by timePlayed descending', () => {
 				const result = sortPlayers(mockPlayers, 'timePlayed', 'desc');
-				expect(result[0].timePlayed).toBe(10000);
-				expect(result[1].timePlayed).toBe(5000);
-				expect(result[2].timePlayed).toBe(3000);
+				expect(result[0].timePlayed).toBe('50h 10min');
+				expect(result[1].timePlayed).toBe('200h 40min');
+				expect(result[2].timePlayed).toBe('100h 20min');
 			});
 
 			it('should sort by rankProgression descending', () => {
