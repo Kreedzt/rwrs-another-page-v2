@@ -79,6 +79,9 @@ function buildCDNForSvelteKit() {
 		console.log(`  ✓ Replaced __VITE_CDN_IMAGE_URL__ with ${cdnImageUrl}`);
 		console.log('✅ app.html pre-processed\n');
 
+		// Backup original app.html content
+		const appHtmlBackup = readFileSync(appHtmlPath, 'utf-8');
+
 		try {
 			// Step 1: 标准构建
 			console.log('🏗️  Step 1: Building with standard SvelteKit process...');
@@ -97,8 +100,8 @@ function buildCDNForSvelteKit() {
 			execSync('vite build', { stdio: 'inherit', env });
 			console.log('✅ Standard build completed\n');
 		} finally {
-			// Restore original app.html after build
-			execSync('git checkout src/app.html', { stdio: 'inherit' });
+			// Restore original app.html after build (without git dependency)
+			writeFileSync(appHtmlPath, appHtmlBackup);
 			console.log('✅ Restored original app.html\n');
 		}
 
@@ -304,11 +307,11 @@ function processHTMLFiles(buildDir: string, manifest: CDNManifest): string[] {
 				findAndProcessHTMLFiles(fullPath, itemRelativePath);
 			} else if (stat.isFile() && item.endsWith('.html')) {
 				const processedContent = processHTMLContent(fullPath, manifest);
-				const outputPath = fullPath.replace('.html', '-cdn.html');
-				writeFileSync(outputPath, processedContent);
+				// 直接覆盖原 HTML，确保最终产物使用 CDN 引用
+				writeFileSync(fullPath, processedContent);
 
-				htmlFiles.push(outputPath);
-				console.log(`  📄 ${itemRelativePath} -> ${basename(outputPath)}`);
+				htmlFiles.push(fullPath);
+				console.log(`  📄 ${itemRelativePath} -> ${basename(fullPath)}`);
 			}
 		}
 	}

@@ -12,6 +12,12 @@ ARG CDN_URL=
 # Separate CDN for images (optional, defaults to CDN_URL)
 ARG CDN_IMAGE_URL=
 
+# Convert ARGs to ENVs so they're available in RUN commands
+ENV VITE_SITE_URL=${VITE_SITE_URL}
+ENV VITE_CDN_IMAGE_URL=${VITE_CDN_IMAGE_URL}
+ENV CDN_URL=${CDN_URL}
+ENV CDN_IMAGE_URL=${CDN_IMAGE_URL}
+
 # Set working directory
 WORKDIR /app
 
