@@ -127,7 +127,7 @@
 	<LoadingState type="servers" />
 {:else if error}
 	<div class="alert alert-error">
-		<XCircle class="h-6 w-6 shrink-0 stroke-current" />
+		<CircleX class="h-6 w-6 shrink-0 stroke-current" />
 		<span>{error}</span>
 	</div>
 {:else}
@@ -169,7 +169,7 @@
 		</div>
 	</div>
 
-	<!-- Mobile content area - 保持原有行为 -->
+	<!-- Mobile content area -->
 	<div class="flex w-full flex-col md:hidden">
 		<!-- Toast container for mobile only -->
 		<div class="toast toast-top toast-end z-50">

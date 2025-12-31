@@ -2,13 +2,13 @@
  * Highlights matching text in a string with HTML markup
  * @param text The text to search within
  * @param query The search query to highlight
- * @param className Optional CSS class name to apply to the highlight (default: "bg-accent text-accent-content")
+ * @param className Optional CSS class name to apply to the highlight (default: classic yellow highlight)
  * @returns String with HTML markup for highlighting
  */
 export function highlightMatch(
 	text: string,
 	query: string,
-	className: string = 'bg-accent text-accent-content'
+	className: string = 'bg-yellow-200 text-gray-900 dark:bg-yellow-500 dark:text-gray-900 rounded px-0.5'
 ): string {
 	if (!query || !text) return text;
 
@@ -33,8 +33,8 @@ export function highlightInBadge(text: string, query: string): string {
 	const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	const regex = new RegExp(`(${escapedQuery})`, 'gi');
 
-	// Use a simple span with inline styles to avoid spacing issues
-	return text.replace(regex, `<span class="bg-accent">$1</span>`);
+	// Use yellow highlight that works well on neutral badge backgrounds
+	return text.replace(regex, `<span class="bg-yellow-300 text-gray-900 dark:bg-yellow-400 dark:text-gray-900 rounded">$1</span>`);
 }
 
 /**

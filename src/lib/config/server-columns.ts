@@ -1,24 +1,14 @@
 import type { IColumn, IDisplayServerItem } from '$lib/models/server.model';
-import type { MapData } from '$lib/services/maps';
 import { highlightMatch, renderPlayerListWithHighlight } from '$lib/utils/highlight';
 
 // Function to get map preview HTML for desktop
-function getMapPreviewHtml(server: IDisplayServerItem, query?: string, maps?: MapData[]): string {
+function getMapPreviewHtml(server: IDisplayServerItem, query?: string): string {
 	const mapId = server.mapId;
 	const mapName = mapId.split('/').pop() || '';
 
 	// Just show the map name badge - preview button is handled separately in the component
 	const displayText = query ? highlightMatch(mapName, query) : mapName;
-	return `<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${displayText}</span>`;
-}
-
-// Function to get map preview HTML for mobile
-function getMobileMapPreviewHtml(server: IDisplayServerItem, maps?: MapData[]): string {
-	const mapId = server.mapId;
-	const mapName = mapId.split('/').pop() || '';
-
-	// Just show the map name badge - preview button is handled separately in collapse-content
-	return `<span class="badge badge-outline bg-white text-green-600 border-green-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${mapName}</span>`;
+	return `<span class="badge badge-info badge-outline font-medium text-xs px-2 py-1 rounded-md shadow-sm">${displayText}</span>`;
 }
 
 // Function to get capacity status and styling
@@ -96,22 +86,22 @@ export const columns: IColumn[] = [
 		i18n: 'app.column.mode',
 		getValue: (server: IDisplayServerItem) => {
 			const modeText = server.mode || 'Unknown';
-			return `<span class="badge badge-outline bg-white text-blue-600 border-blue-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${modeText}</span>`;
+			return `<span class="badge badge-outline bg-blue-50 text-blue-700 border-blue-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${modeText}</span>`;
 		},
 		getValueWithHighlight: (server: IDisplayServerItem, query: string) => {
 			const modeText = server.mode || 'Unknown';
 			const highlightedText = highlightMatch(modeText, query);
-			return `<span class="badge badge-outline bg-white text-blue-600 border-blue-300 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${highlightedText}</span>`;
+			return `<span class="badge badge-outline bg-blue-50 text-blue-700 border-blue-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm" data-mode="mode">${highlightedText}</span>`;
 		}
 	},
 	{
 		key: 'mapId',
 		label: 'Map',
 		i18n: 'app.column.map',
-		getValue: (server: IDisplayServerItem, maps?: MapData[]) =>
-			getMapPreviewHtml(server, undefined, maps),
-		getValueWithHighlight: (server: IDisplayServerItem, query: string, maps?: MapData[]) =>
-			getMapPreviewHtml(server, query, maps)
+		getValue: (server: IDisplayServerItem) =>
+			getMapPreviewHtml(server, undefined),
+		getValueWithHighlight: (server: IDisplayServerItem, query: string) =>
+			getMapPreviewHtml(server, query)
 	},
 	{
 		key: 'playerCount',

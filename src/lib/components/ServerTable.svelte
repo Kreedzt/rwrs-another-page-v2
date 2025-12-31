@@ -166,8 +166,7 @@
 										<a
 											href={item.url}
 											target="_blank"
-											class="link inline-flex min-h-6 items-center underline-offset-4 hover:underline"
-											style="color: var(--color-accent);"
+											class="link link-primary inline-flex min-h-6 items-center underline-offset-4 hover:underline"
 											title={item.url}
 										>
 											{item.url.length > 50 ? item.url.substring(0, 47) + '...' : item.url}
