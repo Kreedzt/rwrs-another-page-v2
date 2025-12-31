@@ -80,11 +80,13 @@ if (browser) {
 export function getCurrentTheme(): 'light' | 'dark' {
 	if (!browser) return 'light';
 
-	let current: Theme;
-	const unsubscribe = theme.subscribe((value) => (current = value));
+	let current: Theme | undefined;
+	const unsubscribe = theme.subscribe((value) => {
+		current = value;
+	});
 	unsubscribe();
 
-	if (current === 'system') {
+	if (current === 'system' || current === undefined) {
 		return getSystemTheme();
 	}
 	return current;

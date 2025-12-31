@@ -24,7 +24,7 @@ class MockIntersectionObserver implements IntersectionObserver {
 
 	constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
 		this.callback = callback;
-		this.root = options?.root || null;
+		this.root = (options?.root as any) || null;
 		this.rootMargin = options?.rootMargin || '';
 		this.thresholds = Array.isArray(options?.threshold)
 			? options.threshold
@@ -102,7 +102,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -118,7 +118,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: true,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -133,7 +133,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: false,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -147,7 +147,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: false,
 					isLoading: true,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -161,7 +161,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -175,7 +175,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 300
 				}
 			});
@@ -192,7 +192,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -208,7 +208,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: true,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -224,7 +224,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: false,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -242,7 +242,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -260,7 +260,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: true,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -275,7 +275,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: false,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -291,7 +291,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -306,7 +306,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -322,7 +322,7 @@ describe('MobileInfiniteScroll Component', () => {
 				props: {
 					hasMore: true,
 					isLoading: false,
-					onLoadMore: mockOnLoadMore,
+					onLoadMore: mockOnLoadMore as any,
 					threshold: 200
 				}
 			});
@@ -331,19 +331,19 @@ describe('MobileInfiniteScroll Component', () => {
 			await rerender({
 				hasMore: true,
 				isLoading: true,
-				onLoadMore: mockOnLoadMore,
+				onLoadMore: mockOnLoadMore as any,
 				threshold: 200
 			});
 			await rerender({
 				hasMore: true,
 				isLoading: false,
-				onLoadMore: mockOnLoadMore,
+				onLoadMore: mockOnLoadMore as any,
 				threshold: 200
 			});
 			await rerender({
 				hasMore: false,
 				isLoading: false,
-				onLoadMore: mockOnLoadMore,
+				onLoadMore: mockOnLoadMore as any,
 				threshold: 200
 			});
 

@@ -54,7 +54,7 @@ export interface AnalyticsEventParams {
 
 	// Action params
 	action?: string;
-	method?: 'click' | 'keyboard' | 'scroll' | 'auto';
+	method?: 'click' | 'keyboard' | 'clear' | 'scroll' | 'auto';
 	visible?: boolean;
 	enabled?: boolean;
 

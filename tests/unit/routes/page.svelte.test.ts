@@ -90,7 +90,6 @@ describe('Page Integration - Map Preview Functionality', () => {
 		// Mock getMaps function
 		vi.mocked(getMaps).mockResolvedValue([
 			{
-				id: 'map1_desert',
 				name: 'Desert Map',
 				path: 'media/packages/vanilla.desert/maps/map1',
 				image: 'md5_1.png'
@@ -125,7 +124,7 @@ describe('Page Integration - Map Preview Functionality', () => {
 			ok: true,
 			text: () => Promise.resolve(mockXmlResponse),
 			headers: new Headers()
-		});
+		} as any);
 	});
 
 	afterEach(() => {

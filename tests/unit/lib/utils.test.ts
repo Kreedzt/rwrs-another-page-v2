@@ -5,7 +5,7 @@ import {
 	getCurrentTimeStr,
 	generateEmptyOnlineStatItem
 } from '$lib/share/utils';
-import type { IDisplayServerItem } from '$lib/models/data-table.model';
+import type { IDisplayServerItem } from '$lib/models/server.model';
 
 describe('XML Player List Parsing', () => {
 	describe('fixPlayerList function (via parseServerListFromString)', () => {

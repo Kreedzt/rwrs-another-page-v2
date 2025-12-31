@@ -13,11 +13,14 @@
 	let visible = $state(true);
 
 	// Auto-dismiss
-	if (duration > 0) {
-		setTimeout(() => {
-			visible = false;
-		}, duration);
-	}
+	$effect(() => {
+		if (duration > 0) {
+			const timer = setTimeout(() => {
+				visible = false;
+			}, duration);
+			return () => clearTimeout(timer);
+		}
+	});
 
 	// Icon component mapping
 	const iconComponents = {
@@ -27,13 +30,15 @@
 		error: CircleX
 	};
 
-	const IconComponent = iconComponents[type];
+	const IconComponent = $derived(iconComponents[type]);
 </script>
 
 {#if visible}
 	<div transition:fade={{ duration: 300 }}>
 		<div class="alert alert-{type} shadow-lg">
-			<svelte:component this={IconComponent} class="h-5 w-5 shrink-0" />
+			{#if IconComponent}
+				<IconComponent class="h-5 w-5 shrink-0" />
+			{/if}
 			<span>{message}</span>
 		</div>
 	</div>

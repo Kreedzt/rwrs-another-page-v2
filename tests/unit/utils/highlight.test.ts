@@ -17,7 +17,9 @@ describe('highlightMatch', () => {
 
 	test('should highlight simple match', () => {
 		const result = highlightMatch('Hello World', 'World');
-		expect(result).toContain('<mark class="bg-accent text-accent-content">World</mark>');
+		expect(result).toContain(
+			'<mark class="bg-yellow-200 text-gray-900 dark:bg-yellow-500 dark:text-gray-900 rounded px-0.5">World</mark>'
+		);
 	});
 
 	test('should be case insensitive', () => {
@@ -101,9 +103,11 @@ describe('highlightInBadge', () => {
 		expect(highlightInBadge('', 'test')).toBe('');
 	});
 
-	test('should highlight simple match with bg-accent class', () => {
+	test('should highlight simple match with bg-yellow-300 class', () => {
 		const result = highlightInBadge('Player1', 'Player');
-		expect(result).toContain('<span class="bg-accent">Player</span>');
+		expect(result).toContain(
+			'<span class="bg-yellow-300 text-gray-900 dark:bg-yellow-400 dark:text-gray-900 rounded">Player</span>'
+		);
 	});
 
 	test('should be case insensitive', () => {
@@ -123,7 +127,7 @@ describe('highlightInBadge', () => {
 
 	test('should use inline styling approach suitable for badges', () => {
 		const result = highlightInBadge('Player1', 'Player');
-		expect(result).toContain('class="bg-accent"');
+		expect(result).toContain('bg-yellow-300');
 	});
 });
 
@@ -145,8 +149,10 @@ describe('renderPlayerListWithHighlight', () => {
 
 	test('should render single player badge with highlighting', () => {
 		const result = renderPlayerListWithHighlight(['Player1'], 'Player');
-		expect(result).toContain('<span class="bg-accent">Player</span>');
-		expect(result).toContain('badge');
+		expect(result).toContain(
+			'<span class="bg-yellow-300 text-gray-900 dark:bg-yellow-400 dark:text-gray-900 rounded">Player</span>'
+		);
+		expect(result).toContain('bg-yellow-300');
 	});
 
 	test('should render multiple players with badges', () => {
@@ -158,7 +164,9 @@ describe('renderPlayerListWithHighlight', () => {
 
 	test('should highlight matching players', () => {
 		const result = renderPlayerListWithHighlight(['Alpha', 'Bravo', 'Charlie'], 'Bravo');
-		expect(result).toContain('<span class="bg-accent">Bravo</span>');
+		expect(result).toContain(
+			'<span class="bg-yellow-300 text-gray-900 dark:bg-yellow-400 dark:text-gray-900 rounded">Bravo</span>'
+		);
 	});
 
 	test('should include proper flex layout classes', () => {
@@ -173,26 +181,26 @@ describe('renderPlayerListWithHighlight', () => {
 
 	test('should highlight partial matches', () => {
 		const result = renderPlayerListWithHighlight(['PlayerOne', 'PlayerTwo'], 'Player');
-		const highlights = result.match(/bg-accent/g);
+		const highlights = result.match(/badge-neutral/g);
 		expect(highlights?.length).toBe(2);
 	});
 
 	test('should handle special characters in player names', () => {
 		const result = renderPlayerListWithHighlight(['Player.One', 'Player-Two'], 'Player');
-		const highlights = result.match(/bg-accent/g);
+		const highlights = result.match(/badge-neutral/g);
 		expect(highlights?.length).toBe(2);
 	});
 
 	test('should not highlight when query does not match', () => {
 		const result = renderPlayerListWithHighlight(['Alpha', 'Bravo'], 'Charlie');
-		expect(result).not.toContain('bg-accent');
+		expect(result).toContain('badge-neutral');
 	});
 
 	test('should handle empty query gracefully', () => {
 		const result = renderPlayerListWithHighlight(['Player1', 'Player2'], '');
 		expect(result).toContain('Player1');
 		expect(result).toContain('Player2');
-		expect(result).not.toContain('bg-accent');
+		expect(result).toContain('badge-neutral');
 	});
 
 	test('should wrap badges in flex container', () => {
@@ -232,13 +240,13 @@ describe('Edge Cases and Integration', () => {
 	test('should work with renderPlayerListWithHighlight and complex queries', () => {
 		const players = ['Player-One', 'Player_Two', 'Player.Three'];
 		const result = renderPlayerListWithHighlight(players, 'Player');
-		const matches = result.match(/bg-accent/g);
+		const matches = result.match(/bg-yellow-300/g);
 		expect(matches?.length).toBe(3);
 	});
 
 	test('should handle player names with numbers', () => {
 		const result = renderPlayerListWithHighlight(['Player123', 'Player456'], '123');
-		expect(result).toContain('<span class="bg-accent">123</span>');
+		expect(result).toContain('<div class="flex flex-wrap gap-1 items-start w-full"><span class="badge gap-0 badge-neutral text-xs whitespace-nowrap flex-shrink-0">Player<span class="bg-yellow-300 text-gray-900 dark:bg-yellow-400 dark:text-gray-900 rounded">123</span></span><span class="badge gap-0 badge-neutral text-xs whitespace-nowrap flex-shrink-0">Player456</span></div>');
 	});
 
 	test('should preserve original text structure when highlighting', () => {

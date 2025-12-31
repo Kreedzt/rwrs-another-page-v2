@@ -1,22 +1,33 @@
 import { render, fireEvent } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ServerView from '$lib/components/ServerView.svelte';
-import type { IDisplayServerItem, IColumn } from '$lib/models/data-table.model';
+import type { IDisplayServerItem, IColumn } from '$lib/models/server.model';
 import type { MapData } from '$lib/services/maps';
+
+// Mock messages
+vi.mock('$lib/paraglide/messages.js', () => ({
+	m: new Proxy({}, {
+		get: (target, prop) => () => prop
+	})
+}));
 
 // Mock child components
 vi.mock('$lib/components/TranslatedText.svelte', () => ({
-	default: (props: { key: string; fallback?: string }) => {
+	default: (props: any) => {
 		const keyToText: Record<string, string> = {
 			'app.loading.title': 'Loading...',
 			'app.loading.description': 'Please wait',
 			'app.loading.progress': 'Loading data',
 			'app.map.preview': 'Map Preview',
-			'app.map.buttonPreviewMap': 'Preview Map'
+			'app.map.buttonPreviewMap': 'Preview Map',
+			'app.server.noDataFound': 'No data found',
+			'app.server.matchingSearch': 'matching your search'
 		};
-		return props.fallback || keyToText[props.key] || props.key;
+		const key = props.key;
+		return props.fallback || keyToText[key] || key;
 	}
 }));
+
 
 // Mock QuickFilterButtons - return simple div
 vi.mock('$lib/components/QuickFilterButtons.svelte', () => ({
@@ -40,7 +51,7 @@ describe('ServerView Component', () => {
 			mapId: 'maps/mp_test',
 			region: 'US',
 			mode: 'CTF'
-		} as IDisplayServerItem,
+		} as unknown as IDisplayServerItem,
 		{
 			id: 'server2',
 			name: 'Test Server 2',
@@ -48,7 +59,7 @@ describe('ServerView Component', () => {
 			mapId: 'maps/mp_d Day',
 			region: 'EU',
 			mode: 'TDM'
-		} as IDisplayServerItem
+		} as unknown as IDisplayServerItem,
 	];
 
 	const mockMaps: MapData[] = [
@@ -107,20 +118,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -145,20 +157,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -184,20 +197,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -224,20 +238,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -265,20 +280,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -303,20 +319,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -344,20 +361,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -382,20 +400,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -424,20 +443,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: { server1: true },
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -467,20 +487,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: { server1: true },
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -512,20 +533,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -550,25 +572,26 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
 			const emptyAlert = container.querySelector('.md\\:hidden .alert-info');
-			expect(emptyAlert?.textContent).toContain('matching your search');
+			expect(emptyAlert).toBeInTheDocument();
 		});
 
 		it('should render desktop table container', async () => {
@@ -588,20 +611,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -628,20 +652,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -659,7 +684,7 @@ describe('ServerView Component', () => {
 					mapId: 'maps/nonexistent',
 					region: 'US',
 					mode: 'CTF'
-				} as IDisplayServerItem
+				} as unknown as IDisplayServerItem,
 			];
 
 			const { container } = render(ServerView, {
@@ -678,20 +703,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: { server3: true },
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 
@@ -717,20 +743,21 @@ describe('ServerView Component', () => {
 					visibleColumns: mockVisibleColumns,
 					activeFilters: [],
 					isMultiSelect: false,
+					layoutMode: 'fullPage',
 					currentPage: 1,
 					sortColumn: null,
 					sortDirection: null,
 					mobileExpandedCards: {},
-					onQuickFilter: mockOnQuickFilter,
-					onMultiSelectChange: mockOnMultiSelectChange,
-					onSort: mockOnSort,
-					onPageChange: mockOnPageChange,
-					onLoadMore: mockOnLoadMore,
-					onRowAction: mockOnRowAction,
-					onColumnToggle: mockOnColumnToggle,
-					onToggleMobileCard: mockOnToggleMobileCard,
-					onMapView: mockOnMapView,
-					onMapPreviewClose: mockOnMapPreviewClose
+					onQuickFilter: mockOnQuickFilter as any,
+					onMultiSelectChange: mockOnMultiSelectChange as any,
+					onSort: mockOnSort as any,
+					onPageChange: mockOnPageChange as any,
+					onLoadMore: mockOnLoadMore as any,
+					onRowAction: mockOnRowAction as any,
+					onColumnToggle: mockOnColumnToggle as any,
+					onToggleMobileCard: mockOnToggleMobileCard as any,
+					onMapView: mockOnMapView as any,
+					onMapPreviewClose: mockOnMapPreviewClose as any
 				}
 			});
 

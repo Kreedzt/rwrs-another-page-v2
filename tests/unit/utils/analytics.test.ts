@@ -40,13 +40,7 @@ const createMockUmami = () => ({
 	trackView: vi.fn()
 });
 
-declare global {
-	interface Window {
-		gtag?: typeof mockGtag;
-		_hmt?: unknown[];
-		umami?: ReturnType<typeof createMockUmami> | undefined;
-	}
-}
+// No need to declare Window properties again as it causes conflicts with app.d.ts
 
 describe('Analytics Utility (Multi-platform: gtag + Baidu + Umami)', () => {
 	beforeEach(() => {

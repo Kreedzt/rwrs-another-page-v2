@@ -49,7 +49,7 @@
 
 <div class="flex items-center gap-2 text-xs">
 	<div class="flex items-center gap-1">
-		<span class="inline-block h-2 w-2 rounded-full {isOnline ? 'bg-success' : 'bg-error'}" />
+		<span class="inline-block h-2 w-2 rounded-full {isOnline ? 'bg-success' : 'bg-error'}"></span>
 		<span class="text-mil-secondary">
 			{#if isOnline}
 				<TranslatedText key="app.pwa.status.online" />

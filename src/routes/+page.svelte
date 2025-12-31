@@ -137,7 +137,7 @@
 		serverState.resetPagination();
 		playerState.resetPagination();
 		updateUrlState({ search: undefined }, true);
-		analytics.trackSearch('clear');
+		analytics.trackSearch('click');
 	}
 
 	function handlePageChange(page: number) {

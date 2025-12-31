@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { filters } from '$lib/utils/quick-filters';
-import type { IDisplayServerItem } from '$lib/models/data-table.model';
+import type { IDisplayServerItem } from '$lib/models/server.model';
 
 // Helper function to create mock server data
 const createMockServer = (overrides: Partial<IDisplayServerItem> = {}): IDisplayServerItem => ({

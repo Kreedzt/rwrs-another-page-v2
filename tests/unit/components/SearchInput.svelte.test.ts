@@ -18,9 +18,9 @@ describe('SearchInput Component', () => {
 		it('should render with default placeholder', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -33,9 +33,9 @@ describe('SearchInput Component', () => {
 			render(SearchInput, {
 				props: {
 					placeholder: 'Search servers...',
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -47,9 +47,9 @@ describe('SearchInput Component', () => {
 			render(SearchInput, {
 				props: {
 					value: 'initial search',
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -60,9 +60,9 @@ describe('SearchInput Component', () => {
 		it('should render search icon', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -74,9 +74,9 @@ describe('SearchInput Component', () => {
 		it('should have proper form-control styling', async () => {
 			const { container } = render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -89,9 +89,9 @@ describe('SearchInput Component', () => {
 		it('should call oninput when user types', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -106,9 +106,9 @@ describe('SearchInput Component', () => {
 			const { rerender } = render(SearchInput, {
 				props: {
 					value: 'initial',
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -117,9 +117,10 @@ describe('SearchInput Component', () => {
 
 			await rerender({
 				value: 'updated',
-				oninput: mockOnInput,
-				onEnter: mockOnEnter,
-				onRef: mockOnRef
+												oninput: mockOnInput as any,
+												onEnter: mockOnEnter as any,
+												onRef: mockOnRef as any
+				
 			});
 
 			expect(input.value).toBe('updated');
@@ -130,9 +131,9 @@ describe('SearchInput Component', () => {
 		it('should call onEnter when Enter key is pressed', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -147,9 +148,9 @@ describe('SearchInput Component', () => {
 		it('should not call onEnter for other keys', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -165,9 +166,9 @@ describe('SearchInput Component', () => {
 		it('should call onRef with input element when component mounts', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -182,8 +183,8 @@ describe('SearchInput Component', () => {
 		it('should not call onRef if onRef is not provided', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any
 				}
 			});
 
@@ -198,9 +199,9 @@ describe('SearchInput Component', () => {
 		it('should have proper search input type', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -212,9 +213,9 @@ describe('SearchInput Component', () => {
 			render(SearchInput, {
 				props: {
 					placeholder: 'Search servers, maps...',
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
@@ -228,13 +229,13 @@ describe('SearchInput Component', () => {
 			render(SearchInput, {
 				props: {
 					value: '',
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 
-			const input = screen.getByRole('searchbox');
+			const input = screen.getByRole('searchbox') as HTMLInputElement;
 			expect(input.value).toBe('');
 		});
 
@@ -255,9 +256,9 @@ describe('SearchInput Component', () => {
 		it('should handle special characters in search', async () => {
 			render(SearchInput, {
 				props: {
-					oninput: mockOnInput,
-					onEnter: mockOnEnter,
-					onRef: mockOnRef
+					oninput: mockOnInput as any,
+					onEnter: mockOnEnter as any,
+					onRef: mockOnRef as any
 				}
 			});
 

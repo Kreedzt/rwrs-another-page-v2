@@ -28,6 +28,7 @@ const BAIDU_CATEGORIES = {
 	theme_change: 'navigation',
 	language_change: 'navigation',
 	github_link_click: 'navigation',
+	layout_mode_change: 'navigation',
 	search_triggered: 'search',
 	quick_filter_applied: 'search',
 	multi_select_toggle: 'search',
@@ -302,7 +303,7 @@ class Analytics {
 	/**
 	 * Track search triggered (without query content)
 	 */
-	trackSearch(method: 'click' | 'keyboard' = 'click'): void {
+	trackSearch(method: 'click' | 'keyboard' | 'clear' = 'click'): void {
 		this.trackEvent('search_triggered', { method });
 	}
 

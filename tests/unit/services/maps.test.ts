@@ -25,13 +25,11 @@ describe('Maps Service', () => {
 			// Mock successful API response
 			const mockMapsData: MapData[] = [
 				{
-					id: 'map1_desert',
 					name: 'Desert Map',
 					path: 'media/packages/vanilla.desert/maps/map1',
 					image: 'md5_1.png'
 				},
 				{
-					id: 'map2_jungle',
 					name: 'Jungle Map',
 					path: 'media/packages/vanilla.jungle/maps/map2',
 					image: 'md5_2.png'
@@ -42,7 +40,7 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.resolve(mockMapsData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
@@ -52,13 +50,11 @@ describe('Maps Service', () => {
 			// Verify results
 			expect(result).toHaveLength(2);
 			expect(result[0]).toEqual({
-				id: 'map1_desert',
 				name: 'Desert Map',
 				path: 'media/packages/vanilla.desert/maps/map1',
 				image: 'md5_1.png'
 			});
 			expect(result[1]).toEqual({
-				id: 'map2_jungle',
 				name: 'Jungle Map',
 				path: 'media/packages/vanilla.jungle/maps/map2',
 				image: 'md5_2.png'
@@ -72,7 +68,7 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.resolve(emptyMapsData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
@@ -96,7 +92,7 @@ describe('Maps Service', () => {
 				statusText: 'Internal Server Error',
 				json: () => Promise.resolve({ error: 'Server error' }),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
@@ -109,7 +105,7 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.reject(new Error('Invalid JSON')),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
@@ -121,7 +117,6 @@ describe('Maps Service', () => {
 			// Mock response with missing required fields
 			const invalidMapsData = [
 				{
-					id: 'map1',
 					name: 'Test Map'
 					// Missing 'path' and 'image' fields
 				}
@@ -131,14 +126,13 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.resolve(invalidMapsData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
 			// Should still return the data as-is, validation happens at runtime
 			expect(result).toHaveLength(1);
 			expect(result[0]).toEqual({
-				id: 'map1',
 				name: 'Test Map'
 			});
 		});
@@ -146,7 +140,6 @@ describe('Maps Service', () => {
 		test('should handle maps with special characters in names', async () => {
 			const mockMapsData: MapData[] = [
 				{
-					id: 'map_special',
 					name: 'Special Map [Beta] v2.0',
 					path: 'media/packages/vanilla/maps/special_map',
 					image: 'special_map.png'
@@ -157,7 +150,7 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.resolve(mockMapsData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
@@ -168,13 +161,11 @@ describe('Maps Service', () => {
 		test('should handle maps with different package paths', async () => {
 			const mockMapsData: MapData[] = [
 				{
-					id: 'map_ww2',
 					name: 'WW2 Map',
 					path: 'media/packages/ww2/maps/operation_overlord',
 					image: 'operation_overlord.png'
 				},
 				{
-					id: 'map_castling',
 					name: 'Castling Map',
 					path: 'media/packages/castling/maps/castle_defense',
 					image: 'castle_defense.png'
@@ -185,7 +176,7 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.resolve(mockMapsData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
@@ -199,7 +190,6 @@ describe('Maps Service', () => {
 		test('should handle large number of maps', async () => {
 			// Create mock data with 50 maps
 			const largeMapsData: MapData[] = Array.from({ length: 50 }, (_, i) => ({
-				id: `map${i}_test`,
 				name: `Test Map ${i}`,
 				path: `media/packages/vanilla.maps/maps/map${i}`,
 				image: `map${i}_image.png`
@@ -209,32 +199,29 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.resolve(largeMapsData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 
 			expect(result).toHaveLength(50);
 			// Test first and last items
-			expect(result[0].id).toBe('map0_test');
-			expect(result[49].id).toBe('map49_test');
+			expect(result[0].name).toBe('Test Map 0');
+			expect(result[49].name).toBe('Test Map 49');
 		});
 
 		test('should handle different image formats', async () => {
 			const mockMapsData: MapData[] = [
 				{
-					id: 'map_png',
 					name: 'PNG Map',
 					path: 'media/packages/vanilla/maps/map1',
 					image: 'map1.png'
 				},
 				{
-					id: 'map_jpg',
 					name: 'JPG Map',
 					path: 'media/packages/vanilla/maps/map2',
 					image: 'map2.jpg'
 				},
 				{
-					id: 'map_webp',
 					name: 'WebP Map',
 					path: 'media/packages/vanilla/maps/map3',
 					image: 'map3.webp'
@@ -245,7 +232,7 @@ describe('Maps Service', () => {
 				ok: true,
 				json: () => Promise.resolve(mockMapsData),
 				headers: new Headers()
-			});
+			} as any);
 
 			const result = await getMaps();
 

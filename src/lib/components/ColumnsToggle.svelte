@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="T extends { key: string; i18n?: string; label?: string }">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import { Check } from '@lucide/svelte';
 	import type { IColumn } from '$lib/models/server.model';
@@ -8,9 +8,9 @@
 		onColumnToggle = () => {},
 		visibleColumns = {}
 	}: {
-		columns: IColumn[];
+		columns: T[];
 		visibleColumns: Record<string, boolean>;
-		onColumnToggle: (column: IColumn, visible: boolean) => void;
+		onColumnToggle: (column: T, visible: boolean) => void;
 	} = $props();
 </script>
 

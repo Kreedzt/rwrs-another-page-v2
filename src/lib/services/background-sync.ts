@@ -4,6 +4,24 @@
  * Sync when network is restored
  */
 
+// Extend ServiceWorkerRegistration to include sync APIs
+interface SyncManager {
+	register(tag: string): Promise<void>;
+}
+
+interface PeriodicSyncManager {
+	getTags(): Promise<string[]>;
+	register(tag: string, options: { minInterval: number }): Promise<void>;
+	unregister(tag: string): Promise<void>;
+}
+
+declare global {
+	interface ServiceWorkerRegistration {
+		sync?: SyncManager;
+		periodicSync?: PeriodicSyncManager;
+	}
+}
+
 /**
  * Register a background sync event
  * @param tag - Unique identifier for the sync event
@@ -11,7 +29,7 @@
 export function registerSync(tag: string): void {
 	if ('serviceWorker' in navigator && 'sync' in ServiceWorkerRegistration.prototype) {
 		navigator.serviceWorker.ready.then((registration) => {
-			registration.sync.register(tag).catch((err) => {
+			registration.sync?.register(tag).catch((err: Error) => {
 				console.error(`Sync registration failed for "${tag}":`, err);
 			});
 		});
@@ -21,7 +39,7 @@ export function registerSync(tag: string): void {
 }
 
 /**
- * Queue a server list refresh for background sync
+ * Queue a server refresh for background sync
  */
 export function queueServerRefresh(): void {
 	registerSync('server-refresh');
@@ -44,14 +62,14 @@ export function registerPeriodicSync(tag: string, minInterval: number): void {
 	if ('serviceWorker' in navigator && 'periodicSync' in ServiceWorkerRegistration.prototype) {
 		navigator.serviceWorker.ready.then((registration) => {
 			// Check if periodic sync is already registered
-			(registration as any).periodicSync
-				.getTags()
+			registration.periodicSync
+				?.getTags()
 				.then((tags: string[]) => {
 					if (tags.includes(tag)) {
 						return;
 					}
 
-					return (registration as any).periodicSync.register(tag, {
+					return registration.periodicSync?.register(tag, {
 						minInterval
 					});
 				})
@@ -70,7 +88,7 @@ export function registerPeriodicSync(tag: string, minInterval: number): void {
 export function unregisterPeriodicSync(tag: string): void {
 	if ('serviceWorker' in navigator && 'periodicSync' in ServiceWorkerRegistration.prototype) {
 		navigator.serviceWorker.ready.then((registration) => {
-			(registration as any).periodicSync.unregister(tag).catch((err: Error) => {
+			registration.periodicSync?.unregister(tag).catch((err: Error) => {
 				console.error(`Periodic sync unregistration failed for "${tag}":`, err);
 			});
 		});

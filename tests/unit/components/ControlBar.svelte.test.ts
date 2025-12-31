@@ -1,7 +1,10 @@
+/// <reference types="@testing-library/jest-dom" />
 import { render, screen, fireEvent } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ControlBar from '$lib/components/ControlBar.svelte';
-import type { IColumn } from '$lib/models/data-table.model';
+import type { IColumn } from '$lib/models/server.model';
+import type { IPlayerColumn } from '$lib/models/player.model';
+import { PlayerDatabase } from '$lib/models/player.model';
 
 // Mock child components
 vi.mock('$lib/components/TranslatedText.svelte', () => ({
@@ -46,22 +49,28 @@ vi.mock('$lib/components/AutoRefresh.svelte', () => ({
 
 // Mock messages
 vi.mock('$lib/paraglide/messages.js', () => ({
-	m: {
-		'app.search.placeholderPlayers': () => 'Search players...'
-	}
+	m: new Proxy({}, {
+		get: (target, prop) => () => prop
+	})
 }));
 
 describe('ControlBar Component', () => {
-	let mockOnPlayerDbChange: ReturnType<typeof vi.fn>;
-	let mockOnRefresh: ReturnType<typeof vi.fn>;
-	let mockOnAutoRefreshToggle: ReturnType<typeof vi.fn>;
-	let mockOnSearchInput: ReturnType<typeof vi.fn>;
-	let mockOnSearchEnter: ReturnType<typeof vi.fn>;
-	let mockOnColumnToggle: ReturnType<typeof vi.fn>;
+	let mockOnPlayerDbChange: ReturnType<typeof vi.fn<(db: PlayerDatabase) => void>>;
+	let mockOnRefresh: ReturnType<typeof vi.fn<() => Promise<void>>>;
+	let mockOnAutoRefreshToggle: ReturnType<typeof vi.fn<(enabled: boolean) => void>>;
+	let mockOnLayoutModeChange: ReturnType<typeof vi.fn<(mode: 'fullPage' | 'tableOnly') => void>>;
+	let mockOnSearchInput: ReturnType<typeof vi.fn<(value: string) => void>>;
+	let mockOnSearchEnter: ReturnType<typeof vi.fn<(value: string) => void>>;
+	let mockOnColumnToggle: ReturnType<typeof vi.fn<(column: IColumn | IPlayerColumn, visible: boolean) => void>>;
 
 	const mockColumns: IColumn[] = [
 		{ key: 'name', label: 'Name' },
 		{ key: 'score', label: 'Score' }
+	];
+
+	const mockPlayerColumns: IPlayerColumn[] = [
+		{ key: 'username', label: 'Username' },
+		{ key: 'kills', label: 'Kills' }
 	];
 
 	const mockVisibleColumns: Record<string, boolean> = {
@@ -69,10 +78,16 @@ describe('ControlBar Component', () => {
 		score: true
 	};
 
+	const mockVisiblePlayerColumns: Record<string, boolean> = {
+		username: true,
+		kills: true
+	};
+
 	beforeEach(() => {
 		mockOnPlayerDbChange = vi.fn();
 		mockOnRefresh = vi.fn().mockResolvedValue(undefined);
 		mockOnAutoRefreshToggle = vi.fn();
+		mockOnLayoutModeChange = vi.fn();
 		mockOnSearchInput = vi.fn();
 		mockOnSearchEnter = vi.fn();
 		mockOnColumnToggle = vi.fn();
@@ -84,15 +99,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'servers',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search servers...',
 					autoRefreshEnabled: false,
+					layoutMode: 'fullPage',
 					columns: mockColumns,
+					playerColumns: mockPlayerColumns,
 					visibleColumns: mockVisibleColumns,
+					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}
@@ -106,15 +125,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'players',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search servers...',
 					autoRefreshEnabled: false,
+					layoutMode: 'fullPage',
 					columns: mockColumns,
+					playerColumns: mockPlayerColumns,
 					visibleColumns: mockVisibleColumns,
+					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}
@@ -128,15 +151,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'servers',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search...',
 					autoRefreshEnabled: false,
+					layoutMode: 'fullPage',
 					columns: mockColumns,
+					playerColumns: mockPlayerColumns,
 					visibleColumns: mockVisibleColumns,
+					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}
@@ -150,15 +177,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'servers',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search...',
 					autoRefreshEnabled: false,
+					layoutMode: 'fullPage',
 					columns: mockColumns,
+					playerColumns: mockPlayerColumns,
 					visibleColumns: mockVisibleColumns,
+					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}
@@ -174,15 +205,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'servers',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search...',
 					autoRefreshEnabled: false,
+					layoutMode: 'fullPage',
 					columns: mockColumns,
+					playerColumns: mockPlayerColumns,
 					visibleColumns: mockVisibleColumns,
+					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}
@@ -202,15 +237,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'servers',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search...',
 					autoRefreshEnabled: true,
+					layoutMode: 'fullPage',
 					columns: mockColumns,
+					playerColumns: mockPlayerColumns,
 					visibleColumns: mockVisibleColumns,
+					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}
@@ -224,15 +263,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'players',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search...',
 					autoRefreshEnabled: false,
+					layoutMode: 'fullPage',
 					columns: mockColumns,
+					playerColumns: mockPlayerColumns,
 					visibleColumns: mockVisibleColumns,
+					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}
@@ -248,15 +291,19 @@ describe('ControlBar Component', () => {
 			const { container } = render(ControlBar, {
 				props: {
 					currentView: 'servers',
-					playerDb: 'invasion',
+					playerDb: PlayerDatabase.INVASION,
 					searchQuery: '',
 					searchPlaceholder: 'Search...',
 					autoRefreshEnabled: false,
+					layoutMode: 'fullPage',
 					columns: [],
+					playerColumns: [],
 					visibleColumns: {},
+					visiblePlayerColumns: {},
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
+					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
 					onColumnToggle: mockOnColumnToggle
 				}

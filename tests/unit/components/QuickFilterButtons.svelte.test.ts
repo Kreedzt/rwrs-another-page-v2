@@ -36,10 +36,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -52,10 +52,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -69,10 +69,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: true,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -93,10 +93,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -110,10 +110,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: ['castling'],
 					isMultiSelect: true,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -127,10 +127,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: ['invasion', 'castling'],
 					isMultiSelect: true,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -150,10 +150,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -167,10 +167,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: true,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -184,10 +184,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -200,10 +200,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -219,10 +219,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 
@@ -234,10 +234,10 @@ describe('QuickFilterButtons', () => {
 			render(QuickFilterButtons, {
 				props: {
 					isLoading: false,
-					onQuickFilter: mockOnQuickFilter,
+					onQuickFilter: mockOnQuickFilter as any,
 					activeFilters: [],
 					isMultiSelect: false,
-					onMultiSelectChange: mockOnMultiSelectChange
+					onMultiSelectChange: mockOnMultiSelectChange as any
 				}
 			});
 

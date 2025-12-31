@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/svelte/svelte5';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import PlayerDatabaseSelector from '$lib/components/PlayerDatabaseSelector.svelte';
-import type { PlayerDatabase } from '$lib/models/player.model';
+import { PlayerDatabase } from '$lib/models/player.model';
 
 // Mock TranslatedText component
 vi.mock('$lib/components/TranslatedText.svelte', () => ({
@@ -16,7 +16,7 @@ vi.mock('$lib/components/TranslatedText.svelte', () => ({
 }));
 
 describe('PlayerDatabaseSelector Component', () => {
-	let mockOnDbChange: ReturnType<typeof vi.fn>;
+	let mockOnDbChange: ReturnType<typeof vi.fn<(db: PlayerDatabase) => void>>;
 
 	beforeEach(() => {
 		mockOnDbChange = vi.fn();
@@ -27,7 +27,7 @@ describe('PlayerDatabaseSelector Component', () => {
 		it('should render with default props', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
@@ -39,7 +39,7 @@ describe('PlayerDatabaseSelector Component', () => {
 		it('should render all three database options', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
@@ -51,73 +51,73 @@ describe('PlayerDatabaseSelector Component', () => {
 		it('should have invasion as first option', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const options = container.querySelectorAll('option');
-			expect(options[0]).toHaveValue('invasion');
+			expect(options[0]).toHaveValue(PlayerDatabase.INVASION);
 		});
 
 		it('should have pacific as second option', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const options = container.querySelectorAll('option');
-			expect(options[1]).toHaveValue('pacific');
+			expect(options[1]).toHaveValue(PlayerDatabase.PACIFIC);
 		});
 
 		it('should have prereset_invasion as third option', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const options = container.querySelectorAll('option');
-			expect(options[2]).toHaveValue('prereset_invasion');
+			expect(options[2]).toHaveValue(PlayerDatabase.PRERESET_INVASION);
 		});
 
 		it('should display invasion as selected when currentDb is invasion', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			expect(select.value).toBe('invasion');
+			expect(select.value).toBe(PlayerDatabase.INVASION);
 		});
 
 		it('should display pacific as selected when currentDb is pacific', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'pacific',
+					currentDb: PlayerDatabase.PACIFIC,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			expect(select.value).toBe('pacific');
+			expect(select.value).toBe(PlayerDatabase.PACIFIC);
 		});
 
 		it('should display prereset_invasion as selected when currentDb is prereset_invasion', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'prereset_invasion',
+					currentDb: PlayerDatabase.PRERESET_INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			expect(select.value).toBe('prereset_invasion');
+			expect(select.value).toBe(PlayerDatabase.PRERESET_INVASION);
 		});
 	});
 
@@ -125,62 +125,62 @@ describe('PlayerDatabaseSelector Component', () => {
 		it('should call onDbChange when switching from invasion to pacific', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			await fireEvent.change(select, { target: { value: 'pacific' } });
+			await fireEvent.change(select, { target: { value: PlayerDatabase.PACIFIC } });
 
-			expect(mockOnDbChange).toHaveBeenCalledWith('pacific');
+			expect(mockOnDbChange).toHaveBeenCalledWith(PlayerDatabase.PACIFIC);
 		});
 
 		it('should call onDbChange when switching to prereset_invasion', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			await fireEvent.change(select, { target: { value: 'prereset_invasion' } });
+			await fireEvent.change(select, { target: { value: PlayerDatabase.PRERESET_INVASION } });
 
-			expect(mockOnDbChange).toHaveBeenCalledWith('prereset_invasion');
+			expect(mockOnDbChange).toHaveBeenCalledWith(PlayerDatabase.PRERESET_INVASION);
 		});
 
 		it('should call onDbChange with correct PlayerDatabase type', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'pacific',
+					currentDb: PlayerDatabase.PACIFIC,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			await fireEvent.change(select, { target: { value: 'invasion' } });
+			await fireEvent.change(select, { target: { value: PlayerDatabase.INVASION } });
 
-			expect(mockOnDbChange).toHaveBeenCalledWith('invasion');
+			expect(mockOnDbChange).toHaveBeenCalledWith(PlayerDatabase.INVASION);
 			expect(mockOnDbChange).toHaveBeenCalledTimes(1);
 		});
 
 		it('should handle rapid database changes', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			await fireEvent.change(select, { target: { value: 'pacific' } });
-			await fireEvent.change(select, { target: { value: 'prereset_invasion' } });
-			await fireEvent.change(select, { target: { value: 'invasion' } });
+			await fireEvent.change(select, { target: { value: PlayerDatabase.PACIFIC } });
+			await fireEvent.change(select, { target: { value: PlayerDatabase.PRERESET_INVASION } });
+			await fireEvent.change(select, { target: { value: PlayerDatabase.INVASION } });
 
-			expect(mockOnDbChange).toHaveBeenNthCalledWith(1, 'pacific');
-			expect(mockOnDbChange).toHaveBeenNthCalledWith(2, 'prereset_invasion');
-			expect(mockOnDbChange).toHaveBeenNthCalledWith(3, 'invasion');
+			expect(mockOnDbChange).toHaveBeenNthCalledWith(1, PlayerDatabase.PACIFIC);
+			expect(mockOnDbChange).toHaveBeenNthCalledWith(2, PlayerDatabase.PRERESET_INVASION);
+			expect(mockOnDbChange).toHaveBeenNthCalledWith(3, PlayerDatabase.INVASION);
 		});
 	});
 
@@ -188,7 +188,7 @@ describe('PlayerDatabaseSelector Component', () => {
 		it('should have correct CSS classes', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
@@ -200,7 +200,7 @@ describe('PlayerDatabaseSelector Component', () => {
 		it('should be a select element', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
@@ -216,7 +216,7 @@ describe('PlayerDatabaseSelector Component', () => {
 			expect(() => {
 				render(PlayerDatabaseSelector, {
 					props: {
-						currentDb: 'invasion',
+						currentDb: PlayerDatabase.INVASION,
 						onDbChange: undefined as any
 					}
 				});
@@ -224,7 +224,7 @@ describe('PlayerDatabaseSelector Component', () => {
 		});
 
 		it('should render correctly with all valid database values', async () => {
-			const databases: PlayerDatabase[] = ['invasion', 'pacific', 'prereset_invasion'];
+			const databases: PlayerDatabase[] = [PlayerDatabase.INVASION, PlayerDatabase.PACIFIC, PlayerDatabase.PRERESET_INVASION];
 
 			for (const db of databases) {
 				const { container } = render(PlayerDatabaseSelector, {
@@ -242,30 +242,30 @@ describe('PlayerDatabaseSelector Component', () => {
 
 	describe('Type Safety', () => {
 		it('should only accept valid PlayerDatabase values as currentDb', async () => {
-			const validDatabases: PlayerDatabase[] = ['invasion', 'pacific', 'prereset_invasion'];
+			const validDatabases: PlayerDatabase[] = [PlayerDatabase.INVASION, PlayerDatabase.PACIFIC, PlayerDatabase.PRERESET_INVASION];
 
 			// This test documents the expected valid values
-			expect(validDatabases).toContain('invasion');
-			expect(validDatabases).toContain('pacific');
-			expect(validDatabases).toContain('prereset_invasion');
+			expect(validDatabases).toContain(PlayerDatabase.INVASION);
+			expect(validDatabases).toContain(PlayerDatabase.PACIFIC);
+			expect(validDatabases).toContain(PlayerDatabase.PRERESET_INVASION);
 		});
 
 		it('should call onDbChange with PlayerDatabase type', async () => {
 			const { container } = render(PlayerDatabaseSelector, {
 				props: {
-					currentDb: 'invasion',
+					currentDb: PlayerDatabase.INVASION,
 					onDbChange: mockOnDbChange
 				}
 			});
 
 			const select = container.querySelector('select') as HTMLSelectElement;
-			await fireEvent.change(select, { target: { value: 'pacific' } });
+			await fireEvent.change(select, { target: { value: PlayerDatabase.PACIFIC } });
 
 			// Verify the callback is called with the correct type
-			expect(mockOnDbChange).toHaveBeenCalledWith('pacific');
+			expect(mockOnDbChange).toHaveBeenCalledWith(PlayerDatabase.PACIFIC);
 			const callArg = mockOnDbChange.mock.calls[0][0];
 			// This should be a valid PlayerDatabase value
-			expect(['invasion', 'pacific', 'prereset_invasion']).toContain(callArg);
+			expect([PlayerDatabase.INVASION, PlayerDatabase.PACIFIC, PlayerDatabase.PRERESET_INVASION]).toContain(callArg);
 		});
 	});
 });

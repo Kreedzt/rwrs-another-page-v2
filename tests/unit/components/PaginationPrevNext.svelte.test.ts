@@ -24,7 +24,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: true,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -38,7 +38,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 2,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -54,7 +54,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: true,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -70,7 +70,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 5,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -85,7 +85,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 10,
 					hasNext: false,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -100,7 +100,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: true,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -114,7 +114,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 2,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -128,7 +128,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 10,
 					hasNext: false,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -142,7 +142,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: true,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -156,7 +156,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: false,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -175,7 +175,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 5,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -192,7 +192,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 3,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -209,7 +209,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 2,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -235,7 +235,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: true,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -245,7 +245,7 @@ describe('PaginationPrevNext Component', () => {
 				currentPage: 5,
 				hasNext: true,
 				hasPrevious: true,
-				onPageChange: mockOnPageChange
+				onPageChange: mockOnPageChange as any
 			});
 
 			expect(screen.getByText('5')).toBeInTheDocument();
@@ -257,7 +257,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: false,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -271,7 +271,7 @@ describe('PaginationPrevNext Component', () => {
 				currentPage: 2,
 				hasNext: true,
 				hasPrevious: true,
-				onPageChange: mockOnPageChange
+				onPageChange: mockOnPageChange as any
 			});
 
 			expect(prevButton).not.toBeDisabled();
@@ -286,7 +286,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 2,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -303,7 +303,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: true,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -317,7 +317,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 3,
 					hasNext: true,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -333,7 +333,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 1,
 					hasNext: false,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -346,7 +346,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 9999,
 					hasNext: false,
 					hasPrevious: true,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 
@@ -360,7 +360,8 @@ describe('PaginationPrevNext Component', () => {
 					props: {
 						currentPage: 1,
 						hasNext: true,
-						hasPrevious: false
+						hasPrevious: false,
+						onPageChange: mockOnPageChange as any
 					}
 				});
 			}).not.toThrow();
@@ -372,7 +373,7 @@ describe('PaginationPrevNext Component', () => {
 					currentPage: 0,
 					hasNext: true,
 					hasPrevious: false,
-					onPageChange: mockOnPageChange
+					onPageChange: mockOnPageChange as any
 				}
 			});
 

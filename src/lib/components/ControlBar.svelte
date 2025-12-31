@@ -27,7 +27,7 @@
 		onLayoutModeChange: (mode: 'fullPage' | 'tableOnly') => void;
 		onSearchInput: (value: string) => void;
 		onSearchEnter?: (value: string) => void;
-		onColumnToggle: (column: IColumn, visible: boolean) => void;
+		onColumnToggle: (column: IColumn | IPlayerColumn, visible: boolean) => void;
 		onSearchRef?: (input: HTMLInputElement | null) => void;
 		onSearchClear?: () => void;
 	}

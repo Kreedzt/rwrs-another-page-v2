@@ -78,7 +78,7 @@
 			{:else}
 				<!-- Load more button (fallback) -->
 				<button class="btn btn-outline btn-sm" onclick={onLoadMore} disabled={isLoading}>
-					<TranslatedText key="app.button.loadMore" fallback="Load More" />
+					<TranslatedText key="app.button.loadMore" />
 				</button>
 			{/if}
 		</div>
