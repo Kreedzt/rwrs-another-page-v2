@@ -8,7 +8,7 @@ function getMapPreviewHtml(server: IDisplayServerItem, query?: string): string {
 
 	// Just show the map name badge - preview button is handled separately in the component
 	const displayText = query ? highlightMatch(mapName, query) : mapName;
-	return `<span class="badge badge-info badge-outline font-medium text-xs px-2 py-1 rounded-md shadow-sm">${displayText}</span>`;
+	return `<span class="badge badge-outline bg-cyan-50 text-cyan-700 border-cyan-200 font-medium text-xs px-2 py-1 rounded-md shadow-sm">${displayText}</span>`;
 }
 
 // Function to get capacity status and styling
