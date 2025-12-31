@@ -104,8 +104,8 @@
 	<Header />
 
 	<main
-		class={`flex w-full flex-col ${layoutMode === 'tableOnly' ? tableOnlyMainClasses : ''}`}
->
+		class={`flex w-full flex-col flex-1 ${layoutMode === 'tableOnly' ? tableOnlyMainClasses : ''}`}
+	>
 		{@render children()}
 	</main>
 

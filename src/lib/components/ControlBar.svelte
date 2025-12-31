@@ -29,6 +29,7 @@
 		onSearchEnter?: (value: string) => void;
 		onColumnToggle: (column: IColumn, visible: boolean) => void;
 		onSearchRef?: (input: HTMLInputElement | null) => void;
+		onSearchClear?: () => void;
 	}
 
 	let {
@@ -49,7 +50,8 @@
 		onSearchInput,
 		onSearchEnter,
 		onColumnToggle,
-		onSearchRef
+		onSearchRef,
+		onSearchClear
 	}: Props = $props();
 
 	// Auto refresh is only available for servers view
@@ -85,6 +87,7 @@
 				oninput={onSearchInput}
 				onEnter={onSearchEnter}
 				onRef={onSearchRef}
+				onClear={onSearchClear}
 			/>
 		</div>
 	</div>

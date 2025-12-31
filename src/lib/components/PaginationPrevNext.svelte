@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import { m } from '$lib/paraglide/messages.js';
 
 	interface Props {
 		currentPage: number;
@@ -21,7 +22,7 @@
 		class="join-item btn btn-sm"
 		disabled={!hasPrevious}
 		onclick={() => goToPage(currentPage - 1)}
-		title="Previous page"
+		title={m['app.paginationControl.previousPage']()}
 	>
 		‹
 	</button>
@@ -36,7 +37,7 @@
 		class="join-item btn btn-sm"
 		disabled={!hasNext}
 		onclick={() => goToPage(currentPage + 1)}
-		title="Next page"
+		title={m['app.paginationControl.nextPage']()}
 	>
 		›
 	</button>

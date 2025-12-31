@@ -132,6 +132,14 @@
 		handleSearchInput(query);
 	}
 
+	function handleSearchClear() {
+		searchQuery = '';
+		serverState.resetPagination();
+		playerState.resetPagination();
+		updateUrlState({ search: undefined }, true);
+		analytics.trackSearch('clear');
+	}
+
 	function handlePageChange(page: number) {
 		if (currentView === 'servers') {
 			serverState.handlePageChange(page);
@@ -398,6 +406,7 @@
 			onSearchEnter={handleSearchEnter}
 			onColumnToggle={onColumnToggle}
 			onSearchRef={(input) => (searchInputRef = input)}
+			onSearchClear={handleSearchClear}
 		/>
 
 		<!-- Statistics Bar -->

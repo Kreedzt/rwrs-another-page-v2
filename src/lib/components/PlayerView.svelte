@@ -180,7 +180,7 @@
 						type="checkbox"
 						checked={mobileExpandedCards[item.id]}
 						onchange={() => onToggleMobileCard(item.id)}
-						aria-label="Toggle player details"
+						aria-label={m['app.ariaLabel.togglePlayerDetails']()}
 						aria-expanded={mobileExpandedCards[item.id] ? 'true' : 'false'}
 					/>
 					<div class="collapse-title font-semibold p-4">

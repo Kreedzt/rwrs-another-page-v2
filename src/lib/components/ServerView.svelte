@@ -205,7 +205,7 @@
 						type="checkbox"
 						checked={mobileExpandedCards[item.id]}
 						onchange={() => onToggleMobileCard(item.id)}
-						aria-label="Toggle server details"
+						aria-label={m['app.ariaLabel.toggleServerDetails']()}
 						aria-expanded={mobileExpandedCards[item.id] ? 'true' : 'false'}
 					/>
 					<div class="collapse-title font-semibold p-4">
@@ -298,7 +298,7 @@
 			{#if mobilePaginatedServers.length === 0}
 				<div class="alert alert-info">
 					<Info class="h-6 w-6 shrink-0 stroke-current" />
-					<span>No data found{searchQuery ? ' matching your search' : ''}.</span>
+					<span><TranslatedText key="app.server.noDataFound" />{#if searchQuery} <TranslatedText key="app.server.matchingSearch" />{/if}.</span>
 				</div>
 			{/if}
 		</div>

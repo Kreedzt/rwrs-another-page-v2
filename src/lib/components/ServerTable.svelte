@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { ArrowDownUp, ArrowUp, ArrowDown, Eye, Info } from '@lucide/svelte';
 	import type { IDisplayServerItem } from '$lib/models/server.model';
 	import type { IColumn } from '$lib/models/server.model';
@@ -81,7 +82,7 @@
 {#if data.length === 0}
 	<div class="alert alert-info">
 		<Info class="h-6 w-6 shrink-0 stroke-current" />
-		<span>No data found{searchQuery ? ' matching your search' : ''}.</span>
+		<span><TranslatedText key="app.server.noDataFound" />{#if searchQuery} <TranslatedText key="app.server.matchingSearch" />{/if}.</span>
 	</div>
 {:else}
 	<!-- Desktop table view (hidden on mobile) -->
@@ -106,7 +107,7 @@
 										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-2 text-left transition-colors duration-200"
 										onclick={() => handleColumnSort(column.key)}
 										type="button"
-										title="Click to sort"
+										title={m['app.ariaLabel.clickToSort']()}
 									>
 										<span class="flex-1">
 											{#if column.i18n}<TranslatedText
@@ -144,7 +145,7 @@
 												class="btn btn-sm btn-primary mobile-btn"
 												onclick={() => handleAction(item, 'join')}
 											>
-												Join
+												{m['app.button.join']()}
 											</button>
 										</div>
 									{:else if column.key === 'mapId'}
@@ -155,7 +156,7 @@
 													type="button"
 													class="btn btn-ghost btn-xs btn-circle"
 													onclick={() => onMapView(maps.find(m => m.path === item.mapId)!)}
-													title="Preview map"
+													title={m['app.ariaLabel.previewMap']()}
 												>
 													<Eye class="w-4 h-4" />
 												</button>

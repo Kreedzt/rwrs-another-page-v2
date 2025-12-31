@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { ArrowDown, Info } from '@lucide/svelte';
 	import type { IPlayerItem, IPlayerColumn } from '$lib/models/player.model';
 
@@ -89,7 +90,7 @@
 										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-2 text-left transition-colors duration-200"
 										onclick={() => handleColumnSort(column.key as string)}
 										type="button"
-										title="Click to sort"
+										title={m['app.ariaLabel.clickToSort']()}
 									>
 										<span class="flex-1">
 											{#if column.i18n}<TranslatedText

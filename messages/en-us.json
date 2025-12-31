@@ -20,7 +20,8 @@
 		"title": "Robin",
 		"search": {
 			"placeholder": "Search servers, maps, players, mode, country, etc...",
-			"placeholderPlayers": "Search players by username..."
+			"placeholderPlayers": "Search players by username...",
+			"clearAria": "Clear search"
 		},
 		"button": {
 			"reset": "Reset",
@@ -197,6 +198,16 @@
 			"tooltip": "Toggle layout mode",
 			"fullPage": "Full Page Scroll",
 			"tableOnly": "Table Scroll"
+		},
+		"server": {
+			"noDataFound": "No data found",
+			"matchingSearch": "matching your search"
+		},
+		"ariaLabel": {
+			"toggleServerDetails": "Toggle server details",
+			"togglePlayerDetails": "Toggle player details",
+			"clickToSort": "Click to sort",
+			"previewMap": "Preview map"
 		}
 	}
 }
