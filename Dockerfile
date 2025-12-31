@@ -3,6 +3,7 @@ FROM node:22-alpine AS build
 
 # Build arguments with defaults
 ARG TAG_NAME
+ARG BUILD_VERSION
 # Site URL for meta tags and canonical URLs
 ARG VITE_SITE_URL=http://localhost:8080
 # CDN image URL for meta tags (OG images, etc.)
@@ -13,6 +14,8 @@ ARG CDN_URL=
 ARG CDN_IMAGE_URL=
 
 # Convert ARGs to ENVs so they're available in RUN commands
+ENV TAG_NAME=${TAG_NAME}
+ENV BUILD_VERSION=${BUILD_VERSION}
 ENV VITE_SITE_URL=${VITE_SITE_URL}
 ENV VITE_CDN_IMAGE_URL=${VITE_CDN_IMAGE_URL}
 ENV CDN_URL=${CDN_URL}
