@@ -19,6 +19,7 @@
 	import { createServerState } from '$lib/stores/use-server-state.svelte';
 	import { createPlayerState } from '$lib/stores/use-player-state.svelte';
 	import { createUrlSync } from '$lib/stores/use-url-sync.svelte';
+	import { getLayoutMode, setLayoutMode } from '$lib/stores/layout-mode.svelte';
 
 	// Components
 	import ControlBar from '$lib/components/ControlBar.svelte';
@@ -65,6 +66,8 @@
 	// User settings from localStorage
 	const userSettings = $state<UserSettings>(userSettingsService.getSettings());
 	let autoRefreshEnabled = $state(userSettings.autoRefresh.enabled);
+	let layoutMode = $derived(getLayoutMode());
+	const tableOnlyLayoutClasses = 'md:flex-1 md:overflow-hidden md:min-h-0';
 
 	// Visible columns (from user settings)
 	let visibleColumns = $state<Record<string, boolean>>({ ...userSettings.visibleColumns });
@@ -179,6 +182,11 @@
 		autoRefreshEnabled = enabled;
 		userSettingsService.updateNested('autoRefresh', 'enabled', enabled);
 		analytics.trackAutoRefreshToggle(enabled);
+	}
+
+	function handleLayoutModeChange(mode: 'fullPage' | 'tableOnly') {
+		setLayoutMode(mode);
+		analytics.trackEvent('layout_mode_change', { mode });
 	}
 
 	function handleQuickFilter(filterId: string) {
@@ -348,8 +356,8 @@
 	});
 </script>
 
-<section aria-label="Server List" class="flex flex-1 flex-col items-center md:overflow-hidden">
-	<div class="container flex flex-1 flex-col px-4 py-2 md:py-3 md:overflow-hidden">
+<section aria-label="Server List" class={`flex flex-col items-center ${layoutMode === 'tableOnly' ? 'md:flex-1 md:min-h-0' : ''}`}>
+	<div class={`container flex flex-col px-4 py-2 md:py-3 ${layoutMode === 'tableOnly' ? tableOnlyLayoutClasses : ''}`}>
 		<!-- View Tabs -->
 		<div role="tablist" class="tabs tabs-border mb-2 md:mb-3 border-mil">
 			<button
@@ -377,6 +385,7 @@
 			{searchQuery}
 			searchPlaceholder={m['app.search.placeholder']()}
 			{autoRefreshEnabled}
+			{layoutMode}
 			{columns}
 			{playerColumns}
 			{visibleColumns}
@@ -384,6 +393,7 @@
 			onPlayerDbChange={handlePlayerDbChange}
 			onRefresh={currentView === 'servers' ? serverState.refreshList : () => playerState.loadPlayers({ searchQuery })}
 			onAutoRefreshToggle={handleAutoRefreshToggle}
+			onLayoutModeChange={handleLayoutModeChange}
 			onSearchInput={handleSearchInput}
 			onSearchEnter={handleSearchEnter}
 			onColumnToggle={onColumnToggle}
@@ -404,6 +414,7 @@
 		{#if currentView === 'servers'}
 			<ServerView
 				loading={serverState.loading && serverState.servers.length === 0}
+				refreshing={serverState.loading && serverState.servers.length > 0}
 				error={serverState.error}
 				{searchQuery}
 				paginatedServers={derivedServerData.paginatedServers}
@@ -421,6 +432,7 @@
 				sortColumn={serverState.sortColumn}
 				sortDirection={serverState.sortDirection}
 				{mobileExpandedCards}
+				{layoutMode}
 				onQuickFilter={handleQuickFilter}
 				onMultiSelectChange={handleMultiSelectChange}
 				onSort={handleSort}
@@ -448,6 +460,7 @@
 				pageSize={playerState.playerPageSize}
 				sortColumn={playerState.playerSortColumn}
 				{mobileExpandedCards}
+				{layoutMode}
 				hasNext={playerState.playerHasNext}
 				hasPrevious={playerState.playerHasPrevious}
 				onSort={handlePlayerSort}

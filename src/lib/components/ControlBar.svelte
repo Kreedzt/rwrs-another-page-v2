@@ -5,6 +5,7 @@
 	import PlayerDatabaseSelector from '$lib/components/PlayerDatabaseSelector.svelte';
 	import ColumnsToggle from '$lib/components/ColumnsToggle.svelte';
 	import AutoRefresh from '$lib/components/AutoRefresh.svelte';
+	import LayoutModeToggle from '$lib/components/LayoutModeToggle.svelte';
 	import type { PlayerDatabase, IPlayerColumn } from '$lib/models/player.model';
 	import type { IColumn } from '$lib/models/server.model';
 	import analytics from '$lib/utils/analytics';
@@ -15,6 +16,7 @@
 		searchQuery: string;
 		searchPlaceholder: string;
 		autoRefreshEnabled: boolean;
+		layoutMode: 'fullPage' | 'tableOnly';
 		columns: IColumn[];
 		playerColumns: IPlayerColumn[];
 		visibleColumns: Record<string, boolean>;
@@ -22,6 +24,7 @@
 		onPlayerDbChange: (db: PlayerDatabase) => void;
 		onRefresh: () => Promise<void>;
 		onAutoRefreshToggle: (enabled: boolean) => void;
+		onLayoutModeChange: (mode: 'fullPage' | 'tableOnly') => void;
 		onSearchInput: (value: string) => void;
 		onSearchEnter?: (value: string) => void;
 		onColumnToggle: (column: IColumn, visible: boolean) => void;
@@ -34,6 +37,7 @@
 		searchQuery,
 		searchPlaceholder,
 		autoRefreshEnabled,
+		layoutMode,
 		columns,
 		playerColumns,
 		visibleColumns,
@@ -41,6 +45,7 @@
 		onPlayerDbChange,
 		onRefresh,
 		onAutoRefreshToggle,
+		onLayoutModeChange,
 		onSearchInput,
 		onSearchEnter,
 		onColumnToggle,
@@ -91,6 +96,13 @@
 
 		<div class="hidden md:block">
 			<ColumnsToggle columns={currentColumns} visibleColumns={currentVisibleColumns} onColumnToggle={onColumnToggle} />
+		</div>
+
+		<div class="hidden md:block">
+			<LayoutModeToggle
+				layoutMode={layoutMode}
+				onToggleChange={onLayoutModeChange}
+			/>
 		</div>
 
 		{#if showAutoRefresh}

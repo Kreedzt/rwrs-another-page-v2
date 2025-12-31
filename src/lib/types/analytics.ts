@@ -9,6 +9,7 @@ export type AnalyticsEventName =
 	| 'theme_change'
 	| 'language_change'
 	| 'github_link_click'
+	| 'layout_mode_change'
 	// Search & Filter Events
 	| 'search_triggered'
 	| 'quick_filter_applied'

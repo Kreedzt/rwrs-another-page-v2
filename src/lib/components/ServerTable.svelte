@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import { ArrowDownUp, ArrowUp, ArrowDown, Eye, Info } from '@lucide/svelte';
 	import type { IDisplayServerItem } from '$lib/models/server.model';
 	import type { IColumn } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
@@ -65,21 +66,6 @@
 		}
 	}
 
-	// Get sort icon for column
-	function getSortIcon(column: string) {
-		if (sortColumn !== column) {
-			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>`;
-		}
-
-		if (sortDirection === 'desc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>`;
-		} else if (sortDirection === 'asc') {
-			return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>`;
-		}
-
-		return '';
-	}
-
 	// Handle column sort
 	function handleColumnSort(column: string) {
 		onSort(column);
@@ -94,19 +80,7 @@
 
 {#if data.length === 0}
 	<div class="alert alert-info">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			class="h-6 w-6 shrink-0 stroke-current"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-			></path>
-		</svg>
+		<Info class="h-6 w-6 shrink-0 stroke-current" />
 		<span>No data found{searchQuery ? ' matching your search' : ''}.</span>
 	</div>
 {:else}
@@ -139,7 +113,13 @@
 												key={column.i18n}
 											/>{:else}{column.label}{/if}
 										</span>
-										{@html getSortIcon(column.key)}
+										{#if sortColumn !== column.key || !sortDirection}
+											<ArrowDownUp class="w-4 h-4 opacity-30" />
+										{:else if sortDirection === 'desc'}
+											<ArrowDown class="w-4 h-4 text-primary" />
+										{:else if sortDirection === 'asc'}
+											<ArrowUp class="w-4 h-4 text-primary" />
+										{/if}
 									</button>
 								{/if}
 							</th>
@@ -169,22 +149,15 @@
 										</div>
 									{:else if column.key === 'mapId'}
 										<div class="flex items-center gap-2">
-											<span class="truncate">{item.mapId.split('/').pop() || ''}</span>
-											{#if maps && maps.find(m => m.path === item.mapId)}
-												{@const mapData = maps.find(m => m.path === item.mapId)}
+											<span class="truncate">{@html getDisplayValue(item, column)}</span>
+											{#if maps && maps.find(m => m.path === item.mapId) && onMapView}
 												<button
 													type="button"
-													class="btn btn-success btn-xs text-white"
-													onclick={(e) => {
-														e.stopPropagation();
-														if (onMapView) onMapView(mapData);
-													}}
+													class="btn btn-ghost btn-xs btn-circle"
+													onclick={() => onMapView(maps.find(m => m.path === item.mapId)!)}
 													title="Preview map"
 												>
-													<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542 7z"></path>
-													</svg>
+													<Eye class="w-4 h-4" />
 												</button>
 											{/if}
 										</div>

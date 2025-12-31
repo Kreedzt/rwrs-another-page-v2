@@ -207,6 +207,12 @@
 			"offline": {
 				"banner": "您处于离线状态。显示缓存数据。"
 			}
+		},
+		"layoutMode": {
+			"button": "布局",
+			"tooltip": "切换布局模式",
+			"fullPage": "整页滚动",
+			"tableOnly": "表格滚动"
 		}
 	}
 }

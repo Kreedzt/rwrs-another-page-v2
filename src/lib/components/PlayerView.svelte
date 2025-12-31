@@ -5,6 +5,9 @@
 	import PlayerTable from '$lib/components/PlayerTable.svelte';
 	import MobileInfiniteScroll from '$lib/components/MobileInfiniteScroll.svelte';
 	import PageSizeSelector from '$lib/components/PageSizeSelector.svelte';
+	import Toast from '$lib/components/Toast.svelte';
+	import { m } from '$lib/paraglide/messages.js';
+	import { ArrowDown, CircleX, Info } from '@lucide/svelte';
 	import type { IPlayerItem, IPlayerColumn } from '$lib/models/player.model';
 
 	interface Props {
@@ -22,6 +25,7 @@
 		pageSize: number;
 		sortColumn: string | null;
 		mobileExpandedCards: Record<string, boolean>;
+		layoutMode: 'fullPage' | 'tableOnly';
 		hasNext: boolean;
 		hasPrevious: boolean;
 		onSort: (column: string) => void;
@@ -46,6 +50,7 @@
 		pageSize,
 		sortColumn,
 		mobileExpandedCards,
+		layoutMode,
 		hasNext,
 		hasPrevious,
 		onSort,
@@ -74,41 +79,50 @@
 		return (item as any)[column.key] ?? '-';
 	}
 
-	// Get sort icon for column (players only has descending sort)
-	function getSortIcon(column: string): string {
-		if (sortColumn !== column) {
-			return `<svg class="w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+	// Toast state for load more success feedback
+	let showLoadMoreToast = $state(false);
+	let wasPreviouslyLoadingMore = $state(false);
+	let hasLoadedPlayersOnce = $state(false);
+
+	// Monitor loading state changes to show toast
+	$effect(() => {
+		// Check if loading just finished (transitioned from true to false)
+		const loadingJustFinished = wasPreviouslyLoadingMore && !mobileLoadingMore;
+
+		// Update tracking state
+		wasPreviouslyLoadingMore = mobileLoadingMore;
+
+		// Track if we've had data at least once
+		if (mobilePaginatedPlayers.length > 0) {
+			hasLoadedPlayersOnce = true;
 		}
 
-		// Always show descending icon for sorted column
-		return `<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
-	}
+		// Show toast only after initial load, when load more completes
+		if (loadingJustFinished && hasLoadedPlayersOnce) {
+			showLoadMoreToast = true;
+			setTimeout(() => {
+				showLoadMoreToast = false;
+			}, 2000);
+		}
+	});
+
+	const tableOnlyContainerClasses = 'md:flex-1 md:min-h-0 md:overflow-hidden';
+	const tableOnlyScrollClasses = 'md:flex-1 md:min-h-0 md:overflow-auto';
+	const fullPageScrollClasses = 'md:overflow-x-auto';
 </script>
 
 {#if loading}
 	<LoadingState type="players" />
 {:else if error}
 	<div class="alert alert-error">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			class="h-6 w-6 shrink-0 stroke-current"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-			/>
-		</svg>
+		<CircleX class="h-6 w-6 shrink-0 stroke-current" />
 		<span>{error}</span>
 	</div>
 {:else}
 	<!-- Desktop scrollable table container -->
-	<div class="hidden md:flex md:flex-1 md:flex-col md:overflow-hidden">
+	<div class={`hidden md:flex md:flex-col ${layoutMode === 'tableOnly' ? tableOnlyContainerClasses : ''}`}>
 		<!-- Desktop table with scroll -->
-		<div class="flex-1 overflow-auto">
+		<div class={`w-full ${layoutMode === 'tableOnly' ? tableOnlyScrollClasses : fullPageScrollClasses}`}>
 			<PlayerTable
 				data={paginatedPlayers}
 				{playerColumns}
@@ -134,6 +148,12 @@
 
 	<!-- Mobile content area - 保持原有行为 -->
 	<div class="flex w-full flex-col md:hidden">
+		<!-- Toast container for mobile only -->
+		<div class="toast toast-top toast-end z-50">
+			{#if showLoadMoreToast}
+				<Toast message={m['app.toast.refreshSuccess.title']()} type="success" />
+			{/if}
+		</div>
 		<!-- Mobile table cards -->
 		<div class="md:hidden">
 			<!-- Mobile sort controls -->
@@ -145,7 +165,11 @@
 						type="button"
 					>
 						{#if column.i18n}<TranslatedText key={column.i18n} />{:else}{column.label}{/if}
-						{@html getSortIcon(column.key as string)}
+						{#if sortColumn !== column.key}
+							<ArrowDown class="w-4 h-4 opacity-30" />
+						{:else}
+							<ArrowDown class="w-4 h-4 text-primary" />
+						{/if}
 					</button>
 				{/each}
 			</div>
@@ -199,19 +223,7 @@
 
 			{#if mobilePaginatedPlayers.length === 0}
 				<div class="alert alert-info">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						class="h-6 w-6 shrink-0 stroke-current"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						></path>
-					</svg>
+					<Info class="h-6 w-6 shrink-0 stroke-current" />
 					<span>
 						<TranslatedText key="app.player.noPlayersFound" />
 						{#if searchQuery}

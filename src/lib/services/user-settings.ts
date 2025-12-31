@@ -6,6 +6,7 @@ interface UserSettings {
 	};
 	visibleColumns: Record<string, boolean>;
 	visiblePlayerColumns: Record<string, boolean>;
+	layoutMode?: 'fullPage' | 'tableOnly';
 	// Future settings can be added here
 	theme?: 'light' | 'dark' | 'auto';
 	language?: string;
@@ -45,7 +46,8 @@ const DEFAULT_SETTINGS: UserSettings = {
 		timePlayed: true,
 		rankProgression: true,
 		rankName: true
-	}
+	},
+	layoutMode: 'fullPage' as const
 };
 
 const STORAGE_KEY = 'rwrs-user-settings';

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { Download } from '@lucide/svelte';
 	import TranslatedText from './TranslatedText.svelte';
 
 	let deferredPrompt: Event | null = null;
@@ -59,9 +60,7 @@
 
 {#if showInstallPrompt}
 	<div class="alert alert-success fixed bottom-4 right-4 z-50 flex max-w-sm items-center gap-4 shadow-lg transition-all">
-		<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-		</svg>
+		<Download class="h-8 w-8 shrink-0" />
 		<div class="flex-1">
 			<p class="font-bold"><TranslatedText key="app.pwa.install.title" /></p>
 			<p class="text-sm opacity-90"><TranslatedText key="app.pwa.install.description" /></p>

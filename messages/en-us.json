@@ -191,6 +191,12 @@
 			"page": "Page",
 			"previousPage": "Previous page",
 			"nextPage": "Next page"
+		},
+		"layoutMode": {
+			"button": "Layout",
+			"tooltip": "Toggle layout mode",
+			"fullPage": "Full Page Scroll",
+			"tableOnly": "Table Scroll"
 		}
 	}
 }

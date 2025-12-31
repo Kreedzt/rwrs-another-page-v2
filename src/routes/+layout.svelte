@@ -4,8 +4,28 @@
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import ChristmasSnowfall from '$lib/components/ChristmasSnowfall.svelte';
 	import Header from './Header.svelte';
+	import { getLayoutMode, syncLayoutMode } from '$lib/stores/layout-mode.svelte';
 
 	let { children } = $props();
+
+	// Layout mode from global store - reactive via derived
+	let layoutMode = $derived(getLayoutMode());
+
+	const tableOnlyRootClasses = 'md:h-screen md:overflow-hidden';
+	const tableOnlyMainClasses = 'md:flex-1 md:overflow-hidden md:min-h-0';
+
+	// Listen for storage changes to sync layout mode across tabs
+	onMount(() => {
+		const handleStorageChange = () => {
+			syncLayoutMode();
+		};
+
+		window.addEventListener('storage', handleStorageChange);
+
+		return () => {
+			window.removeEventListener('storage', handleStorageChange);
+		};
+	});
 
 	// Hide loading screen when SvelteKit hydrates
 	onMount(() => {
@@ -78,10 +98,14 @@
 <ChristmasSnowfall />
 
 <!-- PC端: 固定高度布局; 移动端: 正常流式布局 -->
-<div class="flex min-h-screen flex-col md:h-screen md:overflow-hidden">
+<div
+	class={`flex min-h-screen flex-col ${layoutMode === 'tableOnly' ? tableOnlyRootClasses : ''}`}
+>
 	<Header />
 
-	<main class="flex w-full flex-1 flex-col md:overflow-hidden">
+	<main
+		class={`flex w-full flex-col ${layoutMode === 'tableOnly' ? tableOnlyMainClasses : ''}`}
+>
 		{@render children()}
 	</main>
 
