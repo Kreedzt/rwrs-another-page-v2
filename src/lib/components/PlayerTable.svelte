@@ -1,8 +1,9 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { ArrowDown, Info } from '@lucide/svelte';
+	import { ArrowDown, Info, Share } from '@lucide/svelte';
 	import type { IPlayerItem, IPlayerColumn } from '$lib/models/player.model';
+	import './table.css';
 
 	interface Props {
 		data: IPlayerItem[];
@@ -12,6 +13,7 @@
 		highlightedUsername?: string;
 		sortColumn: string | null;
 		onSort?: (column: string) => void;
+		onShare?: (player: IPlayerItem) => void;
 	}
 
 	let {
@@ -21,7 +23,8 @@
 		searchQuery = '',
 		highlightedUsername,
 		sortColumn = null,
-		onSort = () => {}
+		onSort = () => {},
+		onShare
 	}: Props = $props();
 
 	// Helper function to get the display value for a column
@@ -67,7 +70,7 @@
 		</span>
 	</div>
 {:else}
-	<div class="w-full">
+	<div class="w-full player-table-wrapper">
 		<table class="table-pin-rows mb-0 table table-zebra border-0 bg-mil-primary">
 			<thead>
 				<tr class="bg-mil-secondary">
@@ -77,14 +80,15 @@
 								class="sticky top-0 z-10 h-12 border-mil px-1 py-1 align-middle text-mil-primary {getStickyClass(column.key)}"
 								class:sticky-row-number-header={column.key === 'rowNumber'}
 								class:sticky-username-header={column.key === 'username'}
+								class:action-header={column.key === 'action'}
 							>
-								{#if column.key === 'rowNumber' || column.key === 'rankName'}
-									<!-- No sort button for rowNumber and rankName -->
-									<span class="px-2 py-1">
+								{#if column.key === 'action' || column.key === 'rowNumber' || column.key === 'rankName'}
+									<!-- No sort button for action, rowNumber and rankName -->
+									<div class="text-center px-2 py-1">
 										{#if column.i18n}<TranslatedText
 												key={column.i18n}
 											/>{:else}{column.label}{/if}
-									</span>
+									</div>
 								{:else}
 									<button
 										class="hover:bg-base-300 flex w-full items-center gap-2 rounded px-2 py-2 text-left transition-colors duration-200"
@@ -112,17 +116,30 @@
 			<tbody>
 				{#each data as item (item.id)}
 					{@const isHighlighted = highlightedUsername && item.username.toLowerCase() === highlightedUsername.toLowerCase()}
-					<tr class="min-h-12 border-b border-mil {isHighlighted ? 'bg-accent text-accent-content font-semibold' : 'hover hover:bg-base-300'}">
+					<tr class="min-h-12 border-b border-mil {isHighlighted ? 'highlighted-row bg-primary/20 font-semibold' : 'hover hover:bg-base-300'}">
 						{#each playerColumns as column (column.key)}
 							{#if visibleColumns[column.key]}
 								<td
-									class="border-mil px-4 py-2 {getStickyClass(column.key)} {isHighlighted ? 'text-accent-content' : 'text-mil-primary'} {column.alignment === 'center'
+									class="border-mil px-4 py-2 {getStickyClass(column.key)} text-mil-primary {column.alignment === 'center'
 										? 'align-middle text-center'
 										: column.alignment === 'right'
 											? 'align-middle text-right'
-											: 'align-middle'}"
+											: 'align-middle'} {column.key === 'action' ? 'action-cell' : ''}"
 								>
-									{@html getDisplayValue(item, column, searchQuery)}
+									{#if column.key === 'action'}
+										<div class="flex items-center justify-center text-center">
+											<button
+												type="button"
+												class="btn btn-ghost btn-xs btn-circle"
+												onclick={() => onShare?.(item)}
+												title={m['app.ariaLabel.sharePlayer']()}
+											>
+												<Share class="w-4 h-4" />
+											</button>
+										</div>
+									{:else}
+										{@html getDisplayValue(item, column, searchQuery)}
+									{/if}
 								</td>
 							{/if}
 						{/each}
@@ -134,68 +151,45 @@
 {/if}
 
 <style>
-	/* Ensure table-pin-rows header has higher z-index than sticky column cells */
-	:global(.table-pin-rows thead tr) {
-		z-index: 25 !important;
-	}
-
-	/* Row number - sticky first column on left */
-	:global(.sticky-row-number) {
-		position: sticky;
-		left: 0;
-		z-index: 20;
+	/* PlayerTable specific widths - scoped to .player-table-wrapper */
+	:global(.player-table-wrapper .sticky-row-number) {
 		min-width: 4rem;
 		width: 4rem;
-		background: var(--color-bg-secondary);
-		border-right: 1px solid var(--color-border);
 	}
 
-	:global(.sticky-row-number-header) {
-		position: sticky;
-		left: 0;
-		z-index: 30 !important;
+	:global(.player-table-wrapper .sticky-row-number-header) {
 		min-width: 4rem;
 		width: 4rem;
-		background: var(--color-bg-secondary) !important;
-		border-right: 1px solid var(--color-border);
 	}
 
-	/* Username - sticky second column on left */
-	:global(.sticky-username) {
-		position: sticky;
-		left: 4rem;
-		z-index: 20;
+	:global(.player-table-wrapper .sticky-username) {
 		min-width: 10rem;
-		background: var(--color-bg-secondary);
-		border-right: 1px solid var(--color-border);
 	}
 
-	:global(.sticky-username-header) {
-		position: sticky;
-		left: 4rem;
-		z-index: 30 !important;
+	:global(.player-table-wrapper .sticky-username-header) {
 		min-width: 10rem;
-		background: var(--color-bg-secondary) !important;
-		border-right: 1px solid var(--color-border);
 	}
 
-	/* Highlighted row - override sticky column backgrounds */
-	:global(tr.bg-accent .sticky-row-number),
-	:global(tr.bg-accent .sticky-username) {
-		background: hsl(var(--ac));
+	:global(.player-table-wrapper .action-cell) {
+		min-width: 5rem;
+		width: 5rem;
 	}
 
-	/* Mobile responsive styles */
+	:global(.player-table-wrapper .action-header) {
+		min-width: 5rem;
+		width: 5rem;
+	}
+
+	/* Mobile responsive adjustments for PlayerTable */
 	@media (max-width: 768px) {
-		:global(.sticky-row-number),
-		:global(.sticky-username),
-		:global(.sticky-row-number-header),
-		:global(.sticky-username-header) {
+		:global(.player-table-wrapper .sticky-row-number),
+		:global(.player-table-wrapper .sticky-row-number-header) {
 			min-width: 3rem;
 		}
 
-		:global(.sticky-username),
-		:global(.sticky-username-header) {
+		:global(.player-table-wrapper .sticky-username),
+		:global(.player-table-wrapper .sticky-username-header) {
+			min-width: 3rem;
 			left: 3rem;
 		}
 	}

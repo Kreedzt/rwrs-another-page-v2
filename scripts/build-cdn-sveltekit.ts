@@ -423,6 +423,15 @@ function processHTMLContent(htmlPath: string, manifest: CDNManifest): string {
 		? manifest.cdnBaseUrl.slice(0, -1)
 		: manifest.cdnBaseUrl;
 
+	// Ensure SvelteKit runtime knows the CDN assets root (fixes dynamic chunk loading)
+	content = content.replace(
+		/(__sveltekit_[\w$]+\s*=\s*{\s*base:[^}]*)(};)/,
+		(match, prefix: string, suffix: string) =>
+			prefix.includes('assets:')
+				? match
+				: `${prefix}, assets: "${baseUrl}" ${suffix}`
+	);
+
 	// Replace import("./_app/...") or import("/_app/...")
 	// Replace href="./_app/..." or href="/_app/..."
 	// Replace src="./_app/..." or src="/_app/..."

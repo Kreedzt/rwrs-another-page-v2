@@ -11,6 +11,11 @@
 	// Layout mode from global store - reactive via derived
 	let layoutMode = $derived(getLayoutMode());
 
+	// Copyright year range - project launched in 2025, dynamic end year
+	const launchYear = 2025;
+	const currentYear = $derived(new Date().getFullYear());
+	const copyrightYear = $derived(currentYear > launchYear ? `${launchYear}-${currentYear}` : `${launchYear}`);
+
 	const tableOnlyRootClasses = 'md:h-screen md:overflow-hidden';
 	const tableOnlyMainClasses = 'md:flex-1 md:overflow-hidden md:min-h-0';
 
@@ -130,7 +135,7 @@
 			<p class="text-xs text-mil-secondary">
 				<TranslatedText key="app.footer.robinWeb" />
 				&bull;
-				<TranslatedText key="app.footer.copyright" params={{ year: 2025 }} />
+				<TranslatedText key="app.footer.copyright" params={{ year: copyrightYear }} />
 			</p>
 		</aside>
 	</footer>

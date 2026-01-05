@@ -178,6 +178,27 @@
 				"title": "加载玩家",
 				"description": "正在从API获取最新的玩家数据...",
 				"progress": "连接服务器中..."
+			},
+			"share": "分享统计",
+			"buttonShare": "分享",
+			"shareCard": {
+				"combat": "战斗数据",
+				"objectives": "目标数据",
+				"progression": "进度数据",
+				"other": "其他数据",
+				"queryTime": "数据查询时间"
+			},
+			"shareModal": {
+				"title": "分享玩家统计",
+				"download": "下载",
+				"copy": "复制",
+				"copied": "已复制！",
+				"copying": "复制中...",
+				"downloading": "下载中...",
+				"loadingRankings": "加载排名中...",
+				"error": "生成图片失败",
+				"retry": "重试",
+				"help": "下载图片或复制到剪贴板进行分享"
 			}
 		},
 		"footer": {
@@ -223,7 +244,8 @@
 			"toggleServerDetails": "切换服务器详情",
 			"togglePlayerDetails": "切换玩家详情",
 			"clickToSort": "点击排序",
-			"previewMap": "预览地图"
+			"previewMap": "预览地图",
+			"sharePlayer": "分享玩家统计图片"
 		}
 	}
 }

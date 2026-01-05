@@ -14,6 +14,9 @@ importers:
       '@lucide/svelte':
         specifier: ^0.562.0
         version: 0.562.0(svelte@5.46.1)
+      '@zumer/snapdom':
+        specifier: ^2.0.1
+        version: 2.0.1
       daisyui:
         specifier: ^5.5.14
         version: 5.5.14
@@ -918,6 +921,9 @@ packages:
 
   '@vitest/utils@4.0.16':
     resolution: {integrity: sha512-h8z9yYhV3e1LEfaQ3zdypIrnAg/9hguReGZoS7Gl0aBG5xgA410zBqECqmaF/+RkTggRsfnzc1XaAHA6bmUufA==}
+
+  '@zumer/snapdom@2.0.1':
+    resolution: {integrity: sha512-78/qbYl2FTv4H6qaXcNfAujfIOSzdvs83NW63VbyC9QA3sqNPfPvhn4xYMO6Gy11hXwJUEhd0z65yKiNzDwy9w==}
 
   abbrev@2.0.0:
     resolution: {integrity: sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ==}
@@ -3291,6 +3297,8 @@ snapshots:
     dependencies:
       '@vitest/pretty-format': 4.0.16
       tinyrainbow: 3.0.3
+
+  '@zumer/snapdom@2.0.1': {}
 
   abbrev@2.0.0: {}
 

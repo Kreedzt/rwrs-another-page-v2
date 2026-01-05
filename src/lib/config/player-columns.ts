@@ -147,5 +147,11 @@ export const playerColumns: IPlayerColumn[] = [
 			if (!player.rankName) return '-';
 			return query ? highlightMatch(player.rankName, query) : player.rankName;
 		}
+	},
+	{
+		key: 'action',
+		label: 'Action',
+		i18n: 'app.column.action',
+		alignment: 'center'
 	}
 ];

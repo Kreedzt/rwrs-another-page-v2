@@ -53,6 +53,13 @@ Robin web provides a pure and efficient way to browse Running with Rifles game s
 - URL state management for bookmarkable views
 - Multi-platform analytics tracking (Google Analytics, Baidu Analytics, Umami)
 
+**Share & Export**
+
+- Player statistics sharing with PC/Mobile optimized cards
+- High-quality PNG image generation with snapdom
+- Download or copy to clipboard functionality
+- Real-time query timestamp and rankings display
+
 ## Analytics
 
 The application includes a comprehensive analytics system that tracks user interactions while respecting privacy:
@@ -86,6 +93,9 @@ The application includes a comprehensive analytics system that tracks user inter
 | `column_visibility_toggle` | Showing/hiding columns                      |
 | `server_join_click`        | Clicking server join button                 |
 | `map_preview_open`         | Opening map preview                         |
+| `share_modal_open`         | Opening player share modal                  |
+| `share_download`           | Downloading share image (success/failure)   |
+| `share_copy`               | Copying share image to clipboard            |
 
 ### Debug Mode
 

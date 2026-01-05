@@ -178,6 +178,27 @@
 				"title": "Loading Players",
 				"description": "Fetching latest player data from the API...",
 				"progress": "Connecting to server..."
+			},
+			"share": "Share Stats",
+			"buttonShare": "Share",
+			"shareCard": {
+				"combat": "Combat",
+				"objectives": "Objectives",
+				"progression": "Progression",
+				"other": "Other",
+				"queryTime": "Data queried at"
+			},
+			"shareModal": {
+				"title": "Share Player Stats",
+				"download": "Download",
+				"copy": "Copy",
+				"copied": "Copied!",
+				"copying": "Copying...",
+				"downloading": "Downloading...",
+				"loadingRankings": "Loading rankings...",
+				"error": "Failed to generate image",
+				"retry": "Retry",
+				"help": "Download the image or copy it to your clipboard to share"
 			}
 		},
 		"footer": {
@@ -207,7 +228,8 @@
 			"toggleServerDetails": "Toggle server details",
 			"togglePlayerDetails": "Toggle player details",
 			"clickToSort": "Click to sort",
-			"previewMap": "Preview map"
+			"previewMap": "Preview map",
+			"sharePlayer": "Share player stats as image"
 		}
 	}
 }

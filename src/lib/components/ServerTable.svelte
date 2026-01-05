@@ -5,6 +5,7 @@
 	import type { IDisplayServerItem } from '$lib/models/server.model';
 	import type { IColumn } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
+	import './table.css';
 
 	interface Props {
 		data: IDisplayServerItem[];
@@ -86,7 +87,7 @@
 	</div>
 {:else}
 	<!-- Desktop table view (hidden on mobile) -->
-	<div class="w-full">
+	<div class="w-full server-table-wrapper">
 		<table class="table-pin-rows mb-0 table table-zebra border-0 bg-mil-primary">
 			<thead>
 				<tr class="bg-mil-secondary">
@@ -185,65 +186,29 @@
 {/if}
 
 <style>
-	/* Ensure table-pin-rows header has higher z-index than sticky column cells */
-	:global(.table-pin-rows thead tr) {
-		z-index: 25 !important;
-	}
-
-	/* Name column - sticky first column on left with military styling */
-	:global(.sticky-name) {
-		position: sticky;
-		left: 0;
-		z-index: 20;
+	/* ServerTable specific widths - scoped to .server-table-wrapper */
+	:global(.server-table-wrapper .sticky-name) {
 		min-width: 14rem;
-		background: var(--color-bg-secondary);
-		border-right: 1px solid var(--color-border);
 	}
 
-	:global(.sticky-name-header) {
-		position: sticky;
-		left: 0;
-		z-index: 30 !important;
+	:global(.server-table-wrapper .sticky-name-header) {
 		min-width: 14rem;
-		background: var(--color-bg-secondary) !important;
-		border-right: 1px solid var(--color-border);
 	}
 
-	/* Action column styling - sticky right with military theme */
-	:global(.action-cell) {
-		position: sticky;
-		right: 0;
-		z-index: 20;
+	:global(.server-table-wrapper .action-cell) {
 		min-width: 9rem;
 		width: 9rem;
-		background: var(--color-bg-secondary);
-		border-left: 1px solid var(--color-border);
 	}
 
-	:global(.action-header) {
-		position: sticky;
-		right: 0;
-		z-index: 30 !important;
+	:global(.server-table-wrapper .action-header) {
 		min-width: 9rem;
 		width: 9rem;
-		background: var(--color-bg-secondary) !important;
-		border-left: 1px solid var(--color-border);
 	}
 
-	/* Mobile responsive styles */
+	/* ServerTable specific mobile adjustments */
 	@media (max-width: 768px) {
-		:global(.action-cell),
-		:global(.action-header) {
-			display: none;
-		}
-
-		:global(.min-w-96) {
+		:global(.server-table-wrapper .min-w-96) {
 			min-width: 20rem;
-		}
-
-		:global(.mobile-btn) {
-			font-size: 0.75rem;
-			padding: 0.25rem 0.5rem;
 		}
 	}
 </style>
