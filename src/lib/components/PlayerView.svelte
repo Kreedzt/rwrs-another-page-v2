@@ -7,7 +7,7 @@
 	import PageSizeSelector from '$lib/components/PageSizeSelector.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { ArrowDown, CircleX, Info } from '@lucide/svelte';
+	import { ArrowDown, CircleX, Info, Share } from '@lucide/svelte';
 	import type { IPlayerItem, IPlayerColumn } from '$lib/models/player.model';
 
 	interface Props {
@@ -33,6 +33,7 @@
 		onPageSizeChange: (size: number) => void;
 		onLoadMore: () => void;
 		onToggleMobileCard: (playerId: string) => void;
+		onShare?: (player: IPlayerItem) => void;
 	}
 
 	let {
@@ -57,7 +58,8 @@
 		onPageChange,
 		onPageSizeChange,
 		onLoadMore,
-		onToggleMobileCard
+		onToggleMobileCard,
+		onShare
 	}: Props = $props();
 
 	// Helper function to get the display value for a column
@@ -131,6 +133,7 @@
 				{highlightedUsername}
 				{sortColumn}
 				onSort={onSort}
+				onShare={onShare}
 			/>
 		</div>
 
@@ -203,7 +206,7 @@
 					<div class="collapse-content">
 						<div class="border-base-200 border-t">
 							<div class="space-y-2 pt-3">
-								{#each playerColumns.filter((col) => !['username', 'rowNumber'].includes(col.key as string)) as column (column.key)}
+								{#each playerColumns.filter((col) => !['username', 'rowNumber', 'action'].includes(col.key as string)) as column (column.key)}
 									<div class="flex items-center justify-between py-1">
 										<span class="text-base-content/60 min-w-20 flex-shrink-0 text-sm">
 											{#if column.i18n}<TranslatedText
@@ -215,6 +218,26 @@
 										</div>
 									</div>
 								{/each}
+							</div>
+
+							<!-- Share button section (similar to ServerView Preview Map) -->
+							<div class="border-base-200 mt-4 pt-3 border-t">
+								<div class="flex items-center justify-between">
+									<span class="text-base-content/70 min-w-20 flex-shrink-0 text-sm">
+										<TranslatedText key="app.player.share" />:
+									</span>
+									<button
+										class="btn btn-success btn-sm text-white"
+										onclick={(e) => {
+											e.stopPropagation();
+											onShare?.(item);
+										}}
+										type="button"
+									>
+										<Share class="w-3 h-3 mr-1" />
+										<TranslatedText key="app.player.buttonShare" />
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -245,50 +268,5 @@
 {/if}
 
 <style>
-	/* Enhanced loading animations */
-	:global(.loading-container) {
-		background: linear-gradient(135deg, hsl(var(--b1)) 0%, hsl(var(--b2)) 100%);
-		border: 1px solid hsl(var(--bc) / 0.1);
-		box-shadow:
-			0 4px 6px -1px rgba(0, 0, 0, 0.1),
-			0 2px 4px -1px rgba(0, 0, 0, 0.06);
-	}
-
-	/* Custom bounce animation for loading dots */
-	@keyframes bounce-custom {
-		0%,
-		80%,
-		100% {
-			transform: scale(0.8);
-			opacity: 0.5;
-		}
-		40% {
-			transform: scale(1);
-			opacity: 1;
-		}
-	}
-
-	:global(.loading-dot) {
-		animation: bounce-custom 1.4s infinite ease-in-out both;
-	}
-
-	/* Progress bar animation */
-	@keyframes progress-pulse {
-		0% {
-			width: 30%;
-			opacity: 0.6;
-		}
-		50% {
-			width: 70%;
-			opacity: 1;
-		}
-		100% {
-			width: 90%;
-			opacity: 0.8;
-		}
-	}
-
-	:global(.progress-bar) {
-		animation: progress-pulse 2s ease-in-out infinite;
-	}
+	/* Component-specific styles - loading animations are in LoadingState.svelte */
 </style>

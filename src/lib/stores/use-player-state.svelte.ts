@@ -32,6 +32,7 @@ export function createPlayerState(initialDb: PlayerDatabase = 'invasion' as Play
 	let loading = $state(false);
 	const refreshing = $state(false);
 	let error = $state<string | null>(null);
+	let lastQueryTimestamp = $state<number | undefined>(undefined);
 
 	// Pagination state from API
 	let playerHasNext = $state(false);
@@ -86,6 +87,7 @@ export function createPlayerState(initialDb: PlayerDatabase = 'invasion' as Play
 			playerHasNext = result.hasNext;
 			playerHasPrevious = result.hasPrevious;
 			mobilePlayerCurrentPage = 1;
+			lastQueryTimestamp = Date.now();
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load player data';
 			console.error('Error loading players:', err);
@@ -271,6 +273,9 @@ export function createPlayerState(initialDb: PlayerDatabase = 'invasion' as Play
 		},
 		get playerSortDirection() {
 			return playerSortDirection;
+		},
+		get lastQueryTimestamp() {
+			return lastQueryTimestamp;
 		},
 
 		// Methods

@@ -23,6 +23,10 @@ export type AnalyticsEventName =
 	| 'load_more_click'
 	| 'auto_refresh_toggle'
 	| 'player_database_change'
+	// Share Events
+	| 'share_modal_open'
+	| 'share_download'
+	| 'share_copy'
 	// Engagement Events
 	| 'refresh_click'
 	| 'page_load'
@@ -51,6 +55,11 @@ export interface AnalyticsEventParams {
 
 	// Player database
 	player_database?: 'invasion' | 'pacific' | 'prereset_invasion';
+
+	// Share params
+	device_type?: 'desktop' | 'mobile';
+	image_format?: 'png';
+	success?: boolean;
 
 	// Action params
 	action?: string;

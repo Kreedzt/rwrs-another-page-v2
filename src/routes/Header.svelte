@@ -51,7 +51,7 @@
 
 				<a
 					href="https://github.com/Kreedzt/rwrs-another-page-v2"
-					class="btn-tactical inline-flex items-center justify-center px-2 py-1.5 md:px-3 md:py-2 text-xs md:text-sm transition-all"
+					class="header-link btn-tactical inline-flex items-center justify-center px-2 py-1.5 md:px-3 md:py-2 text-xs md:text-sm transition-all"
 					target="_blank"
 					rel="noopener noreferrer"
 					title="View on GitHub"
@@ -69,11 +69,11 @@
 <ChristmasConfetti bind:this={confettiComponent} />
 
 <style>
-	/* Override DaisyUI button styles in header */
-	header :global(a) {
+	/* Header link styling - override DaisyUI defaults */
+	.header-link {
 		text-decoration: none;
 	}
-	
+
 	/* Title button style reset */
 	header button {
 		background: none;

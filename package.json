@@ -65,6 +65,7 @@
 	"dependencies": {
 		"@inlang/paraglide-js": "^2.7.0",
 		"@lucide/svelte": "^0.562.0",
+		"@zumer/snapdom": "^2.0.1",
 		"daisyui": "^5.5.14",
 		"fast-xml-parser": "^5.3.3"
 	}

@@ -72,7 +72,7 @@
 	}
 
 	/* Stats number highlighting */
-	:global(.stats-number) {
+	.stats-number {
 		font-weight: 600;
 		color: hsl(var(--bc));
 	}

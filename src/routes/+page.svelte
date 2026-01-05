@@ -5,8 +5,9 @@
 	import type { IColumn, IDisplayServerItem } from '$lib/models/server.model';
 	import { columns } from '$lib/config/server-columns';
 	import { getMaps, type MapData } from '$lib/services/maps';
-	import type { IPlayerColumn, PlayerDatabase } from '$lib/models/player.model';
+	import type { IPlayerColumn, PlayerDatabase, PlayerSortField } from '$lib/models/player.model';
 	import { playerColumns } from '$lib/config/player-columns';
+	import { PlayerService } from '$lib/services/players';
 	import {
 		getUrlState,
 		updateUrlState,
@@ -27,6 +28,7 @@
 	import ServerView from '$lib/components/ServerView.svelte';
 	import PlayerView from '$lib/components/PlayerView.svelte';
 	import MapPreview from '$lib/components/MapPreview.svelte';
+	import PlayerShareModal from '$lib/components/PlayerShareModal.svelte';
 	import GlobalKeyboardSearch from '$lib/components/GlobalKeyboardSearch.svelte';
 
 	// Create state stores
@@ -43,6 +45,10 @@
 	let mapPreviewData = $state<MapData | undefined>(undefined);
 	let mapPreviewShow = $state(false);
 	let mapPreviewPosition = $state({ x: 0, y: 0 });
+
+	// Player share modal state
+	let playerShareData = $state<import('$lib/models/player.model').IPlayerItem | undefined>(undefined);
+	let playerShareShow = $state(false);
 
 	// Quick filter state
 	let activeQuickFilters = $state<string[]>([]);
@@ -173,10 +179,8 @@
 	}
 
 	function onColumnToggle(column: IColumn | IPlayerColumn, visible: boolean) {
-		const playerColumnKeys = new Set(playerColumns.map((col) => col.key as string));
-		const isPlayerColumn = playerColumnKeys.has(column.key as string);
-
-		if (isPlayerColumn) {
+		// Use current view to determine which visibility map to update (player/server both have an "action" key)
+		if (currentView === 'players') {
 			visiblePlayerColumns[column.key as string] = visible;
 			userSettingsService.updateNested('visiblePlayerColumns', column.key as string, visible);
 		} else {
@@ -270,6 +274,109 @@
 
 	function handleMapPreviewClose() {
 		mapPreviewShow = false;
+	}
+
+	function handlePlayerShare(player: import('$lib/models/player.model').IPlayerItem) {
+		playerShareData = player;
+		playerShareShow = true;
+	}
+
+	function handlePlayerShareClose() {
+		playerShareShow = false;
+	}
+
+	/**
+	 * Fetch player rankings for all sortable fields
+	 * Concurrently queries the Player API for each sort field in descending order,
+	 * then finds the row number where the target player appears.
+	 */
+	async function fetchPlayerRankings(
+		player: import('$lib/models/player.model').IPlayerItem
+	): Promise<Record<string, number>> {
+		// Map of camelCase column keys to snake_case API sort fields
+		const sortableFields: Array<{ key: string; sortField: PlayerSortField }> = [
+			{ key: 'kills', sortField: 'kills' },
+			{ key: 'deaths', sortField: 'deaths' },
+			{ key: 'score', sortField: 'score' },
+			{ key: 'kd', sortField: 'kd' },
+			{ key: 'timePlayed', sortField: 'time_played' },
+			{ key: 'longestKillStreak', sortField: 'longest_kill_streak' },
+			{ key: 'targetsDestroyed', sortField: 'targets_destroyed' },
+			{ key: 'vehiclesDestroyed', sortField: 'vehicles_destroyed' },
+			{ key: 'soldiersHealed', sortField: 'soldiers_healed' },
+			{ key: 'teamkills', sortField: 'teamkills' },
+			{ key: 'distanceMoved', sortField: 'distance_moved' },
+			{ key: 'shotsFired', sortField: 'shots_fired' },
+			{ key: 'throwablesThrown', sortField: 'throwables_thrown' },
+			{ key: 'rankProgression', sortField: 'rank_progression' }
+		];
+
+		// Helper function to find player's ranking for a single field
+		async function getRankingForField(
+			sortField: PlayerSortField
+		): Promise<{ key: string; rank: number | null }> {
+			try {
+				// Query API with descending sort and username search
+				const result = await PlayerService.listWithPagination({
+					db: player.db,
+					search: player.username,
+					sort: sortField,
+					size: 20
+				});
+
+				// Find the player's position in the results
+				const playerIndex = result.players.findIndex((p) => p.username === player.username);
+
+				if (playerIndex !== -1) {
+					// Calculate the actual ranking (rowNumber from API response)
+					const foundPlayer = result.players[playerIndex];
+					return { key: sortFieldToKey(sortField), rank: foundPlayer.rowNumber };
+				}
+
+				// If player not found in first page, we may need to paginate
+				// For now, return null to indicate not found
+				return { key: sortFieldToKey(sortField), rank: null };
+			} catch (error) {
+				console.error(`Error fetching ranking for ${sortField}:`, error);
+				return { key: sortFieldToKey(sortField), rank: null };
+			}
+		}
+
+		// Convert snake_case sort field to camelCase key
+		function sortFieldToKey(sortField: PlayerSortField): string {
+			const keyMap: Record<PlayerSortField, string> = {
+				kills: 'kills',
+				deaths: 'deaths',
+				kd: 'kd',
+				score: 'score',
+				time_played: 'timePlayed',
+				teamkills: 'teamkills',
+				longest_kill_streak: 'longestKillStreak',
+				targets_destroyed: 'targetsDestroyed',
+				vehicles_destroyed: 'vehiclesDestroyed',
+				soldiers_healed: 'soldiersHealed',
+				distance_moved: 'distanceMoved',
+				shots_fired: 'shotsFired',
+				throwables_thrown: 'throwablesThrown',
+				rank_progression: 'rankProgression',
+				username: 'username'
+			};
+			return keyMap[sortField] || sortField;
+		}
+
+		// Fetch all rankings concurrently
+		const rankingsPromises = sortableFields.map((field) => getRankingForField(field.sortField));
+		const rankingsResults = await Promise.all(rankingsPromises);
+
+		// Build rankings object, excluding null values
+		const rankings: Record<string, number> = {};
+		for (const result of rankingsResults) {
+			if (result.rank !== null) {
+				rankings[result.key] = result.rank;
+			}
+		}
+
+		return rankings;
 	}
 
 	async function loadMaps() {
@@ -477,6 +584,7 @@
 				onPageSizeChange={handlePlayerPageSizeChange}
 				onLoadMore={handleLoadMore}
 				onToggleMobileCard={toggleMobileCard}
+				onShare={handlePlayerShare}
 			/>
 		{/if}
 	</div>
@@ -491,5 +599,14 @@
 		position={mapPreviewPosition}
 		key={mapPreviewData?.path}
 		onClose={handleMapPreviewClose}
+	/>
+
+	<!-- Player share modal -->
+	<PlayerShareModal
+		player={playerShareData}
+		show={playerShareShow}
+		onClose={handlePlayerShareClose}
+		queryTimestamp={playerState.lastQueryTimestamp}
+		onFetchRankings={() => playerShareData ? fetchPlayerRankings(playerShareData) : Promise.resolve({})}
 	/>
 </section>

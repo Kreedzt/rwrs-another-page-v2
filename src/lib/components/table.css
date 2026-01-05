@@ -1,0 +1,100 @@
+/**
+ * Shared table styles for PlayerTable and ServerTable
+ *
+ * This file contains common sticky column styles that need to be global
+ * to work within Svelte's scoped CSS system.
+ */
+
+/* Ensure table-pin-rows header has higher z-index than sticky column cells */
+.table-pin-rows thead tr {
+	z-index: 25 !important;
+}
+
+/* Action column - sticky right with military theme */
+/* Note: Specific widths are overridden in component styles */
+.action-cell {
+	position: sticky;
+	right: 0;
+	z-index: 20;
+	background: var(--color-bg-secondary);
+	border-left: 1px solid var(--color-border);
+}
+
+.action-header {
+	position: sticky;
+	right: 0;
+	z-index: 30 !important;
+	background: var(--color-bg-secondary) !important;
+	border-left: 1px solid var(--color-border);
+}
+
+/* PlayerTable specific: Row number - sticky first column */
+.sticky-row-number {
+	position: sticky;
+	left: 0;
+	z-index: 20;
+	background: var(--color-bg-secondary);
+	border-right: 1px solid var(--color-border);
+}
+
+.sticky-row-number-header {
+	position: sticky;
+	left: 0;
+	z-index: 30 !important;
+	background: var(--color-bg-secondary) !important;
+	border-right: 1px solid var(--color-border);
+}
+
+/* PlayerTable specific: Username - sticky second column */
+.sticky-username {
+	position: sticky;
+	left: 4rem;
+	z-index: 20;
+	background: var(--color-bg-secondary);
+	border-right: 1px solid var(--color-border);
+}
+
+.sticky-username-header {
+	position: sticky;
+	left: 4rem;
+	z-index: 30 !important;
+	background: var(--color-bg-secondary) !important;
+	border-right: 1px solid var(--color-border);
+}
+
+/* ServerTable specific: Name column - sticky first column */
+.sticky-name {
+	position: sticky;
+	left: 0;
+	z-index: 20;
+	background: var(--color-bg-secondary);
+	border-right: 1px solid var(--color-border);
+}
+
+.sticky-name-header {
+	position: sticky;
+	left: 0;
+	z-index: 30 !important;
+	background: var(--color-bg-secondary) !important;
+	border-right: 1px solid var(--color-border);
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+	.action-cell,
+	.action-header {
+		display: none !important;
+	}
+
+	.mobile-btn {
+		font-size: 0.75rem;
+		padding: 0.25rem 0.5rem;
+	}
+}
+
+/* Highlighted row - override sticky column backgrounds */
+.table-pin-rows tbody tr.highlighted-row td.sticky-row-number,
+.table-pin-rows tbody tr.highlighted-row td.sticky-username,
+.table-pin-rows tbody tr.highlighted-row td.action-cell {
+	background: hsl(var(--p) / 0.2) !important;
+}
