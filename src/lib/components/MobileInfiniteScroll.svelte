@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
+	import { LoaderCircle } from '@lucide/svelte';
 
 	interface Props {
 		hasMore: boolean;
@@ -70,7 +71,7 @@
 			{#if isLoading}
 				<!-- Loading indicator -->
 				<div class="flex items-center gap-3">
-					<div class="loading loading-spinner loading-sm"></div>
+					<LoaderCircle class="text-primary h-5 w-5 animate-spin" />
 					<span class="text-base-content/70 text-sm">
 						<TranslatedText key={loadingTextKey} />
 					</span>
@@ -86,7 +87,7 @@
 		<!-- Final loading state -->
 		<div class="flex w-full items-center justify-center py-4" role="status">
 			<div class="flex items-center gap-3">
-				<div class="loading loading-spinner loading-sm"></div>
+				<LoaderCircle class="text-primary h-5 w-5 animate-spin" />
 				<span class="text-base-content/70 text-sm">
 					<TranslatedText key={loadingTextKey} />
 				</span>

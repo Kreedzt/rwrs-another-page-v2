@@ -112,6 +112,9 @@
 			"refreshFailed": {
 				"title": "Refresh server list failed",
 				"description": "Request timed out or failed: {error}"
+			},
+			"loadMoreSuccess": {
+				"title": "Loaded more players successfully"
 			}
 		},
 		"guide": {

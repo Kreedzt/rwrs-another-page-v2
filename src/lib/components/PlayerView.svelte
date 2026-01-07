@@ -154,7 +154,7 @@
 		<!-- Toast container for mobile only -->
 		<div class="toast toast-top toast-end z-50">
 			{#if showLoadMoreToast}
-				<Toast message={m['app.toast.refreshSuccess.title']()} type="success" />
+				<Toast message={m['app.toast.loadMoreSuccess.title']()} type="success" />
 			{/if}
 		</div>
 		<!-- Mobile table cards -->

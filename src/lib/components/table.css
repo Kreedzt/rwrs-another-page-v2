@@ -15,7 +15,7 @@
 .action-cell {
 	position: sticky;
 	right: 0;
-	z-index: 20;
+	z-index: 25;
 	background: var(--color-bg-secondary);
 	border-left: 1px solid var(--color-border);
 }
@@ -93,8 +93,9 @@
 }
 
 /* Highlighted row - override sticky column backgrounds */
+/* Match bg-primary/20 but use opaque background to prevent showing cells underneath */
 .table-pin-rows tbody tr.highlighted-row td.sticky-row-number,
 .table-pin-rows tbody tr.highlighted-row td.sticky-username,
 .table-pin-rows tbody tr.highlighted-row td.action-cell {
-	background: hsl(var(--p) / 0.2) !important;
+	background: color-mix(in oklab, var(--color-primary) 20%, var(--color-bg-secondary)) !important;
 }

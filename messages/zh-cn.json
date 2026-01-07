@@ -112,6 +112,9 @@
 			"refreshFailed": {
 				"title": "刷新服务器列表失败",
 				"description": "请求超时或失败：{error}"
+			},
+			"loadMoreSuccess": {
+				"title": "成功加载更多玩家"
 			}
 		},
 		"guide": {
