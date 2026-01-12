@@ -27,6 +27,9 @@ export type AnalyticsEventName =
 	| 'share_modal_open'
 	| 'share_download'
 	| 'share_copy'
+	| 'server_share_modal_open'
+	| 'server_share_download'
+	| 'server_share_copy'
 	// Engagement Events
 	| 'refresh_click'
 	| 'page_load'
@@ -60,6 +63,7 @@ export interface AnalyticsEventParams {
 	device_type?: 'desktop' | 'mobile';
 	image_format?: 'png';
 	success?: boolean;
+	share_type?: 'player' | 'server';
 
 	// Action params
 	action?: string;

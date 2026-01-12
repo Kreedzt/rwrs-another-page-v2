@@ -56,9 +56,11 @@ Robin web provides a pure and efficient way to browse Running with Rifles game s
 **Share & Export**
 
 - Player statistics sharing with PC/Mobile optimized cards
+- Server information sharing with essential connection details (IP, Port)
 - High-quality PNG image generation with snapdom
 - Download or copy to clipboard functionality
 - Real-time query timestamp and rankings display
+- Player list badges with consistent styling across views
 
 ## Analytics
 
@@ -94,8 +96,11 @@ The application includes a comprehensive analytics system that tracks user inter
 | `server_join_click`        | Clicking server join button                 |
 | `map_preview_open`         | Opening map preview                         |
 | `share_modal_open`         | Opening player share modal                  |
-| `share_download`           | Downloading share image (success/failure)   |
-| `share_copy`               | Copying share image to clipboard            |
+| `share_download`           | Downloading player share image             |
+| `share_copy`               | Copying player share image to clipboard    |
+| `server_share_modal_open`  | Opening server share modal                  |
+| `server_share_download`    | Downloading server share image             |
+| `server_share_copy`        | Copying server share image to clipboard    |
 
 ### Debug Mode
 

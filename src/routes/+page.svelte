@@ -29,6 +29,7 @@
 	import PlayerView from '$lib/components/PlayerView.svelte';
 	import MapPreview from '$lib/components/MapPreview.svelte';
 	import PlayerShareModal from '$lib/components/PlayerShareModal.svelte';
+	import ServerShareModal from '$lib/components/ServerShareModal.svelte';
 	import GlobalKeyboardSearch from '$lib/components/GlobalKeyboardSearch.svelte';
 
 	// Create state stores
@@ -49,6 +50,11 @@
 	// Player share modal state
 	let playerShareData = $state<import('$lib/models/player.model').IPlayerItem | undefined>(undefined);
 	let playerShareShow = $state(false);
+
+	// Server share modal state
+	let serverShareData = $state<import('$lib/models/server.model').IDisplayServerItem | undefined>(undefined);
+	let serverShareShow = $state(false);
+	let serverShareTimestamp = $state<number | undefined>(undefined);
 
 	// Quick filter state
 	let activeQuickFilters = $state<string[]>([]);
@@ -283,6 +289,16 @@
 
 	function handlePlayerShareClose() {
 		playerShareShow = false;
+	}
+
+	function handleServerShare(server: import('$lib/models/server.model').IDisplayServerItem) {
+		serverShareData = server;
+		serverShareShow = true;
+		serverShareTimestamp = Date.now();
+	}
+
+	function handleServerShareClose() {
+		serverShareShow = false;
 	}
 
 	/**
@@ -599,6 +615,7 @@
 				onToggleMobileCard={toggleMobileCard}
 				onMapView={handleMapView}
 				onMapPreviewClose={handleMapPreviewClose}
+				onShare={handleServerShare}
 			/>
 		{:else}
 			<PlayerView
@@ -648,5 +665,14 @@
 		onClose={handlePlayerShareClose}
 		queryTimestamp={playerState.lastQueryTimestamp}
 		onFetchRankings={() => playerShareData ? fetchPlayerRankings(playerShareData) : Promise.resolve({})}
+	/>
+
+	<!-- Server share modal -->
+	<ServerShareModal
+		server={serverShareData}
+		maps={maps}
+		show={serverShareShow}
+		onClose={handleServerShareClose}
+		queryTimestamp={serverShareTimestamp}
 	/>
 </section>

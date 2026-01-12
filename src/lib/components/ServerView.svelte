@@ -8,7 +8,7 @@
 	import QuickFilterButtons from '$lib/components/QuickFilterButtons.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { ArrowDownUp, ArrowUp, ArrowDown, Eye, CircleX, Info } from '@lucide/svelte';
+	import { ArrowDownUp, ArrowUp, ArrowDown, Eye, CircleX, Info, Share } from '@lucide/svelte';
 	import type { IDisplayServerItem, IColumn } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
 
@@ -43,6 +43,7 @@
 		onToggleMobileCard: (serverId: string) => void;
 		onMapView: (mapData: MapData) => void;
 		onMapPreviewClose: () => void;
+		onShare?: (server: IDisplayServerItem) => void;
 	}
 
 	let {
@@ -75,7 +76,8 @@
 		onColumnToggle,
 		onToggleMobileCard,
 		onMapView,
-		onMapPreviewClose
+		onMapPreviewClose,
+		onShare
 	}: Props = $props();
 
 	// Helper function to get the display value for a column
@@ -155,6 +157,7 @@
 				{sortColumn}
 				{sortDirection}
 				{onMapView}
+				onShare={onShare}
 			/>
 		</div>
 
@@ -289,6 +292,26 @@
 										</div>
 									</div>
 								{/if}
+
+								<!-- Share button section -->
+								<div class="border-base-200 mt-4 pt-3 border-t">
+									<div class="flex items-center justify-between">
+										<span class="text-base-content/70 min-w-20 flex-shrink-0 text-sm">
+											<TranslatedText key="app.server.share" />:
+										</span>
+										<button
+											class="btn btn-success btn-sm text-white"
+											onclick={(e) => {
+												e.stopPropagation();
+												onShare?.(item);
+											}}
+											type="button"
+										>
+											<Share class="w-3 h-3 mr-1" />
+											<TranslatedText key="app.server.buttonShare" />
+										</button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

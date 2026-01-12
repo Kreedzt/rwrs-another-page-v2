@@ -1,7 +1,7 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
 	import { m } from '$lib/paraglide/messages.js';
-	import { ArrowDownUp, ArrowUp, ArrowDown, Eye, Info } from '@lucide/svelte';
+	import { ArrowDownUp, ArrowUp, ArrowDown, Eye, Info, Share } from '@lucide/svelte';
 	import type { IDisplayServerItem } from '$lib/models/server.model';
 	import type { IColumn } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
@@ -18,6 +18,7 @@
 		sortColumn?: string | null;
 		sortDirection?: 'asc' | 'desc' | null;
 		onMapView?: (mapData: MapData) => void;
+		onShare?: (server: IDisplayServerItem) => void;
 	}
 
 	let {
@@ -30,7 +31,8 @@
 		onSort = () => {},
 		sortColumn = null,
 		sortDirection = null,
-		onMapView
+		onMapView,
+		onShare
 	}: Props = $props();
 
 	// Helper function to get the display value for a column
@@ -140,14 +142,23 @@
 									class:action-cell={column.key === 'action'}
 								>
 									{#if column.key === 'action'}
-										<div class="flex items-center justify-center text-center">
+										<div class="flex items-center justify-center gap-1">
 											<button
 												type="button"
-												class="btn btn-sm btn-primary mobile-btn"
+												class="btn btn-sm btn-primary flex-1"
 												onclick={() => handleAction(item, 'join')}
 											>
 												{m['app.button.join']()}
 											</button>
+											{#if onShare}
+												<button
+													type="button"
+													class="btn btn-sm btn-secondary flex-1"
+													onclick={() => onShare(item)}
+												>
+													<Share class="w-3 h-3" />
+												</button>
+											{/if}
 										</div>
 									{:else if column.key === 'mapId'}
 										<div class="flex items-center gap-2">
@@ -196,13 +207,13 @@
 	}
 
 	:global(.server-table-wrapper .action-cell) {
-		min-width: 9rem;
-		width: 9rem;
+		min-width: 12rem;
+		width: 12rem;
 	}
 
 	:global(.server-table-wrapper .action-header) {
-		min-width: 9rem;
-		width: 9rem;
+		min-width: 12rem;
+		width: 12rem;
 	}
 
 	/* ServerTable specific mobile adjustments */
