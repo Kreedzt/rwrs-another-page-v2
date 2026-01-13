@@ -27,7 +27,8 @@
 			"reset": "重置",
 			"refresh": "刷新",
 			"join": "加入",
-			"loadMore": "加载更多"
+			"loadMore": "加载更多",
+			"refreshing": "刷新中..."
 		},
 		"switch": {
 			"autoRefresh": "自动刷新",

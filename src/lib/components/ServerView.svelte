@@ -33,6 +33,7 @@
 		sortDirection: 'asc' | 'desc' | null;
 		mobileExpandedCards: Record<string, boolean>;
 		layoutMode: 'fullPage' | 'tableOnly';
+		isManualRefresh?: boolean;
 		onQuickFilter: (filterId: string) => void;
 		onMultiSelectChange: (checked: boolean) => void;
 		onSort: (column: string) => void;
@@ -67,6 +68,7 @@
 		sortDirection,
 		mobileExpandedCards,
 		layoutMode,
+		isManualRefresh = false,
 		onQuickFilter,
 		onMultiSelectChange,
 		onSort,
@@ -133,6 +135,13 @@
 		<span>{error}</span>
 	</div>
 {:else}
+	<!-- Success toast - visible on all platforms -->
+	<div class="toast toast-top toast-end z-50">
+		{#if showRefreshToast && isManualRefresh}
+			<Toast message={m['app.toast.refreshSuccess.title']()} type="success" />
+		{/if}
+	</div>
+
 	<!-- Quick filter buttons -->
 	<QuickFilterButtons
 		isLoading={loading}
@@ -174,12 +183,6 @@
 
 	<!-- Mobile content area -->
 	<div class="flex w-full flex-col md:hidden">
-		<!-- Toast container for mobile only -->
-		<div class="toast toast-top toast-end z-50">
-			{#if showRefreshToast}
-				<Toast message={m['app.toast.refreshSuccess.title']()} type="success" />
-			{/if}
-		</div>
 		<!-- Mobile table cards -->
 		<div class="md:hidden">
 			<!-- Mobile sort controls -->

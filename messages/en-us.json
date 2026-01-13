@@ -27,7 +27,8 @@
 			"reset": "Reset",
 			"refresh": "Refresh",
 			"join": "Join",
-			"loadMore": "Load More"
+			"loadMore": "Load More",
+			"refreshing": "Refreshing..."
 		},
 		"switch": {
 			"autoRefresh": "Auto Refresh",

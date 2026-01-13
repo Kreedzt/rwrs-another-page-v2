@@ -57,6 +57,7 @@ vi.mock('$lib/paraglide/messages.js', () => ({
 describe('ControlBar Component', () => {
 	let mockOnPlayerDbChange: ReturnType<typeof vi.fn<(db: PlayerDatabase) => void>>;
 	let mockOnRefresh: ReturnType<typeof vi.fn<() => Promise<void>>>;
+	let mockOnAutoRefresh: ReturnType<typeof vi.fn<() => Promise<void>>>;
 	let mockOnAutoRefreshToggle: ReturnType<typeof vi.fn<(enabled: boolean) => void>>;
 	let mockOnLayoutModeChange: ReturnType<typeof vi.fn<(mode: 'fullPage' | 'tableOnly') => void>>;
 	let mockOnSearchInput: ReturnType<typeof vi.fn<(value: string) => void>>;
@@ -86,6 +87,7 @@ describe('ControlBar Component', () => {
 	beforeEach(() => {
 		mockOnPlayerDbChange = vi.fn();
 		mockOnRefresh = vi.fn().mockResolvedValue(undefined);
+		mockOnAutoRefresh = vi.fn().mockResolvedValue(undefined);
 		mockOnAutoRefreshToggle = vi.fn();
 		mockOnLayoutModeChange = vi.fn();
 		mockOnSearchInput = vi.fn();
@@ -110,6 +112,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
@@ -136,6 +139,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
@@ -162,6 +166,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
@@ -188,6 +193,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
@@ -216,6 +222,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
@@ -248,6 +255,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
@@ -274,6 +282,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: mockVisiblePlayerColumns,
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,
@@ -302,6 +311,7 @@ describe('ControlBar Component', () => {
 					visiblePlayerColumns: {},
 					onPlayerDbChange: mockOnPlayerDbChange,
 					onRefresh: mockOnRefresh,
+								onAutoRefresh: mockOnAutoRefresh,
 					onAutoRefreshToggle: mockOnAutoRefreshToggle,
 					onLayoutModeChange: mockOnLayoutModeChange,
 					onSearchInput: mockOnSearchInput,

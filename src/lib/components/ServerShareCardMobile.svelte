@@ -1,6 +1,5 @@
 <script lang="ts">
 	import TranslatedText from '$lib/components/TranslatedText.svelte';
-	import { m } from '$lib/paraglide/messages.js';
 	import type { IDisplayServerItem } from '$lib/models/server.model';
 	import type { MapData } from '$lib/services/maps';
 	import { Server } from '@lucide/svelte';

@@ -49,6 +49,7 @@
 
 	// State
 	let cardElement = $state<HTMLElement | undefined>(undefined);
+	let captureElement = $state<HTMLElement | undefined>(undefined); // Hidden container for image generation
 	let isGenerating = $state(false);
 	let isCopying = $state(false);
 	let isDownloading = $state(false);
@@ -91,13 +92,13 @@
 	}
 
 	async function handleDownload() {
-		if (!server || !cardElement) return;
+		if (!server || !captureElement) return;
 
 		isDownloading = true;
 		errorMessage = undefined;
 
 		try {
-			const blob = await serverShareService.generateImage(cardElement, {
+			const blob = await serverShareService.generateImage(captureElement, {
 				format: 'png',
 				quality: 0.95,
 				scale: 2
@@ -119,14 +120,14 @@
 	}
 
 	async function handleCopy() {
-		if (!server || !cardElement) return;
+		if (!server || !captureElement) return;
 
 		isCopying = true;
 		copySuccess = false;
 		errorMessage = undefined;
 
 		try {
-			const blob = await serverShareService.generateImage(cardElement, {
+			const blob = await serverShareService.generateImage(captureElement, {
 				format: 'png',
 				quality: 0.95,
 				scale: 2
@@ -218,6 +219,34 @@
 						<!-- Share Card Preview -->
 						<div class="flex w-full justify-center overflow-auto max-h-[70vh]">
 							<div bind:this={cardElement} class="inline-block p-3 bg-base-200 rounded-xl">
+								{#if isMobile}
+									<ServerShareCardMobile
+										{server}
+										{maps}
+										queryTimestamp={displayTimestamp}
+										{customTheme}
+										{showWatermark}
+										{watermarkText}
+										{customSections}
+										{hiddenFields}
+									/>
+								{:else}
+									<ServerShareCard
+										{server}
+										{maps}
+										queryTimestamp={displayTimestamp}
+										{customTheme}
+										{showWatermark}
+										{watermarkText}
+										{customSections}
+										{hiddenFields}
+									/>
+								{/if}
+							</div>
+						</div>
+						<!-- Hidden container for image generation (unlimited height) -->
+						<div style="position: absolute; left: -9999px; top: 0; pointer-events: none;">
+							<div bind:this={captureElement} class="inline-block p-3 bg-base-200 rounded-xl">
 								{#if isMobile}
 									<ServerShareCardMobile
 										{server}

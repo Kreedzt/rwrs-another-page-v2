@@ -30,6 +30,13 @@ export function createServerState() {
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 
+	// Manual refresh tracking state
+	// isManualRefresh: Controls whether to show success toast (true for both manual and auto-refresh)
+	// manualRefreshLoading: Controls button loading state (only for manual refresh)
+	let isManualRefresh = $state(false);
+	let manualRefreshLoading = $state(false);
+	let manualRefreshTimeout = $state<number | null>(null); // Track timeout to prevent race conditions
+
 	// Pagination state
 	let currentPage = $state(1);
 	let mobileServerCurrentPage = $state(1);
@@ -48,8 +55,18 @@ export function createServerState() {
 
 	/**
 	 * Refresh server list from API
+	 * @param isManual - Whether this refresh was triggered by manual user action (default: false)
 	 */
-	async function refreshList(): Promise<void> {
+	async function refreshList(isManual: boolean = false): Promise<void> {
+		// Set manual refresh flags if this is a user-triggered refresh
+		if (isManual) {
+			isManualRefresh = true;
+			manualRefreshLoading = true;
+		} else {
+			// Auto-refresh also shows success toast now
+			isManualRefresh = true;
+		}
+
 		try {
 			loading = true;
 			servers = await ServerService.listAll();
@@ -60,6 +77,22 @@ export function createServerState() {
 			console.error('Error loading servers:', err);
 		} finally {
 			loading = false;
+
+			// Clear manual refresh loading state (only for manual refresh)
+			if (isManual) {
+				manualRefreshLoading = false;
+			}
+
+			// Clear any existing timeout before setting a new one (prevents race conditions on rapid clicks)
+			if (manualRefreshTimeout !== null) {
+				clearTimeout(manualRefreshTimeout);
+			}
+
+			// Reset isManualRefresh after toast displays (2.5s = 2s toast + buffer)
+			manualRefreshTimeout = setTimeout(() => {
+				isManualRefresh = false;
+				manualRefreshTimeout = null;
+			}, 2500) as unknown as number;
 		}
 	}
 
@@ -222,6 +255,12 @@ export function createServerState() {
 		},
 		get sortDirection() {
 			return sortDirection;
+		},
+		get isManualRefresh() {
+			return isManualRefresh;
+		},
+		get manualRefreshLoading() {
+			return manualRefreshLoading;
 		},
 
 		// Methods

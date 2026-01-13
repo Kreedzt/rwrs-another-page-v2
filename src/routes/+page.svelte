@@ -457,6 +457,22 @@
 		analytics.trackViewSwitch(view);
 	}
 
+	async function handleManualRefresh() {
+		if (currentView === 'servers') {
+			await serverState.refreshList(true);
+		} else {
+			await playerState.loadPlayers({ searchQuery });
+		}
+	}
+
+	async function handleAutoRefresh() {
+		if (currentView === 'servers') {
+			await serverState.refreshList(false);
+		} else {
+			await playerState.loadPlayers({ searchQuery });
+		}
+	}
+
 	function handlePlayerDbChange(db: PlayerDatabase) {
 		playerState.handlePlayerDbChange(db);
 		updateUrlState({ playerDb: db }, true);
@@ -561,8 +577,10 @@
 			{playerColumns}
 			{visibleColumns}
 			{visiblePlayerColumns}
+			isRefreshing={serverState.manualRefreshLoading}
 			onPlayerDbChange={handlePlayerDbChange}
-			onRefresh={currentView === 'servers' ? serverState.refreshList : () => playerState.loadPlayers({ searchQuery })}
+			onRefresh={handleManualRefresh}
+			onAutoRefresh={handleAutoRefresh}
 			onAutoRefreshToggle={handleAutoRefreshToggle}
 			onLayoutModeChange={handleLayoutModeChange}
 			onSearchInput={handleSearchInput}
@@ -605,6 +623,7 @@
 				sortDirection={serverState.sortDirection}
 				{mobileExpandedCards}
 				{layoutMode}
+				isManualRefresh={serverState.isManualRefresh}
 				onQuickFilter={handleQuickFilter}
 				onMultiSelectChange={handleMultiSelectChange}
 				onSort={handleSort}
