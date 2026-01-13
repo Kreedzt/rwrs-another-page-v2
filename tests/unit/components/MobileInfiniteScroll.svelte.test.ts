@@ -123,9 +123,10 @@ describe('MobileInfiniteScroll Component', () => {
 				}
 			});
 
-			// Check for loading spinner
-			const spinner = container.querySelector('.loading-spinner');
+			// Check for loading indicator (LoaderCircle with animate-spin class)
+			const spinner = container.querySelector('.animate-spin');
 			expect(spinner).toBeInTheDocument();
+			expect(spinner).toHaveClass('text-primary');
 		});
 
 		it('should render end of content message when hasMore is false and isLoading is false', async () => {
@@ -152,8 +153,10 @@ describe('MobileInfiniteScroll Component', () => {
 				}
 			});
 
-			const spinner = container.querySelector('.loading-spinner');
+			// Check for loading indicator (LoaderCircle with animate-spin class)
+			const spinner = container.querySelector('.animate-spin');
 			expect(spinner).toBeInTheDocument();
+			expect(spinner).toHaveClass('text-primary');
 		});
 
 		it('should be hidden on desktop (md breakpoint)', async () => {

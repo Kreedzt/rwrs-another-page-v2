@@ -101,6 +101,7 @@
 	}> = [
 		{ key: 'ipAddress', i18n: 'app.column.ip', isMono: true },
 		{ key: 'port', i18n: 'app.column.port', isMono: true },
+		{ key: 'bots', i18n: 'app.column.bots' },
 		{ key: 'country', i18n: 'app.server.column.country' },
 		{ key: 'version', i18n: 'app.server.column.version' }
 	];
@@ -150,9 +151,41 @@
 				</div>
 			{/if}
 		{/each}
+		
+		<!-- URL field - conditional rendering -->
+		{#if server.url && isFieldVisible('url')}
+			<div class="flex items-center justify-between gap-1">
+				<span class="text-base-content/60 text-[10px] whitespace-nowrap">
+					<TranslatedText key="app.column.url" />:
+				</span>
+				<a
+					href={server.url}
+					target="_blank"
+					class="link link-primary text-[10px] truncate"
+					title={server.url}
+				>
+					{server.url.length > 30 ? server.url.substring(0, 27) + '...' : server.url}
+				</a>
+			</div>
+		{/if}
 	</div>
 
-	<!-- Player List - REMOVED PER REQUIREMENT -->
+	<!-- Player List Section -->
+	{#if server.playerList && server.playerList.length > 0 && isFieldVisible('playerList')}
+		<div class="mt-2 border-t border-base-content/15 pt-2">
+			<div class="text-base-content/60 mb-1 text-[10px]">
+				<TranslatedText key="app.server.column.playerList" /> ({server.playerList.length})
+			</div>
+			<div class="flex flex-wrap gap-1">
+				{#each server.playerList as player}
+					<span class="badge badge-neutral text-[10px] whitespace-nowrap flex-shrink-0">{player}</span>
+				{/each}
+				<!-- {#if server.playerList.length > 8}
+					<span class="badge badge-ghost badge-sm text-[10px]">+{server.playerList.length - 8}</span>
+				{/if} -->
+			</div>
+		</div>
+	{/if}
 
 	<!-- Comment -->
 	{#if server.comment && isFieldVisible('comment')}

@@ -216,7 +216,7 @@
 						</div>
 					{:else}
 						<!-- Share Card Preview -->
-						<div class="flex w-full justify-center overflow-auto">
+						<div class="flex w-full justify-center overflow-auto max-h-[70vh]">
 							<div bind:this={cardElement} class="inline-block p-3 bg-base-200 rounded-xl">
 								{#if isMobile}
 									<ServerShareCardMobile
