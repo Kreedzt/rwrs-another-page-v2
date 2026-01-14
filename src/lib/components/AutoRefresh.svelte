@@ -12,7 +12,7 @@
 
 	let intervalId: number | null = null;
 	let nextRefreshCountdown = $state(0);
-	const REFRESH_INTERVAL = 5; // 固定5秒刷新间隔
+	const REFRESH_INTERVAL = 30; // 固定30秒刷新间隔
 
 	function startAutoRefresh() {
 		if (intervalId) {

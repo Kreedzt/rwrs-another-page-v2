@@ -29,6 +29,7 @@
 	import PlayerView from '$lib/components/PlayerView.svelte';
 	import MapPreview from '$lib/components/MapPreview.svelte';
 	import PlayerShareModal from '$lib/components/PlayerShareModal.svelte';
+	import ServerShareModal from '$lib/components/ServerShareModal.svelte';
 	import GlobalKeyboardSearch from '$lib/components/GlobalKeyboardSearch.svelte';
 
 	// Create state stores
@@ -49,6 +50,11 @@
 	// Player share modal state
 	let playerShareData = $state<import('$lib/models/player.model').IPlayerItem | undefined>(undefined);
 	let playerShareShow = $state(false);
+
+	// Server share modal state
+	let serverShareData = $state<import('$lib/models/server.model').IDisplayServerItem | undefined>(undefined);
+	let serverShareShow = $state(false);
+	let serverShareTimestamp = $state<number | undefined>(undefined);
 
 	// Quick filter state
 	let activeQuickFilters = $state<string[]>([]);
@@ -285,6 +291,16 @@
 		playerShareShow = false;
 	}
 
+	function handleServerShare(server: import('$lib/models/server.model').IDisplayServerItem) {
+		serverShareData = server;
+		serverShareShow = true;
+		serverShareTimestamp = Date.now();
+	}
+
+	function handleServerShareClose() {
+		serverShareShow = false;
+	}
+
 	/**
 	 * Fetch player rankings for all sortable fields
 	 * Concurrently queries the Player API for each sort field in descending order,
@@ -315,31 +331,71 @@
 		async function getRankingForField(
 			sortField: PlayerSortField
 		): Promise<{ key: string; rank: number | null }> {
-			try {
-				// Query API with descending sort and username search
-				const result = await PlayerService.listWithPagination({
-					db: player.db,
-					search: player.username,
-					sort: sortField,
-					size: 20
-				});
+			const maxRetries = 3;
 
-				// Find the player's position in the results
-				const playerIndex = result.players.findIndex((p) => p.username === player.username);
+			for (let attempt = 0; attempt < maxRetries; attempt++) {
+				try {
+					// Query API with descending sort and username search
+					const result = await PlayerService.listWithPagination({
+						db: player.db,
+						search: player.username,
+						sort: sortField,
+						size: 20
+					});
 
-				if (playerIndex !== -1) {
-					// Calculate the actual ranking (rowNumber from API response)
-					const foundPlayer = result.players[playerIndex];
-					return { key: sortFieldToKey(sortField), rank: foundPlayer.rowNumber };
+					// Find the player's position in the results
+					const playerIndex = result.players.findIndex((p) => p.username === player.username);
+
+					if (playerIndex !== -1) {
+						// SUCCESS: Found the player with valid rank
+						const foundPlayer = result.players[playerIndex];
+						return { key: sortFieldToKey(sortField), rank: foundPlayer.rowNumber };
+					}
+
+					// Player not found in results - retry immediately if attempts remain
+					// Don't return null yet, try again
+					continue;
+
+				} catch (error: any) {
+					// Check if this is a retryable error
+					const isRetryable = isRetryableError(error);
+
+					if (!isRetryable || attempt === maxRetries - 1) {
+						// Last attempt or non-retryable error
+						console.error(`Error fetching ranking for ${sortField}:`, error);
+						return { key: sortFieldToKey(sortField), rank: null };
+					}
+
+					// Immediately retry (no delay)
+					continue;
 				}
-
-				// If player not found in first page, we may need to paginate
-				// For now, return null to indicate not found
-				return { key: sortFieldToKey(sortField), rank: null };
-			} catch (error) {
-				console.error(`Error fetching ranking for ${sortField}:`, error);
-				return { key: sortFieldToKey(sortField), rank: null };
 			}
+
+			// All retries exhausted, player genuinely not found
+			return { key: sortFieldToKey(sortField), rank: null };
+		}
+
+		// Helper function to determine if an error is retryable
+		function isRetryableError(error: any): boolean {
+			// Network errors (TypeError with "Failed to fetch")
+			if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+				return true;
+			}
+
+			// Timeout errors (AbortError)
+			if (error instanceof Error && error.name === 'AbortError') {
+				return true;
+			}
+
+			// HTTP errors with status code
+			if (error?.status) {
+				const status = error.status;
+				// Retry on: 408 (Request Timeout), 429 (Rate Limited), 5xx (Server Errors)
+				return status === 408 || status === 429 || status >= 500;
+			}
+
+			// Default: don't retry on unknown errors
+			return false;
 		}
 
 		// Convert snake_case sort field to camelCase key
@@ -399,6 +455,22 @@
 			serverState.refreshList();
 		}
 		analytics.trackViewSwitch(view);
+	}
+
+	async function handleManualRefresh() {
+		if (currentView === 'servers') {
+			await serverState.refreshList(true);
+		} else {
+			await playerState.loadPlayers({ searchQuery });
+		}
+	}
+
+	async function handleAutoRefresh() {
+		if (currentView === 'servers') {
+			await serverState.refreshList(false);
+		} else {
+			await playerState.loadPlayers({ searchQuery });
+		}
 	}
 
 	function handlePlayerDbChange(db: PlayerDatabase) {
@@ -505,8 +577,10 @@
 			{playerColumns}
 			{visibleColumns}
 			{visiblePlayerColumns}
+			isRefreshing={serverState.manualRefreshLoading}
 			onPlayerDbChange={handlePlayerDbChange}
-			onRefresh={currentView === 'servers' ? serverState.refreshList : () => playerState.loadPlayers({ searchQuery })}
+			onRefresh={handleManualRefresh}
+			onAutoRefresh={handleAutoRefresh}
 			onAutoRefreshToggle={handleAutoRefreshToggle}
 			onLayoutModeChange={handleLayoutModeChange}
 			onSearchInput={handleSearchInput}
@@ -549,6 +623,7 @@
 				sortDirection={serverState.sortDirection}
 				{mobileExpandedCards}
 				{layoutMode}
+				isManualRefresh={serverState.isManualRefresh}
 				onQuickFilter={handleQuickFilter}
 				onMultiSelectChange={handleMultiSelectChange}
 				onSort={handleSort}
@@ -559,6 +634,7 @@
 				onToggleMobileCard={toggleMobileCard}
 				onMapView={handleMapView}
 				onMapPreviewClose={handleMapPreviewClose}
+				onShare={handleServerShare}
 			/>
 		{:else}
 			<PlayerView
@@ -608,5 +684,14 @@
 		onClose={handlePlayerShareClose}
 		queryTimestamp={playerState.lastQueryTimestamp}
 		onFetchRankings={() => playerShareData ? fetchPlayerRankings(playerShareData) : Promise.resolve({})}
+	/>
+
+	<!-- Server share modal -->
+	<ServerShareModal
+		server={serverShareData}
+		maps={maps}
+		show={serverShareShow}
+		onClose={handleServerShareClose}
+		queryTimestamp={serverShareTimestamp}
 	/>
 </section>

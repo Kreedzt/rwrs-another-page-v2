@@ -8,8 +8,8 @@ export default defineConfig({
 			reuseExistingServer: false
 		},
 		{
-			command: 'npm run build && npm run preview',
-			port: 4173,
+			command: 'E2E_TEST=true npm run dev',
+			port: 5173,
 			reuseExistingServer: false
 		}
 	],

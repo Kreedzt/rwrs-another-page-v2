@@ -21,8 +21,10 @@
 		playerColumns: IPlayerColumn[];
 		visibleColumns: Record<string, boolean>;
 		visiblePlayerColumns: Record<string, boolean>;
+		isRefreshing?: boolean;
 		onPlayerDbChange: (db: PlayerDatabase) => void;
 		onRefresh: () => Promise<void>;
+		onAutoRefresh: () => Promise<void>;
 		onAutoRefreshToggle: (enabled: boolean) => void;
 		onLayoutModeChange: (mode: 'fullPage' | 'tableOnly') => void;
 		onSearchInput: (value: string) => void;
@@ -43,8 +45,10 @@
 		playerColumns,
 		visibleColumns,
 		visiblePlayerColumns,
+		isRefreshing = false,
 		onPlayerDbChange,
 		onRefresh,
+		onAutoRefresh,
 		onAutoRefreshToggle,
 		onLayoutModeChange,
 		onSearchInput,
@@ -93,7 +97,16 @@
 	</div>
 
 	<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
-		<button class="btn-tactical w-full min-w-24 px-4 py-2 sm:w-auto" onclick={handleRefresh}>
+		<button
+			class="btn-tactical flex w-full min-w-24 items-center justify-center gap-2 px-4 py-2 sm:w-auto"
+			disabled={isRefreshing}
+			aria-busy={isRefreshing}
+			aria-label={isRefreshing ? m['app.button.refreshing']() : m['app.button.refresh']()}
+			onclick={handleRefresh}
+		>
+			{#if isRefreshing}
+				<span class="h-4 w-4 animate-spin" style="border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%;"></span>
+			{/if}
 			<TranslatedText key="app.button.refresh" />
 		</button>
 
@@ -111,7 +124,7 @@
 		{#if showAutoRefresh}
 			<AutoRefresh
 				enabled={autoRefreshEnabled}
-				onRefresh={onRefresh}
+				onRefresh={onAutoRefresh}
 				onToggleChange={onAutoRefreshToggle}
 			/>
 		{/if}

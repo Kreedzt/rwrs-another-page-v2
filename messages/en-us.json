@@ -27,7 +27,8 @@
 			"reset": "Reset",
 			"refresh": "Refresh",
 			"join": "Join",
-			"loadMore": "Load More"
+			"loadMore": "Load More",
+			"refreshing": "Refreshing..."
 		},
 		"switch": {
 			"autoRefresh": "Auto Refresh",
@@ -112,6 +113,9 @@
 			"refreshFailed": {
 				"title": "Refresh server list failed",
 				"description": "Request timed out or failed: {error}"
+			},
+			"loadMoreSuccess": {
+				"title": "Loaded more players successfully"
 			}
 		},
 		"guide": {
@@ -222,7 +226,32 @@
 		},
 		"server": {
 			"noDataFound": "No data found",
-			"matchingSearch": "matching your search"
+			"matchingSearch": "matching your search",
+			"share": "Share Server",
+			"buttonShare": "Share",
+			"column": {
+				"map": "Map",
+				"mode": "Mode",
+				"country": "Country",
+				"version": "Version",
+				"lastSeen": "Last Seen",
+				"playerList": "Players",
+				"comment": "Comment"
+			},
+			"shareCard": {
+				"queryTime": "Data queried at"
+			},
+			"shareModal": {
+				"title": "Share Server Info",
+				"download": "Download",
+				"copy": "Copy",
+				"copied": "Copied!",
+				"copying": "Copying...",
+				"downloading": "Downloading...",
+				"error": "Failed to generate image",
+				"retry": "Retry",
+				"help": "Download the image or copy it to your clipboard to share"
+			}
 		},
 		"ariaLabel": {
 			"toggleServerDetails": "Toggle server details",

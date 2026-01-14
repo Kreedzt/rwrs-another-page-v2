@@ -95,13 +95,13 @@ describe('AutoRefresh', () => {
 		});
 
 		await waitFor(() => {
-			expect(screen.getByText(/5s/)).toBeInTheDocument();
+			expect(screen.getByText(/30s/)).toBeInTheDocument();
 		});
 
 		vi.advanceTimersByTime(1000);
 
 		await waitFor(() => {
-			expect(screen.getByText(/4s/)).toBeInTheDocument();
+			expect(screen.getByText(/29s/)).toBeInTheDocument();
 		});
 	});
 

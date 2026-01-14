@@ -27,7 +27,8 @@
 			"reset": "重置",
 			"refresh": "刷新",
 			"join": "加入",
-			"loadMore": "加载更多"
+			"loadMore": "加载更多",
+			"refreshing": "刷新中..."
 		},
 		"switch": {
 			"autoRefresh": "自动刷新",
@@ -112,6 +113,9 @@
 			"refreshFailed": {
 				"title": "刷新服务器列表失败",
 				"description": "请求超时或失败：{error}"
+			},
+			"loadMoreSuccess": {
+				"title": "成功加载更多玩家"
 			}
 		},
 		"guide": {
@@ -238,7 +242,32 @@
 		},
 		"server": {
 			"noDataFound": "未找到数据",
-			"matchingSearch": "匹配您的搜索"
+			"matchingSearch": "匹配您的搜索",
+			"share": "分享服务器",
+			"buttonShare": "分享",
+			"column": {
+				"map": "地图",
+				"mode": "模式",
+				"country": "国家/地区",
+				"version": "版本",
+				"lastSeen": "最后上线",
+				"playerList": "玩家",
+				"comment": "备注"
+			},
+			"shareCard": {
+				"queryTime": "数据查询时间"
+			},
+			"shareModal": {
+				"title": "分享服务器信息",
+				"download": "下载",
+				"copy": "复制",
+				"copied": "已复制！",
+				"copying": "复制中...",
+				"downloading": "下载中...",
+				"error": "生成图片失败",
+				"retry": "重试",
+				"help": "下载图片或复制到剪贴板进行分享"
+			}
 		},
 		"ariaLabel": {
 			"toggleServerDetails": "切换服务器详情",

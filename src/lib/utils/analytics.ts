@@ -43,6 +43,9 @@ const BAIDU_CATEGORIES = {
 	share_modal_open: 'share',
 	share_download: 'share',
 	share_copy: 'share',
+	server_share_modal_open: 'share',
+	server_share_download: 'share',
+	server_share_copy: 'share',
 	refresh_click: 'engagement',
 	page_load: 'engagement',
 	session_start: 'engagement'
@@ -167,6 +170,7 @@ class Analytics {
 		if (params.player_database) labelParts.push(`db:${params.player_database}`);
 		if (params.device_type) labelParts.push(`device:${params.device_type}`);
 		if (params.image_format) labelParts.push(`format:${params.image_format}`);
+		if (params.share_type) labelParts.push(`type:${params.share_type}`);
 		if (params.method) labelParts.push(`method:${params.method}`);
 
 		return {
@@ -449,7 +453,42 @@ class Analytics {
 		this.trackEvent('share_copy', {
 			device_type: deviceType,
 			image_format: 'png',
-			success
+			success,
+			share_type: 'player'
+		});
+	}
+
+	/**
+	 * Track server share modal open
+	 */
+	trackServerShareModalOpen(deviceType: 'desktop' | 'mobile'): void {
+		this.trackEvent('server_share_modal_open', {
+			device_type: deviceType,
+			share_type: 'server'
+		});
+	}
+
+	/**
+	 * Track server share image download
+	 */
+	trackServerShareDownload(deviceType: 'desktop' | 'mobile', success: boolean): void {
+		this.trackEvent('server_share_download', {
+			device_type: deviceType,
+			image_format: 'png',
+			success,
+			share_type: 'server'
+		});
+	}
+
+	/**
+	 * Track server share image copy to clipboard
+	 */
+	trackServerShareCopy(deviceType: 'desktop' | 'mobile', success: boolean): void {
+		this.trackEvent('server_share_copy', {
+			device_type: deviceType,
+			image_format: 'png',
+			success,
+			share_type: 'server'
 		});
 	}
 

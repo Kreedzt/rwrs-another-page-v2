@@ -70,9 +70,40 @@ function buildCDNForSvelteKit() {
 		// Replace __VITE_SITE_URL__ and __VITE_CDN_IMAGE_URL__ placeholders
 		const siteUrl = process.env.VITE_SITE_URL || 'https://robin.kreedzt.com';
 		const cdnImageUrl = process.env.VITE_CDN_IMAGE_URL || siteUrl;
+		const normalizedSiteUrl = siteUrl.replace(/\/$/, '');
+		const canonicalUrl = `${normalizedSiteUrl}/`;
 
 		appHtmlContent = appHtmlContent.replace(/__VITE_SITE_URL__/g, siteUrl);
 		appHtmlContent = appHtmlContent.replace(/__VITE_CDN_IMAGE_URL__/g, cdnImageUrl);
+
+		// Update canonical/alternate/OG/Twitter/JSON-LD URLs to absolute site domain for CDN build
+		const replaceLink = (rel: string, hreflang?: string) => {
+			const langAttr = hreflang ? `\\s+hreflang="${hreflang}"` : '';
+			const pattern = new RegExp(
+				`<link\\s+rel="${rel}"${langAttr}\\s+href="[^"]*"\\s*\\/?>`,
+				'i'
+			);
+			const replacement = `<link rel="${rel}"${hreflang ? ` hreflang="${hreflang}"` : ''} href="${canonicalUrl}" />`;
+			appHtmlContent = appHtmlContent.replace(pattern, replacement);
+		};
+
+		replaceLink('canonical');
+		replaceLink('alternate', 'en');
+		replaceLink('alternate', 'zh');
+		replaceLink('alternate', 'x-default');
+
+		appHtmlContent = appHtmlContent.replace(
+			/<meta\s+property="og:url"\s+content="[^"]*"\s*\/?>/i,
+			`<meta property="og:url" content="${canonicalUrl}" />`
+		);
+		appHtmlContent = appHtmlContent.replace(
+			/<meta\s+name="twitter:url"\s+content="[^"]*"\s*\/?>/i,
+			`<meta name="twitter:url" content="${canonicalUrl}" />`
+		);
+		appHtmlContent = appHtmlContent.replace(
+			/"url":\s*"[^"]*"/,
+			`"url": "${canonicalUrl}"`
+		);
 
 		writeFileSync(appHtmlPath, appHtmlContent);
 		console.log(`  ✓ Replaced __VITE_SITE_URL__ with ${siteUrl}`);
