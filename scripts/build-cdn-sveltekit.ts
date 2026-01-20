@@ -224,6 +224,17 @@ function processAssetsForCDN(
 	];
 	const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico'];
 
+	// SEO-critical assets that should remain on same domain
+	function shouldExcludeFromCDN(relativePath: string, filename: string): boolean {
+		const excludePatterns = [
+			/^favicon\./i, // favicon.png, favicon.ico
+			/^apple-touch-icon/, // apple-touch-icon*.png
+			/^apple-splash/, // apple-splash*.jpg
+			/^apple-touch-startup-image/ // apple-touch-startup-image*.jpg
+		];
+		return excludePatterns.some((pattern) => pattern.test(filename));
+	}
+
 	function processDirectory(dir: string, relativePath: string = '') {
 		const items = readdirSync(dir);
 
@@ -256,6 +267,11 @@ function processAssetsForCDN(
 
 				// 处理资源文件
 				if (assetExtensions.includes(ext)) {
+					// Skip SEO-critical assets (favicon, apple icons, splash screens)
+					if (shouldExcludeFromCDN(itemRelativePath, item)) {
+						console.log(`  🔒 SEO asset (local): ${itemRelativePath}`);
+						continue;
+					}
 					try {
 						const content = readFileSync(fullPath);
 						const md5Hash = createHash('md5').update(content).digest('hex');
